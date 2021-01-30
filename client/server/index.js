@@ -17,6 +17,7 @@ io.on("connection", onConnection);
 function onConnection(socket) {
   console.log("hello");
   socket.on("drawing", (data) => {
+    console.log(data)
     socket.broadcast.emit("drawing", data);
   });
 }
