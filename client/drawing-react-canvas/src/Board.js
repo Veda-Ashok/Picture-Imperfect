@@ -154,8 +154,10 @@ export default function Board() {
       drawLine(data.x0 * w, data.y0 * h, data.x1 * w, data.y1 * h, data.color);
     };
 
-    socketRef.current = io("ws://localhost:8080");
+    console.log('trying to connect to server')
+    socketRef.current = io.connect("ws://localhost:8080");
     socketRef.current.on("drawing", onDrawingEvent);
+    console.log('connected to server')
   }, []);
 
   // ------------- The Canvas and color elements --------------------------
