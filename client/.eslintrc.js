@@ -4,7 +4,15 @@ module.exports = {
     es6: true,
     node: true,
   },
-  extends: ['plugin:react/recommended', 'airbnb', 'plugin:prettier/recommended'],
+  extends: [
+    'plugin:react/recommended',
+
+    'plugin:jsx-a11y/recommended',
+
+    'airbnb',
+
+    'plugin:prettier/recommended',
+  ],
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
@@ -14,6 +22,7 @@ module.exports = {
   },
   plugins: ['react'],
   rules: {
+    'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx'] }],
     'prettier/prettier': ['error', {}, { usePrettierrc: true }],
   },
 }

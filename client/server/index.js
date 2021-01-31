@@ -13,10 +13,10 @@ const io = socket(server, {
   },
 })
 
-function onConnection() {
+function onConnection(sock) {
   console.log('hello')
-  socket.on('drawing', (data) => {
-    socket.broadcast.emit('drawing', data)
+  sock.on('drawing', (data) => {
+    sock.broadcast.emit('drawing', data)
   })
 }
 
