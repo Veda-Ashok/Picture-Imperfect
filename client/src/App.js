@@ -1,6 +1,6 @@
 import React from 'react'
-import Board from './Board'
+import HomePage from './components/home/HomePage'
 
 export default function App() {
-  return <Board />
+  return <HomePage />
 }
