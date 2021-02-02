@@ -1,5 +1,5 @@
 import React from 'react'
 
 export default function HomePage() {
-  return <h1>Picture Imperfect</h1>
+  return <h1>hahah</h1>
 }
