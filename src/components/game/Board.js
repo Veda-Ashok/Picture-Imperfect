@@ -137,11 +137,11 @@ const Board = () => {
     socketRef.current.on('drawing', onDrawingEvent)
   }, [])
 
-  // ------------- The Canvas and color elements --------------------------
+  // ------------- The Canvas --------------------------
 
   return (
     <div>
-      <canvas ref={canvasRef} className="whiteboard" />
+      <canvas ref={canvasRef} aria-label="canvas" />
     </div>
   )
 }
