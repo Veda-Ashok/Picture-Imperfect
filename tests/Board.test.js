@@ -2,7 +2,7 @@ import { render } from '@testing-library/react'
 import React from 'react'
 import io from 'socket.io-client'
 import MockedSocket from 'socket.io-mock'
-import Board from '../components/game/Board'
+import Board from '../src/components/game/Board'
 
 jest.mock('socket.io-client')
 
