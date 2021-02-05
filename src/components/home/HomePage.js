@@ -5,8 +5,10 @@ export default function HomePage() {
   return (
     <>
       <h1>Picture Imperfect</h1>
-      <Button>Create Game</Button>
-      <Button>Join Game</Button>
+      <Button color="secondary" href="/create">
+        Create Game
+      </Button>
+      <Button href="/join">Join Game</Button>
     </>
   )
 }
