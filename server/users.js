@@ -13,10 +13,11 @@ function getUserById(id) {
 function userLeave(id) {
   const index = users.findIndex((user) => user.id === id)
 
-  if (index !== -1) {
-    return users.splice(index, 1)[0]
+  if (index === -1) {
+    // throw `Error: user with id ${id} not in list`
+    return id
   }
-  return users[index]
+  return users.splice(index, 1)[0]
 }
 
 function getRoomUsers(room) {

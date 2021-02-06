@@ -1,9 +1,9 @@
-// const { userJoin, getCurrentUser, userLeave, getRoomUsers } = require('./users').default
-import { userJoin, getCurrentUser, userLeave, getRoomUsers } from './users'
+// import { userJoin, getCurrentUser, userLeave, getRoomUsers } from './users'
 
 const express = require('express')
 const socketio = require('socket.io')
 const http = require('http')
+const { userJoin, getUserById, userLeave, getRoomUsers } = require('./users')
 
 const app = express()
 const server = http.createServer(app)
@@ -33,6 +33,7 @@ io.on('connection', (socket) => {
 
   // handle joining a room
   socket.on('joinRoom', ({ username, room }) => {
+    console.log(username, room)
     const user = userJoin(socket.id, username, room)
 
     socket.join(user.room)
@@ -64,7 +65,7 @@ io.on('connection', (socket) => {
 
   // send drawings to other users
   socket.on('drawing', (data) => {
-    const user = getCurrentUser(socket.id)
+    const user = getUserById(socket.id)
 
     socket.broadcast.to(user.room).emit('drawing', data)
   })
