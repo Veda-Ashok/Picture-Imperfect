@@ -1,12 +1,14 @@
-import React, { useRef, useEffect } from 'react'
-import io from 'socket.io-client'
+import React, { useRef, useEffect, useContext } from 'react'
+// import io from 'socket.io-client'
+import Context from '../../context/context'
 
 const Board = () => {
+  const globalContext = useContext(Context)
   const canvasRef = useRef(null)
   const socketRef = useRef()
 
   useEffect(() => {
-    // --------------- getContext() method returns a drawing context on the canvas-----
+    // --------------- getContext() method returns a drawing canvesContext on the canvas-----
 
     const canvas = canvasRef.current
     const context = canvas.getContext('2d')
@@ -133,7 +135,7 @@ const Board = () => {
       drawLine(data.x0 * w, data.y0 * h, data.x1 * w, data.y1 * h, data.color)
     }
 
-    socketRef.current = io.connect('ws://localhost:8080')
+    socketRef.current = globalContext.socket
     socketRef.current.on('drawing', onDrawingEvent)
   }, [])
 
