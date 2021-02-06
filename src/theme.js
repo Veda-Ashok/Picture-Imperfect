@@ -13,4 +13,26 @@ const theme = createMuiTheme({
   },
 })
 
+theme.props = {
+  MuiButton: {
+    disableElevation: true,
+  },
+}
+
+theme.overrides = {
+  MuiButton: {
+    root: {
+      textTransform: 'none',
+    },
+    containedPrimary: {
+      '&:hover': {
+        backgroundColor: amber[500],
+        color: deepPurple[900],
+      },
+    },
+    containedSecondary: {
+      fontWeight: 100,
+    },
+  },
+}
 export default theme

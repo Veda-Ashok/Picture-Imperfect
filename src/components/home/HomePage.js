@@ -1,14 +1,25 @@
 import React from 'react'
-import Button from '@material-ui/core/Button'
+import { Button, TextField, Grid } from '@material-ui/core'
 
 export default function HomePage() {
   return (
     <>
-      <h1>Picture Imperfect</h1>
-      <Button color="secondary" href="/create">
-        Create Game
-      </Button>
-      <Button href="/join">Join Game</Button>
+      <Grid container spacing={2}>
+        <h1>Picture Imperfect</h1>
+        <Grid item xs="12">
+          <Button variant="contained" color="primary" href="/create">
+            Create Game
+          </Button>
+        </Grid>
+        <Grid item xs="12">
+          <Button variant="contained" color="secondary" href="/join">
+            Join Game
+          </Button>
+        </Grid>
+        <Grid item xs="12">
+          <TextField label="First Name" />
+        </Grid>
+      </Grid>
     </>
   )
 }
