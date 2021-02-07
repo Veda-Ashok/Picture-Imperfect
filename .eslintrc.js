@@ -26,5 +26,6 @@ module.exports = {
     'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx'] }],
     'prettier/prettier': ['error', {}, { usePrettierrc: true }],
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+    'no-bitwise': 0,
   },
 }
