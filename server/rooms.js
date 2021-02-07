@@ -1,4 +1,4 @@
-const rooms = Set()
+const rooms = new Set()
 
 function generateUID() {
   // I generate the UID from two parts here
