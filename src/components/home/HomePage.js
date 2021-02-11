@@ -11,13 +11,13 @@ import Context from '../../context/context'
 export default function HomePage() {
   const globalContext = useContext(Context)
   const history = useHistory()
-  const [joinCode, setJoinCode] = useState('')
+  const [roomCode, setRoomCode] = useState(undefined)
   const [openCreateGame, setOpenCreateGame] = useState(false)
   const [openJoinGame, setOpenJoinGame] = useState(false)
 
   const handleRoomCode = (e) => {
-    console.log(joinCode)
-    setJoinCode(e.target.value)
+    console.log(roomCode)
+    setRoomCode(e.target.value)
   }
 
   const handleCreateGameOpen = () => {
@@ -41,27 +41,51 @@ export default function HomePage() {
     try {
       const socket = io.connect('ws://localhost:8080')
       console.log('made socket')
-      socket.emit('joinRoom', { username: 'Lord Slug', room: joinCode })
+      socket.emit('joinRoom', { username: 'Lord Slug', room: roomCode })
       console.log('joined room?')
+      // need to check if the roomcode exists
+      globalContext.addRoomCode(roomCode, globalContext)
       globalContext.addSocket(socket, globalContext)
       console.log('socket stuff over')
-      history.push('/game')
+      history.push('/lobby')
     } catch (error) {
       console.log(error)
     }
   }
 
+  // const onRoomUsers = (data) => {
+  //   console.log('onRoomUsers', data)
+  //   console.log('onRoomUsers data.room', data.room)
+  //   setRoomCode(data.room)
+  //   // data.users
+  // }
+
   const handleCreate = async (event) => {
     event.preventDefault()
     try {
+      let room
       const socket = io.connect('ws://localhost:8080')
       console.log('made socket')
       // TODO: Create room function
       socket.emit('createRoom', { username: 'Creation Slug', customWords: true })
+
+      await new Promise((resolve) => {
+        socket.on('roomUsers', async (data) => {
+          console.log('onRoomUsers', data)
+          console.log('onRoomUsers data.room', data.room)
+          room = data.room
+          resolve(data)
+        })
+      })
+      console.log('room code before global state: ', room)
+
+      globalContext.addRoomCode(room, globalContext)
       console.log('created room?')
       globalContext.addSocket(socket, globalContext)
       console.log('socket stuff over')
-      history.push('/game')
+      console.log('room code after global state: ', room)
+
+      history.push('/lobby')
     } catch (error) {
       console.log(error)
     }
