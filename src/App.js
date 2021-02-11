@@ -1,6 +1,7 @@
 import React from 'react'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { ThemeProvider } from '@material-ui/core/styles'
+import CssBaseline from '@material-ui/core/CssBaseline'
 import HomePage from './components/home/HomePage'
 import LobbyPage from './components/lobby/LobbyPage'
 import Board from './components/game/Board'
@@ -11,6 +12,7 @@ export default function App() {
   return (
     <GlobalState>
       <ThemeProvider theme={theme}>
+        <CssBaseline />
         <Router>
           <Switch>
             <Route exact path="/gameOver">

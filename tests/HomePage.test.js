@@ -24,7 +24,8 @@ describe('Homepage', () => {
       },
     }
     customRender(<HomePage />, { providerProps })
-    expect(screen.getByText('Picture Imperfect')).toBeInTheDocument()
+    expect(screen.getByText('Picture')).toBeInTheDocument()
+    expect(screen.getByText('Imperfect')).toBeInTheDocument()
     expect(screen.getByText('Create Game')).toBeInTheDocument()
     expect(screen.getByText('Join Game')).toBeInTheDocument()
   })

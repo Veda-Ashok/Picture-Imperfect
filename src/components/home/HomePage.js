@@ -3,13 +3,26 @@ import Button from '@material-ui/core/Button'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
 import TextField from '@material-ui/core/TextField'
+import Typography from '@material-ui/core/Typography'
 import { useHistory } from 'react-router-dom'
 import io from 'socket.io-client'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Dialog from '@material-ui/core/Dialog'
+import { makeStyles } from '@material-ui/core/styles'
 import Context from '../../context/context'
 
+const useStyles = makeStyles((theme) => ({
+  body: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  dialog: {
+    margin: theme.spacing(1),
+  },
+}))
+
 export default function HomePage() {
+  const classes = useStyles()
   const globalContext = useContext(Context)
   const history = useHistory()
   const [roomCode, setRoomCode] = useState(undefined)
@@ -120,16 +133,18 @@ export default function HomePage() {
   }
 
   return (
-    <div>
-      <h1>Picture Imperfect</h1>
+    <div classeName={classes.body}>
+      <Typography variant="h1">Picture</Typography>
 
       <img src="/logo192.png" alt="logo" />
 
-      <Button variant="contained" color="secondary" onClick={handleCreateGameOpen}>
+      <Typography variant="h1">Imperfect</Typography>
+
+      <Button variant="contained" color="secondary" size="large" onClick={handleCreateGameOpen}>
         Create Game
       </Button>
 
-      <Button variant="contained" onClick={handleJoinGameOpen}>
+      <Button variant="contained" color="secondary" size="large" onClick={handleJoinGameOpen}>
         Join Game
       </Button>
 
@@ -137,6 +152,7 @@ export default function HomePage() {
         onClose={handleUsernameErrorClose}
         aria-labelledby="username-error"
         open={openUsernameError}
+        className={classes.dialog}
       >
         <DialogTitle>{usernameError}</DialogTitle>
       </Dialog>
@@ -156,13 +172,14 @@ export default function HomePage() {
               <Checkbox
                 checked={customWords}
                 onChange={handleCustomWords}
+                color="primary"
                 name="custom-words-checkbox"
               />
             }
             /* eslint-disable */
             label="Add your own custom words?"
           />
-          <Button variant="contained" color="secondary" type="submit">
+          <Button variant="contained" color="primary" type="submit">
             Create Game
           </Button>
         </form>
@@ -183,7 +200,7 @@ export default function HomePage() {
             variant="outlined"
             onChange={(e) => handleUsername(e)}
           />
-          <Button variant="contained" color="secondary" type="submit">
+          <Button variant="contained" color="primary" type="submit">
             Join Game
           </Button>
         </form>

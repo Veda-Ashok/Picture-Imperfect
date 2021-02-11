@@ -1,14 +1,26 @@
 import { createMuiTheme } from '@material-ui/core'
-import { deepPurple, amber } from '@material-ui/core/colors'
+import { amber, grey } from '@material-ui/core/colors'
+
+const babyBlue = '#B2DAFF'
+const cgRed = '#BF211E'
+const white = '#FFFFFF'
 
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: deepPurple[500],
+      main: amber[200],
     },
     secondary: {
-      main: amber[500],
-      contrastText: deepPurple[900],
+      main: white,
+    },
+    error: {
+      main: cgRed,
+    },
+  },
+  typography: {
+    fontFamily: ['Raleway', 'sans-serif'].join(','),
+    h1: {
+      fontFamily: ['Ribeye', 'cursive'].join(','),
     },
   },
 })
@@ -26,12 +38,20 @@ theme.overrides = {
     },
     containedPrimary: {
       '&:hover': {
-        backgroundColor: amber[500],
-        color: deepPurple[900],
+        backgroundColor: amber[400],
       },
     },
     containedSecondary: {
-      fontWeight: 100,
+      '&:hover': {
+        backgroundColor: grey[100],
+      },
+    },
+  },
+  MuiCssBaseline: {
+    '@global': {
+      body: {
+        backgroundColor: babyBlue,
+      },
     },
   },
 }
