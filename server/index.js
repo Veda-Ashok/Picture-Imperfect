@@ -4,6 +4,7 @@ const express = require('express')
 const socketio = require('socket.io')
 const http = require('http')
 const { userJoin, getUserById, userLeave, getRoomUsers } = require('./users')
+const { createRoom } = require('./rooms')
 
 const app = express()
 const server = http.createServer(app)
@@ -14,22 +15,26 @@ const io = socketio(server, {
   },
 })
 
-// function onConnection(socket) {
-//   console.log('hello')
-
-//   // handle disconnect
-//   socket.on('disconnect', () => {
-//     io.emit('message', 'A user has disconnected')
-//   })
-
-//   // send drawings to other users
-//   socket.on('drawing', (data) => {
-//     socket.broadcast.emit('drawing', data)
-//   })
-// }
-
 io.on('connection', (socket) => {
   console.log('hello')
+
+  // handle creating a room
+  socket.on('createRoom', ({ username }) => {
+    const room = createRoom()
+
+    console.log(username, room)
+    const user = userJoin(socket.id, username, room)
+
+    socket.join(user.room)
+
+    socket.broadcast.to(user.room).emit('message', `${user.username} has joined`)
+
+    // send users room info
+    io.to(user.room).emit('roomUsers', {
+      room: user.room,
+      users: getRoomUsers(user.room),
+    })
+  })
 
   // handle joining a room
   socket.on('joinRoom', ({ username, room }) => {
