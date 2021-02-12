@@ -11,7 +11,9 @@ const addRoomCode = (roomCode, state) => {
 }
 //  check if the spread is ok
 const addUsers = (users, state) => {
+  console.log(state.user)
   const updatedUsers = { ...state.users, ...users }
+  console.log(updatedUsers)
   return { ...state, updatedUsers }
 }
 

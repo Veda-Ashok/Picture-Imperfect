@@ -50,26 +50,28 @@ function userLeave(id) {
 //   return users.filter((user) => user.room === room)
 // }
 
-function getRoomUsers(room) {
-  return getUsersInRoom(room)
-}
+// function getRoomUsers(room) {
+//   return getUsersInRoom(room)
+// }
 
 // function getUserByUsernameAndRoom(username, room) {
 //   return users.filter((user) => user.room === room && user.username === username)
 // }
 
 function getUserByUsernameAndRoom(username, room) {
-  const roomUsers = Object.values(getRoomUsers(room))
-  const user = roomUsers.find((currentUser) => {
-    return currentUser.username === username
-  })
-  return user
+  if (getUsersInRoom(room)) {
+    const roomUsers = Object.values(getUsersInRoom(room))
+    const user = roomUsers.find((currentUser) => {
+      return currentUser.username === username
+    })
+    return user
+  }
+  return undefined
 }
 
 module.exports = {
   userJoin,
   getUserById,
   userLeave,
-  getRoomUsers,
   getUserByUsernameAndRoom,
 }

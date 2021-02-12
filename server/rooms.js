@@ -31,8 +31,13 @@ function removeUserFromRoom(room, userId) {
   }
 }
 
+function getUsersInRoom(room) {
+  return rooms[room]
+}
+
 module.exports = {
   createRoom,
   addUserToRoom,
   removeUserFromRoom,
+  getUsersInRoom,
 }

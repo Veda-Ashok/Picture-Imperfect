@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect, useRef } from 'react'
 import Button from '@material-ui/core/Button'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
@@ -103,56 +103,76 @@ export default function HomePage() {
   }
 
   const goToRoom = async (event) => {
+    console.log('Going to room')
     event.preventDefault()
     if ((roomCode === undefined || roomCode.length < 1) && command === 'joinRoom') {
       // Throw error if they dont input a room code
       setErrorMessage('Please input a room code!')
       handleErrorOpen()
-    } else if (username === undefined) {
+    } else if (username === undefined || username.length < 1) {
       setErrorMessage('Please enter a username!')
       handleErrorOpen()
     } else {
       try {
         let room
-        let socket
+        const socketRef = useRef()
+        let users
         let usernameTaken = false
+        let invalidRoom = false
         // const roomExist = false
+        console.log('before checking if socket already exists')
         if (!globalContext.socket) {
-          socket = io.connect('ws://localhost:8080')
+          const socket = io.connect('ws://localhost:8080')
           console.log('made socket')
           globalContext.addSocket(socket, globalContext)
+          socketRef.current = globalContext.socket
         } else {
-          socket = globalContext.socket
+          socketRef.current = globalContext.socket
         }
         // we need a socket command to check username
         // usernameTaken = data.usernameTaken
+        if (command === 'createRoom') {
+          socketRef.current.emit(command, { username, customWords })
+        } else if (command === 'joinRoom') {
+          socketRef.current.emit('joinRoom', { username, room: roomCode })
+        }
+
+        console.log('promises')
         await new Promise((resolve) => {
-          socket.on('SOME COMMAND THAT CHECKS ROOM EXISTS AND USERNAME TAKEN', async (data) => {
+          socketRef.current.on('invalidRoomCode', async (data) => {
             console.log('checking validity', data)
-            usernameTaken = data.usernameTaken
-            // roomExist = data.roomExist
+            invalidRoom = true
+            setErrorMessage(`Sorry, ${roomCode} is invalid! Please enter a different code.`)
+            handleErrorOpen()
+            resolve(data)
+          })
+          socketRef.current.on('invalidUsername', async (data) => {
+            console.log('checking validity', data)
+            usernameTaken = true
+            setErrorMessage(`Sorry ${username} is already taken in the lobby`)
+            handleErrorOpen()
+            resolve(data)
+          })
+          socketRef.current.on('roomUsers', async (data) => {
+            console.log('onRoomUsers data.room', data.room)
+            room = data.room
+            users = data.users
+            console.log('user from t server', users)
             resolve(data)
           })
         })
 
-        if (usernameTaken) {
-          handleErrorOpen()
-          setErrorMessage('Sorry that username is taken')
-        } else {
-          if (command === 'createRoom') {
-            socket.emit(command, { username, customWords })
-          } else if (command === 'joinRoom') {
-            socket.emit('joinRoom', { username, room: roomCode })
-          }
-          await new Promise((resolve) => {
-            socket.on('roomUsers', async (data) => {
-              console.log('onRoomUsers data.room', data.room)
-              room = data.room
-              resolve(data)
-            })
-          })
+        if (!usernameTaken && !invalidRoom) {
+          // await new Promise((resolve) => {
+          //   socket.on('roomUsers', async (data) => {
+          //     console.log('onRoomUsers data.room', data.room)
+          //     room = data.room
+          //     resolve(data)
+          //   })
+          // })
 
           globalContext.addRoomCode(room, globalContext)
+          globalContext.addUsers(users, globalContext)
           history.push('/lobby')
         }
       } catch (error) {
