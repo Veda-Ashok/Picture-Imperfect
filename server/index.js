@@ -3,7 +3,13 @@
 const express = require('express')
 const socketio = require('socket.io')
 const http = require('http')
-const { userJoin, getUserById, userLeave, getRoomUsers } = require('./users')
+const {
+  userJoin,
+  getUserById,
+  userLeave,
+  getRoomUsers,
+  getUserByUsernameAndRoom,
+} = require('./users')
 const { createRoom } = require('./rooms')
 
 const app = express()
@@ -39,17 +45,27 @@ io.on('connection', (socket) => {
   // handle joining a room
   socket.on('joinRoom', ({ username, room }) => {
     console.log(username, room)
-    const user = userJoin(socket.id, username, room)
 
-    socket.join(user.room)
+    const users = getRoomUsers(room)
+    const userExists = getUserByUsernameAndRoom(username, room)
 
-    socket.broadcast.to(user.room).emit('message', `${user.username} has joined`)
+    if (!users) {
+      socket.emit('invalidRoomCode', `${room} does not exist`)
+    } else if (userExists) {
+      socket.emit('invalidUsername', `${username} is already taken in room ${room}`)
+    } else {
+      const user = userJoin(socket.id, username, room)
 
-    // send users room info
-    io.to(user.room).emit('roomUsers', {
-      room: user.room,
-      users: getRoomUsers(user.room),
-    })
+      socket.join(user.room)
+
+      socket.broadcast.to(user.room).emit('message', `${user.username} has joined`)
+
+      // send users room info
+      io.to(user.room).emit('roomUsers', {
+        room: user.room,
+        users: getRoomUsers(user.room),
+      })
+    }
   })
 
   // handle disconnect

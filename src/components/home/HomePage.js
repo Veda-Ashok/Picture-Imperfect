@@ -28,11 +28,11 @@ export default function HomePage() {
   const [roomCode, setRoomCode] = useState(undefined)
   const [username, setUsername] = useState(undefined)
   const [command, setCommand] = useState(undefined)
-  const [usernameError, setUsernameError] = useState('')
+  const [usernameError, setError] = useState('')
   const [customWords, setCustomWords] = useState(false)
   const [openCreateGame, setOpenCreateGame] = useState(false)
   const [openJoinGame, setOpenJoinGame] = useState(false)
-  const [openUsernameError, setOpenUsernameError] = useState(false)
+  const [openError, setOpenError] = useState(false)
 
   // if they are in a room right now remove them from the room
   useEffect(() => {
@@ -75,27 +75,29 @@ export default function HomePage() {
     setUsername(e.target.value)
   }
 
-  const handleUsernameErrorOpen = () => {
-    setUsername(undefined)
-    setOpenUsernameError(true)
+  const handleErrorOpen = () => {
+    setOpenError(true)
   }
 
-  const handleUsernameErrorClose = () => {
-    setOpenUsernameError(false)
+  const handleErrorClose = () => {
+    setOpenError(false)
   }
 
   const goToRoom = async (event) => {
     event.preventDefault()
-    if (roomCode === undefined) {
+    if ((roomCode === undefined || roomCode.length < 1) && command === 'joinRoom') {
       // Throw error if they dont input a room code
+      setError('Please input a room code!')
+      handleErrorOpen()
     } else if (username === undefined) {
-      handleUsernameErrorOpen()
-      setUsernameError('Please enter a username')
+      setError('Please enter a username!')
+      handleErrorOpen()
     } else {
       try {
         let room
         let socket
-        const usernameTaken = true
+        let usernameTaken = false
+        // const roomExist = false
         if (!globalContext.socket) {
           socket = io.connect('ws://localhost:8080')
           console.log('made socket')
@@ -105,9 +107,18 @@ export default function HomePage() {
         }
         // we need a socket command to check username
         // usernameTaken = data.usernameTaken
+        await new Promise((resolve) => {
+          socket.on('SOME COMMAND THAT CHECKS ROOM EXISTS AND USERNAME TAKEN', async (data) => {
+            console.log('checking validity', data)
+            usernameTaken = data.usernameTaken
+            // roomExist = data.roomExist
+            resolve(data)
+          })
+        })
+
         if (usernameTaken) {
-          handleUsernameErrorOpen()
-          setUsernameError('Sorry that username is taken')
+          handleErrorOpen()
+          setError('Sorry that username is taken')
         } else {
           if (command === 'createRoom') {
             socket.emit(command, { username, customWords })
@@ -152,9 +163,9 @@ export default function HomePage() {
       </Button>
 
       <Dialog
-        onClose={handleUsernameErrorClose}
-        aria-labelledby="username-error"
-        open={openUsernameError}
+        onClose={handleErrorClose}
+        aria-labelledby="error"
+        open={openError}
         className={classes.dialog}
       >
         <DialogTitle>{usernameError}</DialogTitle>
