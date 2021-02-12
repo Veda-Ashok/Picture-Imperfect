@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useRef } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import Button from '@material-ui/core/Button'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
@@ -115,45 +115,45 @@ export default function HomePage() {
     } else {
       try {
         let room
-        const socketRef = useRef()
+        let socket
         let users
         let usernameTaken = false
         let invalidRoom = false
         // const roomExist = false
         console.log('before checking if socket already exists')
         if (!globalContext.socket) {
-          const socket = io.connect('ws://localhost:8080')
+          socket = io.connect('ws://localhost:8080')
           console.log('made socket')
           globalContext.addSocket(socket, globalContext)
-          socketRef.current = globalContext.socket
         } else {
-          socketRef.current = globalContext.socket
+          console.log('elrkjnwelrnf;worhupij')
+          socket = globalContext.socket
         }
         // we need a socket command to check username
         // usernameTaken = data.usernameTaken
         if (command === 'createRoom') {
-          socketRef.current.emit(command, { username, customWords })
+          socket.emit(command, { username, customWords })
         } else if (command === 'joinRoom') {
-          socketRef.current.emit('joinRoom', { username, room: roomCode })
+          socket.emit('joinRoom', { username, room: roomCode })
         }
 
         console.log('promises')
         await new Promise((resolve) => {
-          socketRef.current.on('invalidRoomCode', async (data) => {
+          socket.on('invalidRoomCode', async (data) => {
             console.log('checking validity', data)
             invalidRoom = true
             setErrorMessage(`Sorry, ${roomCode} is invalid! Please enter a different code.`)
             handleErrorOpen()
             resolve(data)
           })
-          socketRef.current.on('invalidUsername', async (data) => {
+          socket.on('invalidUsername', async (data) => {
             console.log('checking validity', data)
             usernameTaken = true
             setErrorMessage(`Sorry ${username} is already taken in the lobby`)
             handleErrorOpen()
             resolve(data)
           })
-          socketRef.current.on('roomUsers', async (data) => {
+          socket.on('roomUsers', async (data) => {
             console.log('onRoomUsers data.room', data.room)
             room = data.room
             users = data.users
