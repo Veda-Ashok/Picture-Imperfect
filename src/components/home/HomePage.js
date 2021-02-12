@@ -39,6 +39,7 @@ export default function HomePage() {
     if (globalContext.roomCode) {
       globalContext.addRoomCode(undefined, globalContext)
       globalContext.socket.emit('disconnect')
+      globalContext.addSocket(undefined, globalContext)
     }
   }, [])
 
