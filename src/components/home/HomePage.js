@@ -37,8 +37,8 @@ export default function HomePage() {
   // if they are in a room right now remove them from the room
   useEffect(() => {
     if (globalContext.roomCode) {
-      globalContext.addRoomCode(undefined, globalContext)
       globalContext.socket.emit('disconnect')
+      globalContext.addRoomCode(undefined, globalContext)
       globalContext.addSocket(undefined, globalContext)
     }
   }, [])
