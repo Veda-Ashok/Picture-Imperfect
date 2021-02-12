@@ -15,9 +15,25 @@ const useStyles = makeStyles((theme) => ({
   body: {
     display: 'flex',
     justifyContent: 'center',
+    flexDirection: 'column',
+    alignItems: 'center',
+    height: '100vh',
   },
   dialog: {
     margin: theme.spacing(1),
+    display: 'flex',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  img: {
+    maxWidth: '192px',
+  },
+  buttons: {
+    margin: theme.spacing(5),
+  },
+  button: {
+    margin: theme.spacing(2),
   },
 }))
 
@@ -45,7 +61,6 @@ export default function HomePage() {
 
   // Room handlers
   const handleRoomCode = (e) => {
-    console.log(roomCode)
     setRoomCode(e.target.value)
   }
 
@@ -71,7 +86,6 @@ export default function HomePage() {
 
   // Username handlers
   const handleUsername = (e) => {
-    console.log('username', username)
     setUsername(e.target.value)
   }
 
@@ -147,20 +161,34 @@ export default function HomePage() {
   }
 
   return (
-    <div classeName={classes.body}>
+    <div className={classes.body}>
       <Typography variant="h1">Picture</Typography>
 
-      <img src="/logo192.png" alt="logo" />
+      <img className={classes.img} src="/logo192.png" alt="logo" />
 
       <Typography variant="h1">Imperfect</Typography>
 
-      <Button variant="contained" color="secondary" size="large" onClick={handleCreateGameOpen}>
-        Create Game
-      </Button>
+      <span className={classes.buttons}>
+        <Button
+          className={classes.button}
+          variant="contained"
+          color="secondary"
+          size="large"
+          onClick={handleCreateGameOpen}
+        >
+          Create Game
+        </Button>
 
-      <Button variant="contained" color="secondary" size="large" onClick={handleJoinGameOpen}>
-        Join Game
-      </Button>
+        <Button
+          className={classes.button}
+          variant="contained"
+          color="secondary"
+          size="large"
+          onClick={handleJoinGameOpen}
+        >
+          Join Game
+        </Button>
+      </span>
 
       <Dialog
         onClose={handleErrorClose}
@@ -173,7 +201,7 @@ export default function HomePage() {
 
       <Dialog onClose={handleCreateGameClose} aria-labelledby="create-game" open={openCreateGame}>
         <DialogTitle id="create-game-title">Create Game</DialogTitle>
-        <form onSubmit={goToRoom}>
+        <form onSubmit={goToRoom} className={classes.dialog}>
           <TextField
             id="outlined-basic"
             label="Enter username"
@@ -201,7 +229,7 @@ export default function HomePage() {
 
       <Dialog onClose={handleJoinGameClose} aria-labelledby="join-game" open={openJoinGame}>
         <DialogTitle id="create-game-title">Join Game</DialogTitle>
-        <form onSubmit={goToRoom}>
+        <form onSubmit={goToRoom} className={classes.dialog}>
           <TextField
             id="outlined-basic"
             label="Enter room code"

@@ -11,7 +11,8 @@ const addRoomCode = (roomCode, state) => {
 }
 //  check if the spread is ok
 const addUsers = (users, state) => {
-  return { ...state, ...users }
+  const updatedUsers = { ...state.users, ...users }
+  return { ...state, updatedUsers }
 }
 
 export const pictureImperfectReducer = (state, action) => {
