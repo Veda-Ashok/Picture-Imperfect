@@ -86,7 +86,9 @@ export default function HomePage() {
 
   const goToRoom = async (event) => {
     event.preventDefault()
-    if (username === undefined) {
+    if (roomCode === undefined) {
+      // Throw error if they dont input a room code
+    } else if (username === undefined) {
       handleUsernameErrorOpen()
       setUsernameError('Please enter a username')
     } else {
