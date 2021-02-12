@@ -37,6 +37,9 @@ const useStyles = makeStyles((theme) => ({
   button: {
     margin: theme.spacing(2),
   },
+  textfields: {
+    margin: theme.spacing(2.5),
+  },
 }))
 
 export default function HomePage() {
@@ -210,6 +213,7 @@ export default function HomePage() {
               label="Enter username"
               variant="outlined"
               onChange={(e) => handleUsername(e)}
+              className={classes.textfields}
             />
             <FormControlLabel
               /* eslint-disable */
@@ -241,12 +245,14 @@ export default function HomePage() {
               id="outlined-basic"
               label="Enter room code"
               variant="outlined"
+              className={classes.textfields}
               onChange={(e) => handleRoomCode(e)}
             />
             <TextField
               id="outlined-basic"
               label="Enter username"
               variant="outlined"
+              className={classes.textfields}
               onChange={(e) => handleUsername(e)}
             />
           </DialogContent>

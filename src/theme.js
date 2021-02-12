@@ -32,6 +32,9 @@ theme.props = {
   MuiButton: {
     disableElevation: true,
   },
+  // MuiInputLabel: {
+  //   shrink: false,
+  // },
 }
 
 theme.overrides = {
@@ -65,6 +68,40 @@ theme.overrides = {
       borderRadius: 3,
       borderColor: '#000',
       borderStyle: 'solid',
+    },
+  },
+  MuiDialogContent: {
+    dividers: {
+      borderTop: '3px solid',
+      borderBottom: '3px solid',
+      borderColor: '#000',
+    },
+  },
+  MuiOutlinedInput: {
+    root: {
+      '& $notchedOutline': {
+        borderColor: '#000',
+      },
+      '&:hover $notchedOutline': {
+        border: '3px solid',
+        borderColor: '#000',
+      },
+      '&$focused $notchedOutline': {
+        borderColor: '#000',
+      },
+    },
+  },
+  MuiInputLabel: {
+    root: {
+      color: 'black',
+      '&$focused': {
+        color: '#000',
+      },
+    },
+  },
+  MuiCheckbox: {
+    root: {
+      color: 'black',
     },
   },
 }
