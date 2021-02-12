@@ -17,6 +17,9 @@ const theme = createMuiTheme({
       main: cgRed,
     },
   },
+  text: {
+    primary: '#000',
+  },
   typography: {
     fontFamily: ['Raleway', 'sans-serif'].join(','),
     h1: {
@@ -35,6 +38,8 @@ theme.overrides = {
   MuiButton: {
     root: {
       textTransform: 'none',
+      border: '3px solid',
+      borderColor: '#000',
     },
     containedPrimary: {
       '&:hover': {
@@ -43,7 +48,7 @@ theme.overrides = {
     },
     containedSecondary: {
       '&:hover': {
-        backgroundColor: grey[100],
+        backgroundColor: grey[200],
       },
     },
   },
@@ -52,6 +57,14 @@ theme.overrides = {
       body: {
         backgroundColor: babyBlue,
       },
+    },
+  },
+  MuiDialog: {
+    paper: {
+      borderWidth: 3,
+      borderRadius: 3,
+      borderColor: '#000',
+      borderStyle: 'solid',
     },
   },
 }

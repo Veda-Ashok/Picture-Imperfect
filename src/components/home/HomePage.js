@@ -4,9 +4,11 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
+import DialogContent from '@material-ui/core/DialogContent'
 import { useHistory } from 'react-router-dom'
 import io from 'socket.io-client'
 import DialogTitle from '@material-ui/core/DialogTitle'
+import DialogActions from '@material-ui/core/DialogActions'
 import Dialog from '@material-ui/core/Dialog'
 import { makeStyles } from '@material-ui/core/styles'
 import Context from '../../context/context'
@@ -44,7 +46,7 @@ export default function HomePage() {
   const [roomCode, setRoomCode] = useState(undefined)
   const [username, setUsername] = useState(undefined)
   const [command, setCommand] = useState(undefined)
-  const [usernameError, setError] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
   const [customWords, setCustomWords] = useState(false)
   const [openCreateGame, setOpenCreateGame] = useState(false)
   const [openJoinGame, setOpenJoinGame] = useState(false)
@@ -101,10 +103,10 @@ export default function HomePage() {
     event.preventDefault()
     if ((roomCode === undefined || roomCode.length < 1) && command === 'joinRoom') {
       // Throw error if they dont input a room code
-      setError('Please input a room code!')
+      setErrorMessage('Please input a room code!')
       handleErrorOpen()
     } else if (username === undefined) {
-      setError('Please enter a username!')
+      setErrorMessage('Please enter a username!')
       handleErrorOpen()
     } else {
       try {
@@ -132,7 +134,7 @@ export default function HomePage() {
 
         if (usernameTaken) {
           handleErrorOpen()
-          setError('Sorry that username is taken')
+          setErrorMessage('Sorry that username is taken')
         } else {
           if (command === 'createRoom') {
             socket.emit(command, { username, customWords })
@@ -196,55 +198,63 @@ export default function HomePage() {
         open={openError}
         className={classes.dialog}
       >
-        <DialogTitle>{usernameError}</DialogTitle>
+        <DialogTitle>{errorMessage}</DialogTitle>
       </Dialog>
 
       <Dialog onClose={handleCreateGameClose} aria-labelledby="create-game" open={openCreateGame}>
-        <DialogTitle id="create-game-title">Create Game</DialogTitle>
-        <form onSubmit={goToRoom} className={classes.dialog}>
-          <TextField
-            id="outlined-basic"
-            label="Enter username"
-            variant="outlined"
-            onChange={(e) => handleUsername(e)}
-          />
-          <FormControlLabel
-            /* eslint-disable */
-            control={
-              <Checkbox
-                checked={customWords}
-                onChange={handleCustomWords}
-                color="primary"
-                name="custom-words-checkbox"
-              />
-            }
-            /* eslint-disable */
-            label="Add your own custom words?"
-          />
-          <Button variant="contained" color="primary" type="submit">
-            Create Game
-          </Button>
+        <form onSubmit={goToRoom}>
+          <DialogTitle id="create-game-title">Create Game</DialogTitle>
+          <DialogContent dividers className={classes.dialog}>
+            <TextField
+              id="outlined-basic"
+              label="Enter username"
+              variant="outlined"
+              onChange={(e) => handleUsername(e)}
+            />
+            <FormControlLabel
+              /* eslint-disable */
+              control={
+                <Checkbox
+                  checked={customWords}
+                  onChange={handleCustomWords}
+                  color="primary"
+                  name="custom-words-checkbox"
+                />
+              }
+              /* eslint-disable */
+              label="Add your own custom words?"
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button variant="contained" color="primary" type="submit">
+              Create Game
+            </Button>
+          </DialogActions>
         </form>
       </Dialog>
 
       <Dialog onClose={handleJoinGameClose} aria-labelledby="join-game" open={openJoinGame}>
-        <DialogTitle id="create-game-title">Join Game</DialogTitle>
-        <form onSubmit={goToRoom} className={classes.dialog}>
-          <TextField
-            id="outlined-basic"
-            label="Enter room code"
-            variant="outlined"
-            onChange={(e) => handleRoomCode(e)}
-          />
-          <TextField
-            id="outlined-basic"
-            label="Enter username"
-            variant="outlined"
-            onChange={(e) => handleUsername(e)}
-          />
-          <Button variant="contained" color="primary" type="submit">
-            Join Game
-          </Button>
+        <form onSubmit={goToRoom}>
+          <DialogTitle id="create-game-title">Join Game</DialogTitle>
+          <DialogContent dividers className={classes.dialog}>
+            <TextField
+              id="outlined-basic"
+              label="Enter room code"
+              variant="outlined"
+              onChange={(e) => handleRoomCode(e)}
+            />
+            <TextField
+              id="outlined-basic"
+              label="Enter username"
+              variant="outlined"
+              onChange={(e) => handleUsername(e)}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button variant="contained" color="primary" type="submit">
+              Join Game
+            </Button>
+          </DialogActions>
         </form>
       </Dialog>
     </div>
