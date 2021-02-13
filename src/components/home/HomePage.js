@@ -102,6 +102,8 @@ export default function HomePage() {
     setOpenError(false)
   }
 
+  let fuckYou = 6
+
   const goToRoom = async (event) => {
     console.log('Going to room')
     event.preventDefault()
@@ -139,22 +141,24 @@ export default function HomePage() {
 
         console.log('promises')
         await new Promise((resolve) => {
-          socket.on('invalidRoomCode', async (data) => {
+          socket.once('invalidRoomCode', async (data) => {
             console.log('checking validity', data)
             invalidRoom = true
             setErrorMessage(`Sorry, ${roomCode} is invalid! Please enter a different code.`)
             handleErrorOpen()
             resolve(data)
           })
-          socket.on('invalidUsername', async (data) => {
+          socket.once('invalidUsername', async (data) => {
             console.log('checking validity', data)
             usernameTaken = true
             setErrorMessage(`Sorry ${username} is already taken in the lobby`)
             handleErrorOpen()
             resolve(data)
           })
-          socket.on('roomUsers', async (data) => {
+          socket.once('roomUsers', async (data) => {
             console.log('onRoomUsers data.room', data.room)
+            fuckYou -= 1
+            console.log(fuckYou)
             room = data.room
             users = data.users
             console.log('user from t server', users)
@@ -170,9 +174,8 @@ export default function HomePage() {
           //     resolve(data)
           //   })
           // })
-
+          globalContext.updateUsers(users, globalContext)
           globalContext.addRoomCode(room, globalContext)
-          globalContext.addUsers(users, globalContext)
           history.push('/lobby')
         }
       } catch (error) {

@@ -1,7 +1,7 @@
 import React, { useReducer } from 'react'
 import PropTypes from 'prop-types'
 import Context from './context'
-import { pictureImperfectReducer, ADD_SOCKET, ADD_ROOM_CODE, ADD_USERS } from './reducers'
+import { pictureImperfectReducer, ADD_SOCKET, ADD_ROOM_CODE, UPDATE_USERS } from './reducers'
 
 const GlobalState = (props) => {
   const { children } = props
@@ -19,8 +19,8 @@ const GlobalState = (props) => {
     dispatch({ type: ADD_ROOM_CODE, roomCode })
   }
 
-  const addUsers = (users) => {
-    dispatch({ type: ADD_USERS, users })
+  const updateUsers = (users) => {
+    dispatch({ type: UPDATE_USERS, users })
   }
 
   return (
@@ -31,7 +31,7 @@ const GlobalState = (props) => {
         roomCode: appState.roomCode,
         addRoomCode,
         users: appState.users,
-        addUsers,
+        updateUsers,
       }}
     >
       {children}

@@ -4,8 +4,14 @@ import Context from '../../context/context'
 
 export default function LobbyPage() {
   const globalContext = useContext(Context)
+  const { socket } = globalContext
 
-  console.log(globalContext.users)
+  socket.on('roomUsers', async (data) => {
+    console.log('onRoomUsers data.room', data.room)
+    globalContext.updateUsers(data.users, globalContext)
+    console.log('user from t server', data.users)
+  })
+
   return (
     <div>
       <Typography variant="h2">Lobby Page</Typography>
