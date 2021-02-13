@@ -7,9 +7,9 @@ export default function LobbyPage() {
   const { socket } = globalContext
 
   socket.on('roomUsers', async (data) => {
-    console.log('onRoomUsers data.room', data.room)
+    // console.log('onRoomUsers data.room', data.room)
     globalContext.updateUsers(data.users, globalContext)
-    console.log('user from t server', data.users)
+    console.log('user from the server', data.users)
   })
 
   return (
