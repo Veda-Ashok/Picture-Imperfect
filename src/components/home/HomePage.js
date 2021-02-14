@@ -13,8 +13,14 @@ import Dialog from '@material-ui/core/Dialog'
 import { makeStyles } from '@material-ui/core/styles'
 import Context from '../../context/context'
 import IconBoard from './IconBoard'
+import Rules from '../reusable/Rules'
 
 const useStyles = makeStyles((theme) => ({
+  rules: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+  },
   body: {
     display: 'flex',
     justifyContent: 'center',
@@ -23,7 +29,6 @@ const useStyles = makeStyles((theme) => ({
     height: '100vh',
   },
   dialog: {
-    margin: theme.spacing(1),
     display: 'flex',
     justifyContent: 'center',
     flexDirection: 'column',
@@ -65,8 +70,6 @@ export default function HomePage() {
       globalContext.addSocket(undefined, globalContext)
     }
   }, [])
-
-  // for setting user's icons
 
   // Room handlers
   const handleRoomCode = (e) => {
@@ -160,7 +163,7 @@ export default function HomePage() {
           history.push('/lobby')
         }
       } catch (error) {
-        console.log(error)
+        console.error(error)
       }
     }
   }
@@ -171,6 +174,7 @@ export default function HomePage() {
 
   return (
     <div className={classes.body}>
+      <Rules />
       <Typography variant="h1">Picture</Typography>
 
       <img className={classes.img} src="/logo192.png" alt="logo" />

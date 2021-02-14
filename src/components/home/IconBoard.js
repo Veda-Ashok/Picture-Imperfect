@@ -63,7 +63,6 @@ export default function IconBoard({ setIcon }) {
       mousey0 *= canvas.height
       mousey1 *= canvas.height
 
-      // console.log('coordinates:', mousex0, mousey0, mousex1, mousey1)
       context.beginPath()
       context.moveTo(mousex0, mousey0)
       context.lineTo(mousex1, mousey1)
@@ -71,23 +70,13 @@ export default function IconBoard({ setIcon }) {
       context.stroke()
       context.closePath()
 
-      // const canvasPic = document.getElementById('canvas')
       const dataURL = canvas.toDataURL('image/png')
       setIcon(dataURL)
     }
 
-    // const w = canvas.width
-    // const h = canvas.height
-
-    //   socketRef.current.emit('drawing', {
-    //     x0: x0 / w,
-    //     y0: y0 / h,
-    //     x1: x1 / w,
-    //     y1: y1 / h,
     // ---------------- mouse movement --------------------------------------
 
     const onMouseDown = (e) => {
-      console.log('on mouse down')
       drawing = true
       current.x = e.clientX || e.touches[0].clientX
       current.y = e.clientY || e.touches[0].clientY
@@ -166,13 +155,6 @@ export default function IconBoard({ setIcon }) {
 
     window.addEventListener('resize', onResize, false)
     onResize()
-
-    // ----------------------- socket.io connection ----------------------------
-    // const onDrawingEvent = (data) => {
-    //   const w = canvas.width
-    //   const h = canvas.height
-    //   drawLine(data.x0 * w, data.y0 * h, data.x1 * w, data.y1 * h, data.color)
-    // }
   }, [])
 
   // ------------- The Canvas --------------------------
