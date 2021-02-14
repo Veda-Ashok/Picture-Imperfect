@@ -12,6 +12,7 @@ import DialogActions from '@material-ui/core/DialogActions'
 import Dialog from '@material-ui/core/Dialog'
 import { makeStyles } from '@material-ui/core/styles'
 import Context from '../../context/context'
+import IconBoard from './IconBoard'
 
 const useStyles = makeStyles((theme) => ({
   body: {
@@ -38,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(2),
   },
   textfields: {
-    margin: theme.spacing(2.5),
+    margin: theme.spacing(2),
   },
 }))
 
@@ -54,6 +55,7 @@ export default function HomePage() {
   const [openCreateGame, setOpenCreateGame] = useState(false)
   const [openJoinGame, setOpenJoinGame] = useState(false)
   const [openError, setOpenError] = useState(false)
+  const [icon, setIcon] = useState('')
 
   // if they are in a room right now remove them from the room
   useEffect(() => {
@@ -63,6 +65,8 @@ export default function HomePage() {
       globalContext.addSocket(undefined, globalContext)
     }
   }, [])
+
+  // for setting user's icons
 
   // Room handlers
   const handleRoomCode = (e) => {
@@ -102,10 +106,7 @@ export default function HomePage() {
     setOpenError(false)
   }
 
-  let fuckYou = 6
-
   const goToRoom = async (event) => {
-    console.log('Going to room')
     event.preventDefault()
     if ((roomCode === undefined || roomCode.length < 1) && command === 'joinRoom') {
       // Throw error if they dont input a room code
@@ -121,59 +122,39 @@ export default function HomePage() {
         let users
         let usernameTaken = false
         let invalidRoom = false
-        // const roomExist = false
-        console.log('before checking if socket already exists')
         if (!globalContext.socket) {
           socket = io.connect('ws://localhost:8080')
-          console.log('made socket')
           globalContext.addSocket(socket, globalContext)
         } else {
-          console.log('elrkjnwelrnf;worhupij')
           socket = globalContext.socket
         }
-        // we need a socket command to check username
-        // usernameTaken = data.usernameTaken
         if (command === 'createRoom') {
-          socket.emit(command, { username, customWords })
+          socket.emit(command, { username, customWords, icon })
         } else if (command === 'joinRoom') {
-          socket.emit('joinRoom', { username, room: roomCode })
+          socket.emit('joinRoom', { username, room: roomCode, icon })
         }
 
-        console.log('promises')
         await new Promise((resolve) => {
           socket.once('invalidRoomCode', async (data) => {
-            console.log('checking validity', data)
             invalidRoom = true
-            setErrorMessage(`Sorry, ${roomCode} is invalid! Please enter a different code.`)
+            setErrorMessage(data)
             handleErrorOpen()
             resolve(data)
           })
           socket.once('invalidUsername', async (data) => {
-            console.log('checking validity', data)
             usernameTaken = true
-            setErrorMessage(`Sorry ${username} is already taken in the lobby`)
+            setErrorMessage(data)
             handleErrorOpen()
             resolve(data)
           })
           socket.once('roomUsers', async (data) => {
-            console.log('onRoomUsers data.room', data.room)
-            fuckYou -= 1
-            console.log(fuckYou)
             room = data.room
             users = data.users
-            console.log('user from t server', users)
             resolve(data)
           })
         })
 
         if (!usernameTaken && !invalidRoom) {
-          // await new Promise((resolve) => {
-          //   socket.on('roomUsers', async (data) => {
-          //     console.log('onRoomUsers data.room', data.room)
-          //     room = data.room
-          //     resolve(data)
-          //   })
-          // })
           globalContext.updateUsers(users, globalContext)
           globalContext.addRoomCode(room, globalContext)
           history.push('/lobby')
@@ -231,6 +212,9 @@ export default function HomePage() {
         <form onSubmit={goToRoom}>
           <DialogTitle id="create-game-title">Create Game</DialogTitle>
           <DialogContent dividers className={classes.dialog}>
+            <div className={classes.textfields}>
+              <IconBoard setIcon={setIcon} />
+            </div>
             <TextField
               id="outlined-basic"
               label="Enter username"
@@ -264,6 +248,9 @@ export default function HomePage() {
         <form onSubmit={goToRoom}>
           <DialogTitle id="create-game-title">Join Game</DialogTitle>
           <DialogContent dividers className={classes.dialog}>
+            <div className={classes.textfields}>
+              <IconBoard setIcon={setIcon} />
+            </div>
             <TextField
               id="outlined-basic"
               label="Enter room code"
@@ -271,9 +258,10 @@ export default function HomePage() {
               className={classes.textfields}
               onChange={(e) => handleRoomCode(e)}
             />
+
             <TextField
               id="outlined-basic"
-              label="Enter username"
+              label="Enter nickname"
               variant="outlined"
               className={classes.textfields}
               onChange={(e) => handleUsername(e)}
