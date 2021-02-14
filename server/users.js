@@ -1,32 +1,43 @@
-const users = []
+const { addUserToRoom, removeUserFromRoom, getUsersInRoom } = require('./rooms')
 
-function userJoin(id, username, room) {
-  const user = { id, username, room }
-  users.push(user)
-  return user
+const users = {}
+
+function userJoin(id, username, room, icon) {
+  users[id] = { username, room, icon }
+  addUserToRoom(room, id, users[id])
+  return users[id]
 }
-
 function getUserById(id) {
-  return users.find((user) => user.id === id)
+  return users[id]
 }
 
 function userLeave(id) {
-  const index = users.findIndex((user) => user.id === id)
+  const user = users[id]
 
-  if (index === -1) {
+  if (!user) {
     // throw `Error: user with id ${id} not in list`
     return id
   }
-  return users.splice(index, 1)[0]
+  delete users[id]
+  removeUserFromRoom(user.room, id)
+
+  return user
 }
 
-function getRoomUsers(room) {
-  return users.filter((user) => user.room === room)
+function getUserByUsernameAndRoom(username, room) {
+  if (getUsersInRoom(room)) {
+    const roomUsers = Object.values(getUsersInRoom(room))
+    const user = roomUsers.find((currentUser) => {
+      return currentUser.username === username
+    })
+    return user
+  }
+  return undefined
 }
 
 module.exports = {
   userJoin,
   getUserById,
   userLeave,
-  getRoomUsers,
+  getUserByUsernameAndRoom,
 }

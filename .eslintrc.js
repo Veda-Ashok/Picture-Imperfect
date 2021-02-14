@@ -24,7 +24,7 @@ module.exports = {
   plugins: ['react'],
   rules: {
     'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx'] }],
-    'prettier/prettier': ['error', {}, { usePrettierrc: true }],
+    'prettier/prettier': ['error', { endOfLine: 'auto' }, { usePrettierrc: true }],
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'no-bitwise': 0,
   },

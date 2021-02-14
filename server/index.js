@@ -1,10 +1,8 @@
-// import { userJoin, getCurrentUser, userLeave, getRoomUsers } from './users'
-
 const express = require('express')
 const socketio = require('socket.io')
 const http = require('http')
-const { userJoin, getUserById, userLeave, getRoomUsers } = require('./users')
-const { createRoom } = require('./rooms')
+const { userJoin, getUserById, userLeave, getUserByUsernameAndRoom } = require('./users')
+const { createRoom, getUsersInRoom } = require('./rooms')
 
 const app = express()
 const server = http.createServer(app)
@@ -19,12 +17,11 @@ io.on('connection', (socket) => {
   console.log('hello')
 
   // handle creating a room
-  socket.on('createRoom', ({ username }) => {
+  socket.on('createRoom', ({ username, icon }) => {
     const room = createRoom()
 
     console.log(username, room)
-    const user = userJoin(socket.id, username, room)
-
+    const user = userJoin(socket.id, username, room, icon)
     socket.join(user.room)
 
     socket.broadcast.to(user.room).emit('message', `${user.username} has joined`)
@@ -32,24 +29,35 @@ io.on('connection', (socket) => {
     // send users room info
     io.to(user.room).emit('roomUsers', {
       room: user.room,
-      users: getRoomUsers(user.room),
+      users: getUsersInRoom(user.room),
     })
+    console.log('done with whole creation method')
   })
 
   // handle joining a room
-  socket.on('joinRoom', ({ username, room }) => {
+  socket.on('joinRoom', ({ username, room, icon }) => {
     console.log(username, room)
-    const user = userJoin(socket.id, username, room)
 
-    socket.join(user.room)
+    const users = getUsersInRoom(room)
+    const userExists = getUserByUsernameAndRoom(username, room)
 
-    socket.broadcast.to(user.room).emit('message', `${user.username} has joined`)
+    if (!users) {
+      socket.emit('invalidRoomCode', `Sorry, ${room} is invalid! Please enter a different code.`)
+    } else if (userExists) {
+      socket.emit('invalidUsername', `Sorry, ${username} is already taken in room ${room}`)
+    } else {
+      const user = userJoin(socket.id, username, room, icon)
 
-    // send users room info
-    io.to(user.room).emit('roomUsers', {
-      room: user.room,
-      users: getRoomUsers(user.room),
-    })
+      socket.join(user.room)
+
+      socket.broadcast.to(user.room).emit('message', `${user.username} has joined`)
+
+      // send users room info
+      io.to(user.room).emit('roomUsers', {
+        room: user.room,
+        users: getUsersInRoom(user.room),
+      })
+    }
   })
 
   // handle disconnect
@@ -63,7 +71,7 @@ io.on('connection', (socket) => {
       // send users room info
       io.to(user.room).emit('roomUsers', {
         room: user.room,
-        users: getRoomUsers(user.room),
+        users: getUsersInRoom(user.room),
       })
     }
   })

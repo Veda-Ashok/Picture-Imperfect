@@ -1,105 +1,281 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import Button from '@material-ui/core/Button'
-// import Form from '@material-ui/core/Form'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Checkbox from '@material-ui/core/Checkbox'
 import TextField from '@material-ui/core/TextField'
+import Typography from '@material-ui/core/Typography'
+import DialogContent from '@material-ui/core/DialogContent'
 import { useHistory } from 'react-router-dom'
 import io from 'socket.io-client'
 import DialogTitle from '@material-ui/core/DialogTitle'
+import DialogActions from '@material-ui/core/DialogActions'
 import Dialog from '@material-ui/core/Dialog'
+import { makeStyles } from '@material-ui/core/styles'
 import Context from '../../context/context'
+import IconBoard from './IconBoard'
+import Rules from '../reusable/Rules'
+
+const useStyles = makeStyles((theme) => ({
+  rules: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+  },
+  body: {
+    display: 'flex',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    alignItems: 'center',
+    height: '100vh',
+  },
+  dialog: {
+    display: 'flex',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  img: {
+    maxWidth: '192px',
+  },
+  buttons: {
+    margin: theme.spacing(5),
+  },
+  button: {
+    margin: theme.spacing(2),
+  },
+  textfields: {
+    margin: theme.spacing(2),
+  },
+}))
 
 export default function HomePage() {
+  const classes = useStyles()
   const globalContext = useContext(Context)
   const history = useHistory()
-  const [joinCode, setJoinCode] = useState('')
+  const [roomCode, setRoomCode] = useState(undefined)
+  const [username, setUsername] = useState(undefined)
+  const [command, setCommand] = useState(undefined)
+  const [errorMessage, setErrorMessage] = useState('')
+  const [customWords, setCustomWords] = useState(false)
   const [openCreateGame, setOpenCreateGame] = useState(false)
   const [openJoinGame, setOpenJoinGame] = useState(false)
+  const [openError, setOpenError] = useState(false)
+  const [icon, setIcon] = useState('')
 
+  // if they are in a room right now remove them from the room
+  useEffect(() => {
+    if (globalContext.roomCode) {
+      globalContext.socket.emit('disconnect')
+      globalContext.addRoomCode(undefined, globalContext)
+      globalContext.addSocket(undefined, globalContext)
+    }
+  }, [])
+
+  // Room handlers
   const handleRoomCode = (e) => {
-    console.log(joinCode)
-    setJoinCode(e.target.value)
+    setRoomCode(e.target.value)
   }
 
   const handleCreateGameOpen = () => {
+    setCommand('createRoom')
     setOpenCreateGame(true)
   }
 
-  const handleJoinGameOpen = () => {
-    setOpenJoinGame(true)
-  }
-
   const handleCreateGameClose = () => {
+    setCommand('')
     setOpenCreateGame(false)
   }
 
+  const handleJoinGameOpen = () => {
+    setCommand('joinRoom')
+    setOpenJoinGame(true)
+  }
+
   const handleJoinGameClose = () => {
+    setCommand('')
     setOpenJoinGame(false)
   }
 
-  const handleJoin = async (event) => {
+  // Username handlers
+  const handleUsername = (e) => {
+    setUsername(e.target.value)
+  }
+
+  const handleErrorOpen = () => {
+    setOpenError(true)
+  }
+
+  const handleErrorClose = () => {
+    setOpenError(false)
+  }
+
+  const goToRoom = async (event) => {
     event.preventDefault()
-    try {
-      const socket = io.connect('ws://localhost:8080')
-      console.log('made socket')
-      socket.emit('joinRoom', { username: 'Lord Slug', room: joinCode })
-      console.log('joined room?')
-      globalContext.addSocket(socket, globalContext)
-      console.log('socket stuff over')
-      history.push('/game')
-    } catch (error) {
-      console.log(error)
+    if ((roomCode === undefined || roomCode.length < 1) && command === 'joinRoom') {
+      // Throw error if they dont input a room code
+      setErrorMessage('Please input a room code!')
+      handleErrorOpen()
+    } else if (username === undefined || username.length < 1) {
+      setErrorMessage('Please enter a username!')
+      handleErrorOpen()
+    } else {
+      try {
+        let room
+        let socket
+        let users
+        let usernameTaken = false
+        let invalidRoom = false
+        if (!globalContext.socket) {
+          socket = io.connect('ws://localhost:8080')
+          globalContext.addSocket(socket, globalContext)
+        } else {
+          socket = globalContext.socket
+        }
+        if (command === 'createRoom') {
+          socket.emit(command, { username, customWords, icon })
+        } else if (command === 'joinRoom') {
+          socket.emit('joinRoom', { username, room: roomCode, icon })
+        }
+
+        await new Promise((resolve) => {
+          socket.once('invalidRoomCode', async (data) => {
+            invalidRoom = true
+            setErrorMessage(data)
+            handleErrorOpen()
+            resolve(data)
+          })
+          socket.once('invalidUsername', async (data) => {
+            usernameTaken = true
+            setErrorMessage(data)
+            handleErrorOpen()
+            resolve(data)
+          })
+          socket.once('roomUsers', async (data) => {
+            room = data.room
+            users = data.users
+            resolve(data)
+          })
+        })
+
+        if (!usernameTaken && !invalidRoom) {
+          globalContext.updateUsers(users, globalContext)
+          globalContext.addRoomCode(room, globalContext)
+          history.push('/lobby')
+        }
+      } catch (error) {
+        console.error(error)
+      }
     }
   }
 
-  const handleCreate = async (event) => {
-    event.preventDefault()
-    try {
-      const socket = io.connect('ws://localhost:8080')
-      console.log('made socket')
-      // TODO: Create room function
-      socket.emit('createRoom', { username: 'Creation Slug', customWords: true })
-      console.log('created room?')
-      globalContext.addSocket(socket, globalContext)
-      console.log('socket stuff over')
-      history.push('/game')
-    } catch (error) {
-      console.log(error)
-    }
+  const handleCustomWords = (event) => {
+    setCustomWords(event.target.checked)
   }
 
   return (
-    <div>
-      <h1>Picture Imperfect</h1>
+    <div className={classes.body}>
+      <Rules />
+      <Typography variant="h1">Picture</Typography>
 
-      <Button variant="contained" color="secondary" onClick={handleCreateGameOpen}>
-        Create Game
-      </Button>
+      <img className={classes.img} src="/logo192.png" alt="logo" />
 
-      <Button variant="contained" onClick={handleJoinGameOpen}>
-        Join Game
-      </Button>
+      <Typography variant="h1">Imperfect</Typography>
+
+      <span className={classes.buttons}>
+        <Button
+          className={classes.button}
+          variant="contained"
+          color="secondary"
+          size="large"
+          onClick={handleCreateGameOpen}
+        >
+          Create Game
+        </Button>
+
+        <Button
+          className={classes.button}
+          variant="contained"
+          color="secondary"
+          size="large"
+          onClick={handleJoinGameOpen}
+        >
+          Join Game
+        </Button>
+      </span>
+
+      <Dialog
+        onClose={handleErrorClose}
+        aria-labelledby="error"
+        open={openError}
+        className={classes.dialog}
+      >
+        <DialogTitle>{errorMessage}</DialogTitle>
+      </Dialog>
 
       <Dialog onClose={handleCreateGameClose} aria-labelledby="create-game" open={openCreateGame}>
-        <form onSubmit={handleCreate}>
+        <form onSubmit={goToRoom}>
           <DialogTitle id="create-game-title">Create Game</DialogTitle>
-          <Button variant="contained" color="secondary" type="submit" onClick={handleCreate}>
-            Create Game
-          </Button>
+          <DialogContent dividers className={classes.dialog}>
+            <div className={classes.textfields}>
+              <IconBoard setIcon={setIcon} />
+            </div>
+            <TextField
+              id="outlined-basic"
+              label="Enter username"
+              variant="outlined"
+              onChange={(e) => handleUsername(e)}
+              className={classes.textfields}
+            />
+            <FormControlLabel
+              /* eslint-disable */
+              control={
+                <Checkbox
+                  checked={customWords}
+                  onChange={handleCustomWords}
+                  color="primary"
+                  name="custom-words-checkbox"
+                />
+              }
+              /* eslint-disable */
+              label="Add your own custom words?"
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button variant="contained" color="primary" type="submit">
+              Create Game
+            </Button>
+          </DialogActions>
         </form>
       </Dialog>
 
-      <Dialog onClose={handleJoinGameClose} aria-labelledby="create-game" open={openJoinGame}>
-        <form onSubmit={handleJoin}>
+      <Dialog onClose={handleJoinGameClose} aria-labelledby="join-game" open={openJoinGame}>
+        <form onSubmit={goToRoom}>
           <DialogTitle id="create-game-title">Join Game</DialogTitle>
-          <TextField
-            id="outlined-basic"
-            label="Enter room code"
-            variant="outlined"
-            onChange={(e) => handleRoomCode(e)}
-          />
-          <Button variant="contained" color="secondary" type="submit" onClick={handleJoin}>
-            Join Game
-          </Button>
+          <DialogContent dividers className={classes.dialog}>
+            <div className={classes.textfields}>
+              <IconBoard setIcon={setIcon} />
+            </div>
+            <TextField
+              id="outlined-basic"
+              label="Enter room code"
+              variant="outlined"
+              className={classes.textfields}
+              onChange={(e) => handleRoomCode(e)}
+            />
+
+            <TextField
+              id="outlined-basic"
+              label="Enter nickname"
+              variant="outlined"
+              className={classes.textfields}
+              onChange={(e) => handleUsername(e)}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button variant="contained" color="primary" type="submit">
+              Join Game
+            </Button>
+          </DialogActions>
         </form>
       </Dialog>
     </div>

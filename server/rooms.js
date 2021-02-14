@@ -1,4 +1,4 @@
-const rooms = new Set()
+const rooms = {}
 
 function generateUID() {
   // I generate the UID from two parts here
@@ -15,10 +15,28 @@ function createRoom() {
   while (code in rooms) {
     code = generateUID()
   }
-  rooms.add(code)
+  rooms[code] = {}
   return code
+}
+
+function addUserToRoom(room, userId, user) {
+  rooms[room][userId] = user
+}
+
+function removeUserFromRoom(room, userId) {
+  delete rooms[room][userId]
+  if (rooms[room] === {}) {
+    delete rooms[room]
+  }
+}
+
+function getUsersInRoom(room) {
+  return rooms[room]
 }
 
 module.exports = {
   createRoom,
+  addUserToRoom,
+  removeUserFromRoom,
+  getUsersInRoom,
 }
