@@ -1,5 +1,3 @@
-// import { userJoin, getCurrentUser, userLeave, getUsersInRoom } from './users'
-
 const express = require('express')
 const socketio = require('socket.io')
 const http = require('http')
@@ -19,20 +17,16 @@ io.on('connection', (socket) => {
   console.log('hello')
 
   // handle creating a room
-  socket.on('createRoom', ({ username }) => {
-    console.log('creating room')
+  socket.on('createRoom', ({ username, icon }) => {
     const room = createRoom()
 
     console.log(username, room)
-    console.log('before joining room')
-    const user = userJoin(socket.id, username, room)
-    console.log('after joining room')
+    const user = userJoin(socket.id, username, room, icon)
     socket.join(user.room)
 
     socket.broadcast.to(user.room).emit('message', `${user.username} has joined`)
 
     // send users room info
-    console.log('emitting room users')
     io.to(user.room).emit('roomUsers', {
       room: user.room,
       users: getUsersInRoom(user.room),
@@ -41,18 +35,18 @@ io.on('connection', (socket) => {
   })
 
   // handle joining a room
-  socket.on('joinRoom', ({ username, room }) => {
+  socket.on('joinRoom', ({ username, room, icon }) => {
     console.log(username, room)
 
     const users = getUsersInRoom(room)
     const userExists = getUserByUsernameAndRoom(username, room)
 
     if (!users) {
-      socket.emit('invalidRoomCode', `${room} does not exist`)
+      socket.emit('invalidRoomCode', `Sorry, ${room} is invalid! Please enter a different code.`)
     } else if (userExists) {
-      socket.emit('invalidUsername', `${username} is already taken in room ${room}`)
+      socket.emit('invalidUsername', `Sorry, ${username} is already taken in room ${room}`)
     } else {
-      const user = userJoin(socket.id, username, room)
+      const user = userJoin(socket.id, username, room, icon)
 
       socket.join(user.room)
 

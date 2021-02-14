@@ -1,4 +1,3 @@
-// const rooms = new S et()
 const rooms = {}
 
 function generateUID() {
