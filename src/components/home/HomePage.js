@@ -16,11 +16,6 @@ import IconBoard from './IconBoard'
 import Rules from '../reusable/Rules'
 
 const useStyles = makeStyles((theme) => ({
-  rules: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-  },
   body: {
     display: 'flex',
     justifyContent: 'center',
@@ -220,7 +215,6 @@ export default function HomePage() {
               <IconBoard setIcon={setIcon} />
             </div>
             <TextField
-              id="outlined-basic"
               label="Enter username"
               variant="outlined"
               onChange={(e) => handleUsername(e)}
@@ -256,7 +250,6 @@ export default function HomePage() {
               <IconBoard setIcon={setIcon} />
             </div>
             <TextField
-              id="outlined-basic"
               label="Enter room code"
               variant="outlined"
               className={classes.textfields}
@@ -264,7 +257,6 @@ export default function HomePage() {
             />
 
             <TextField
-              id="outlined-basic"
               label="Enter nickname"
               variant="outlined"
               className={classes.textfields}

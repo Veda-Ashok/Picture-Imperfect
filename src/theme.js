@@ -25,6 +25,9 @@ const theme = createMuiTheme({
     h1: {
       fontFamily: ['Ribeye', 'cursive'].join(','),
     },
+    subtitle1: {
+      fontWeight: 500,
+    },
   },
 })
 
@@ -102,6 +105,14 @@ theme.overrides = {
   MuiCheckbox: {
     root: {
       color: 'black',
+    },
+  },
+  MuiAvatar: {
+    root: {
+      width: '80px',
+      height: '80px',
+      border: '3px solid black',
+      background: 'white',
     },
   },
 }
