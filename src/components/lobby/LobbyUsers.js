@@ -34,6 +34,7 @@ export default function LobbyUsers() {
   }
 
   useEffect(() => {
+    // if they arent in a room send them to the homepage
     // subscribe to socket events
     socket.on('roomUsers', handleUserUpdate)
 

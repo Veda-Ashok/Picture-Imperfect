@@ -153,6 +153,7 @@ export default function HomePage() {
         })
 
         if (!usernameTaken && !invalidRoom) {
+          globalContext.updateMyInfo({ username, icon }, globalContext)
           globalContext.updateUsers(users, globalContext)
           globalContext.addRoomCode(room, globalContext)
           history.push('/lobby')

@@ -7,6 +7,7 @@ import {
   ADD_ROOM_CODE,
   UPDATE_USERS,
   UPDATE_CUSTOM_WORDS,
+  UPDATE_MY_INFO,
 } from './reducers'
 
 const GlobalState = (props) => {
@@ -16,6 +17,7 @@ const GlobalState = (props) => {
     roomCode: undefined,
     users: {},
     customWords: true,
+    myInfo: {},
   })
 
   const addSocket = (socket) => {
@@ -28,6 +30,10 @@ const GlobalState = (props) => {
 
   const updateUsers = (users) => {
     dispatch({ type: UPDATE_USERS, users })
+  }
+
+  const updateMyInfo = (myInfo) => {
+    dispatch({ type: UPDATE_MY_INFO, myInfo })
   }
 
   const updateCustomWords = (customWords) => {
@@ -45,6 +51,8 @@ const GlobalState = (props) => {
         updateUsers,
         customWords: appState.customWords,
         updateCustomWords,
+        myInfo: appState.myInfo,
+        updateMyInfo,
       }}
     >
       {children}

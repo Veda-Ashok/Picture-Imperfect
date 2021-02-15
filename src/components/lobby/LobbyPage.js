@@ -1,8 +1,10 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import { makeStyles } from '@material-ui/core/styles'
+import { useHistory } from 'react-router-dom'
+
 import Context from '../../context/context'
 import LobbyUsers from './LobbyUsers'
 import Rules from '../reusable/Rules'
@@ -14,18 +16,19 @@ const useStyles = makeStyles((theme) => ({
   },
   textfields: {
     margin: theme.spacing(2),
-    background: 'white',
+    background: '#B2DAFF',
     borderRadius: '5px',
   },
   textContent: {
     float: 'left',
     width: '30%',
     // border: '5px solid black',
-    height: '80vh',
+    background: 'white',
+    height: '100vh',
     overflow: 'auto',
-    marginTop: theme.spacing(15),
+    // marginTop: theme.spacing(15),
     display: 'flex',
-    flexFlow: 'column wrap',
+    flexFlow: 'column nowrap',
     justifyContent: 'center',
     // flexDirection: 'row',
     alignItems: 'center',
@@ -35,11 +38,11 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     top: 0,
     left: 0,
-    background: 'white',
+    background: '#B2DAFF',
     border: '3px solid black',
     borderRadius: '5px',
     margin: theme.spacing(2),
-    padding: theme.spacing(2),
+    padding: theme.spacing(1),
   },
   users: {
     float: 'right',
@@ -53,17 +56,41 @@ const useStyles = makeStyles((theme) => ({
 
 export default function LobbyPage() {
   const classes = useStyles()
+  const history = useHistory()
   const globalContext = useContext(Context)
+
+  useEffect(() => {
+    if (!globalContext.roomCode || !globalContext.socket) {
+      history.push('/')
+    }
+  }, [])
+
+  const handleStartGame = async (event) => {
+    event.preventDefault()
+    try {
+      console.log(globalContext.myInfo.username)
+      globalContext.socket.emit('startGame', globalContext.myInfo.username)
+
+      // await new Promise((resolve) => {
+      //   socket.once('gameStarted', async (data) => {
+      //     resolve(data)
+      //   })
+      // })
+      history.push('/game')
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   return (
     <div className={classes.root}>
       <Rules />
-      <Typography variant="h4" className={classes.roomCode}>
-        Roomcode:
-        {'  '}
-        {globalContext.roomCode}
-      </Typography>
       <div className={classes.textContent}>
+        <Typography variant="h4" className={classes.roomCode}>
+          Roomcode:
+          {'  '}
+          {globalContext.roomCode}
+        </Typography>
         {globalContext.customWords && (
           <TextField
             label="Enter custom words"
@@ -80,7 +107,7 @@ export default function LobbyPage() {
           variant="contained"
           color="primary"
           size="large"
-          onClick={() => alert('start game')}
+          onClick={handleStartGame}
         >
           Start Game
         </Button>
@@ -90,9 +117,7 @@ export default function LobbyPage() {
           Players
         </Typography>
       </div>
-      <div className={classes.users}>
-        <LobbyUsers />
-      </div>
+      <div className={classes.users}>{globalContext.socket && <LobbyUsers />}</div>
     </div>
   )
 }
