@@ -1,7 +1,14 @@
 import React, { useReducer } from 'react'
 import PropTypes from 'prop-types'
 import Context from './context'
-import { pictureImperfectReducer, ADD_SOCKET, ADD_ROOM_CODE, UPDATE_USERS } from './reducers'
+import {
+  pictureImperfectReducer,
+  ADD_SOCKET,
+  ADD_ROOM_CODE,
+  UPDATE_USERS,
+  UPDATE_CUSTOM_WORDS,
+  UPDATE_MY_INFO,
+} from './reducers'
 
 const GlobalState = (props) => {
   const { children } = props
@@ -9,6 +16,8 @@ const GlobalState = (props) => {
     socket: undefined,
     roomCode: undefined,
     users: {},
+    customWords: true,
+    myInfo: {},
   })
 
   const addSocket = (socket) => {
@@ -23,6 +32,14 @@ const GlobalState = (props) => {
     dispatch({ type: UPDATE_USERS, users })
   }
 
+  const updateMyInfo = (myInfo) => {
+    dispatch({ type: UPDATE_MY_INFO, myInfo })
+  }
+
+  const updateCustomWords = (customWords) => {
+    dispatch({ type: UPDATE_CUSTOM_WORDS, customWords })
+  }
+
   return (
     <Context.Provider
       value={{
@@ -32,6 +49,10 @@ const GlobalState = (props) => {
         addRoomCode,
         users: appState.users,
         updateUsers,
+        customWords: appState.customWords,
+        updateCustomWords,
+        myInfo: appState.myInfo,
+        updateMyInfo,
       }}
     >
       {children}

@@ -25,7 +25,7 @@ function addUserToRoom(room, userId, user) {
 
 function removeUserFromRoom(room, userId) {
   delete rooms[room][userId]
-  if (rooms[room] === {}) {
+  if (Object.keys(rooms[room]).length === 0) {
     delete rooms[room]
   }
 }
@@ -34,9 +34,14 @@ function getUsersInRoom(room) {
   return rooms[room]
 }
 
+function updateUserInRoom(room, userId, key, value) {
+  rooms[room][userId][key] = value
+}
+
 module.exports = {
   createRoom,
   addUserToRoom,
   removeUserFromRoom,
   getUsersInRoom,
+  updateUserInRoom,
 }

@@ -13,6 +13,7 @@ const useStyles = makeStyles((theme) => ({
   canvas: {
     height: '100px',
     width: '100px',
+    borderRadius: '100px',
     border: '3px solid',
     borderColor: 'black',
   },
