@@ -9,6 +9,7 @@ const {
   updateUser,
 } = require('./users')
 const { createRoom, getUsersInRoom } = require('./rooms')
+const { Game } = require('./game')
 
 const app = express()
 const server = http.createServer(app)
@@ -91,6 +92,11 @@ io.on('connection', (socket) => {
     })
     if (everyoneReady) {
       io.to(user.room).emit('everyoneReady')
+      const room = getUsersInRoom(user.room)
+      const roomCode = user.room
+
+      const game = new Game(room, 5, roomCode, io)
+      game.assignRoles()
     }
 
     // send users room info
