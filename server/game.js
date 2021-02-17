@@ -62,7 +62,6 @@ class Game {
 
   assignRoles() {
     this.assignJudge()
-    console.log(Object.keys(this.room))
     if (Object.keys(this.room).length % 2 === 0) {
       this.assignJudge()
     }
