@@ -52,6 +52,9 @@ export default function LobbyUsers() {
           <div className={classes.avatars}>
             <Avatar src={user.icon ? user.icon : '/logo192.png'} alt={user.username} />
             <Typography variant="subtitle1">{user.username}</Typography>
+            <Typography variant="subtitle1">
+              {user.ready ? 'LET ME INNNNNNNNNN' : 'HOLD THE F*CKING PHONE!!'}
+            </Typography>
           </div>
         )
       })}

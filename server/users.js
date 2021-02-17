@@ -7,6 +7,7 @@ function userJoin(id, username, room, icon) {
   addUserToRoom(room, id, users[id])
   return users[id]
 }
+
 function getUserById(id) {
   return users[id]
 }

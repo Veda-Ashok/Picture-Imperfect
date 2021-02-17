@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
@@ -58,25 +58,54 @@ export default function LobbyPage() {
   const classes = useStyles()
   const history = useHistory()
   const globalContext = useContext(Context)
+  const [isReady, setIsReady] = useState(false)
+  const [message, setMessage] = useState('')
+
+  const handleRoomUsers = (data) => {
+    if (Object.keys(data.users).length < 3) {
+      setMessage('You need at least 3 players to start!')
+    } else {
+      setMessage('')
+    }
+  }
 
   useEffect(() => {
     if (!globalContext.roomCode || !globalContext.socket) {
       history.push('/')
+    }
+
+    globalContext.socket.once('everyoneReady', () => {
+      console.log('starting game')
+      history.push('/game')
+    })
+
+    globalContext.socket.on('roomUsers', handleRoomUsers)
+
+    return () => {
+      // before the component is destroyed
+      // unbind all event handlers used in this component
+      globalContext.socket.off('roomUsers', handleRoomUsers)
     }
   }, [])
 
   const handleReady = async (event) => {
     event.preventDefault()
     try {
-      console.log(globalContext.myInfo.username)
-      globalContext.socket.emit('ready', globalContext.socket.id)
+      // console.log(globalContext.myInfo.username)
+      console.log('socket id', globalContext.socket.id)
+      if (isReady) {
+        globalContext.socket.emit('notReady', globalContext.socket.id)
+      } else {
+        globalContext.socket.emit('ready', globalContext.socket.id)
+      }
 
       await new Promise((resolve) => {
-        globalContext.socket.once('everyoneReady', async (data) => {
+        globalContext.socket.once('roomUsers', async (data) => {
           resolve(data)
         })
       })
-      history.push('/game')
+
+      setIsReady(!isReady)
     } catch (error) {
       console.error(error)
     }
@@ -86,6 +115,7 @@ export default function LobbyPage() {
     <div className={classes.root}>
       <Rules />
       <div className={classes.textContent}>
+        <Typography>{message}</Typography>
         <Typography variant="h4" className={classes.roomCode}>
           Roomcode:
           {'  '}
@@ -109,7 +139,7 @@ export default function LobbyPage() {
           size="large"
           onClick={handleReady}
         >
-          Ready
+          {isReady ? `I'm no longer ready :(` : `I'm ready`}
         </Button>
         <Typography variant="h6" className={classes.margin}>
           {Object.values(globalContext.users).length}

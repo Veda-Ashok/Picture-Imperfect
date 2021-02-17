@@ -26,7 +26,6 @@ io.on('connection', (socket) => {
   socket.on('createRoom', ({ username, icon }) => {
     const room = createRoom()
 
-    console.log(username, room)
     const user = userJoin(socket.id, username, room, icon)
     socket.join(user.room)
 
@@ -42,8 +41,6 @@ io.on('connection', (socket) => {
 
   // handle joining a room
   socket.on('joinRoom', ({ username, room, icon }) => {
-    console.log(username, room)
-
     const users = getUsersInRoom(room)
     const userExists = getUserByUsernameAndRoom(username, room)
 
@@ -85,7 +82,28 @@ io.on('connection', (socket) => {
   // handle user getting ready for game
   socket.on('ready', () => {
     let user = getUserById(socket.id)
-    user = updateUser(user.id, 'ready', true)
+    user = updateUser(socket.id, 'ready', true)
+
+    const players = Object.values(getUsersInRoom(user.room))
+    let everyoneReady = players.length >= 3
+    players.forEach((player) => {
+      everyoneReady = everyoneReady && player.ready
+    })
+    if (everyoneReady) {
+      io.to(user.room).emit('everyoneReady')
+    }
+
+    // send users room info
+    io.to(user.room).emit('roomUsers', {
+      room: user.room,
+      users: getUsersInRoom(user.room),
+    })
+  })
+
+  // handle user no longer ready for game
+  socket.on('notReady', () => {
+    let user = getUserById(socket.id)
+    user = updateUser(socket.id, 'ready', false)
 
     // send users room info
     io.to(user.room).emit('roomUsers', {
