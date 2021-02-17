@@ -1,7 +1,13 @@
 const express = require('express')
 const socketio = require('socket.io')
 const http = require('http')
-const { userJoin, getUserById, userLeave, getUserByUsernameAndRoom } = require('./users')
+const {
+  userJoin,
+  getUserById,
+  userLeave,
+  getUserByUsernameAndRoom,
+  updateUser,
+} = require('./users')
 const { createRoom, getUsersInRoom } = require('./rooms')
 
 const app = express()
@@ -74,6 +80,18 @@ io.on('connection', (socket) => {
         users: getUsersInRoom(user.room),
       })
     }
+  })
+
+  // handle user getting ready for game
+  socket.on('ready', () => {
+    let user = getUserById(socket.id)
+    user = updateUser(user.id, 'ready', true)
+
+    // send users room info
+    io.to(user.room).emit('roomUsers', {
+      room: user.room,
+      users: getUsersInRoom(user.room),
+    })
   })
 
   // send drawings to other users

@@ -34,9 +34,14 @@ function getUsersInRoom(room) {
   return rooms[room]
 }
 
+function updateUserInRoom(room, userId, key, value) {
+  rooms[room][userId][key] = value
+}
+
 module.exports = {
   createRoom,
   addUserToRoom,
   removeUserFromRoom,
   getUsersInRoom,
+  updateUserInRoom,
 }

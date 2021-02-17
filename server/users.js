@@ -1,9 +1,9 @@
-const { addUserToRoom, removeUserFromRoom, getUsersInRoom } = require('./rooms')
+const { addUserToRoom, removeUserFromRoom, getUsersInRoom, updateUserInRoom } = require('./rooms')
 
 const users = {}
 
 function userJoin(id, username, room, icon) {
-  users[id] = { username, room, icon }
+  users[id] = { username, room, icon, ready: false }
   addUserToRoom(room, id, users[id])
   return users[id]
 }
@@ -35,9 +35,17 @@ function getUserByUsernameAndRoom(username, room) {
   return undefined
 }
 
+function updateUser(id, key, value) {
+  users[id][key] = value
+  const { room } = users[id]
+  updateUserInRoom(room, id, key, value)
+  return users[id]
+}
+
 module.exports = {
   userJoin,
   getUserById,
   userLeave,
   getUserByUsernameAndRoom,
+  updateUser,
 }

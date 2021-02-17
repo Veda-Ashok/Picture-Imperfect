@@ -65,17 +65,17 @@ export default function LobbyPage() {
     }
   }, [])
 
-  const handleStartGame = async (event) => {
+  const handleReady = async (event) => {
     event.preventDefault()
     try {
       console.log(globalContext.myInfo.username)
-      globalContext.socket.emit('startGame', globalContext.myInfo.username)
+      globalContext.socket.emit('ready', globalContext.socket.id)
 
-      // await new Promise((resolve) => {
-      //   socket.once('gameStarted', async (data) => {
-      //     resolve(data)
-      //   })
-      // })
+      await new Promise((resolve) => {
+        globalContext.socket.once('everyoneReady', async (data) => {
+          resolve(data)
+        })
+      })
       history.push('/game')
     } catch (error) {
       console.error(error)
@@ -99,17 +99,17 @@ export default function LobbyPage() {
             className={classes.textfields}
           />
         )}
-        <Typography variant="h4" className={classes.margin}>
-          Everyone ready?
+        <Typography variant="h5" className={classes.margin}>
+          Game starts when everyone is ready
         </Typography>
         <Button
           className={classes.margin}
           variant="contained"
           color="primary"
           size="large"
-          onClick={handleStartGame}
+          onClick={handleReady}
         >
-          Start Game
+          Ready
         </Button>
         <Typography variant="h6" className={classes.margin}>
           {Object.values(globalContext.users).length}
