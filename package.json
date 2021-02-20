@@ -26,6 +26,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "dev": "(cd server && node index.js) & yarn start",
     "build": "react-scripts build",
     "test": "jest --watchAll",
     "eject": "react-scripts eject",
