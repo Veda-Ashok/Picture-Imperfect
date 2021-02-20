@@ -122,6 +122,7 @@ export default function HomePage() {
         let invalidRoom = false
         if (!globalContext.socket) {
           socket = io.connect('ws://localhost:8080')
+          console.log('HEREEEEE')
           globalContext.addSocket(socket, globalContext)
         } else {
           socket = globalContext.socket
