@@ -125,8 +125,8 @@ export default function HomePage() {
         let usernameTaken = false
         let invalidRoom = false
         if (!globalContext.socket) {
-          // socket = io.connect(`ws://localhost:${PORT}`)
-          socket = io.connect('ws://localhost:8080')
+          socket = io.connect(`ws://localhost:${process.env.PORT || 8080}`)
+          // socket = io.connect('ws://localhost:8080')
           console.log('HEREEEEE')
           globalContext.addSocket(socket, globalContext)
         } else {
