@@ -1,6 +1,7 @@
 const express = require('express')
 const socketio = require('socket.io')
 const http = require('http')
+const path = require('path')
 const {
   userJoin,
   getUserById,
@@ -17,6 +18,12 @@ const io = socketio(server, {
     origin: 'http://localhost:3000',
     methods: ['GET', 'POST'],
   },
+})
+
+app.use(express.static(path.join(__dirname, 'build')))
+
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'))
 })
 
 io.on('connection', (socket) => {
