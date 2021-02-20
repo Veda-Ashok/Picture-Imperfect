@@ -130,5 +130,5 @@ io.on('connection', (socket) => {
 // const PORT = 8080
 const PORT = process.env.PORT || 8080
 server.listen(PORT, () => console.log(`server is running on port ${PORT}`))
-
+app.listen(PORT)
 // export default PORT
