@@ -90,16 +90,17 @@ class Game {
     console.log('playerDrawtime: ', this.playerDrawTime)
 
     console.log('about to start interval')
-    const interval = setInterval(() => {
-      console.log('timeRemaining: ', timeRemaining)
-      console.log('interval duration:', intervalDuration)
 
+    // interval waits for intervalDuration (2 seconds) before running the function for the first time
+    const interval = setInterval(() => {
       this.io.to(this.roomCode).emit('newDrawers', {
         judges: this.judges,
         blueTeam: this.blueTeam,
         whiteTeam: this.whiteTeam,
         timeRemaining,
       })
+      console.log('timeRemaining: ', timeRemaining)
+      console.log('interval duration:', intervalDuration)
       timeRemaining -= intervalDuration
     }, intervalDuration * 1000)
 
@@ -107,7 +108,7 @@ class Game {
     setTimeout(() => {
       clearInterval(interval)
       this.playRound()
-    }, this.totalDrawTime * 1000)
+    }, (this.totalDrawTime + 2) * 1000) // add 2 seconds because the interval waits 2 seconds before running
   }
 
   /*
