@@ -34,7 +34,8 @@ class Game {
     this.currentDrawers = {}
     this.round = 1
     this.totalRounds = totalRounds
-    this.drawTime = 30
+    this.totalDrawTime = 30
+    this.playerDrawTime = 2
     this.blueTeamWord = ''
     this.whiteTeamWord = ''
     this.possibleJudges = JSON.parse(JSON.stringify(room))
@@ -74,6 +75,57 @@ class Game {
       whiteTeam: this.whiteTeam,
     })
   }
+
+  rotateDrawers() {
+    const currentBlueDrawer = this.blueTeam[0]
+    const currentWhiteDrawer = this.whiteTeam[0]
+    this.blueTeam = this.blueTeam.slice(1, this.blueTeam.length).push(currentBlueDrawer)
+    this.whiteTeam = this.whiteTeam.slice(1, this.whiteTeam.length).push(currentWhiteDrawer)
+  }
+
+  playRound() {
+    let timeRemaining = this.totalDrawTime
+    const intervalDuration = this.playerDrawTime
+    console.log('totalDrawtime: ', this.totalDrawTime)
+    console.log('playerDrawtime: ', this.playerDrawTime)
+
+    console.log('about to start interval')
+    const interval = setInterval(() => {
+      console.log('timeRemaining: ', timeRemaining)
+      console.log('interval duration:', intervalDuration)
+
+      this.io.to(this.roomCode).emit('newDrawers', {
+        judges: this.judges,
+        blueTeam: this.blueTeam,
+        whiteTeam: this.whiteTeam,
+        timeRemaining,
+      })
+      timeRemaining -= intervalDuration
+    }, intervalDuration * 1000)
+
+    console.log('about to set timeout')
+    setTimeout(() => {
+      clearInterval(interval)
+      this.playRound()
+    }, this.totalDrawTime * 1000)
+  }
+
+  /*
+    timeRemaining = 120;
+    intervalDuration = 10;
+    let interval = setInterval(() => {
+      this.broadcast('!TIME:' + timeRemaining, this.players);
+      timeRemaining -= intervalDuration;
+    }, intervalDuration*1000);
+    this.isDay = true;
+    this.roomState = 'daytime';
+    this.broadcast(`!TIME:120`, this.players);
+    this.broadcast('!NEWSTATE:daytime', this.players);
+    setTimeout(() => {
+      clearInterval(interval);
+      this.switchTime();
+    }, 120000);
+  */
 }
 
 module.exports = {

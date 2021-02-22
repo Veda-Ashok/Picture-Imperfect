@@ -138,6 +138,11 @@ const Board = () => {
     socketRef.current = globalContext.socket
     socketRef.current.on('drawing', onDrawingEvent)
     socketRef.current.on('roomRoles', (data) => {
+      console.log('roomRoles: ')
+      console.log(data)
+    })
+    socketRef.current.on('newDrawers', (data) => {
+      console.log('newDrawers: ')
       console.log(data)
     })
   }, [])
