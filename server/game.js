@@ -108,7 +108,7 @@ class Game {
     setTimeout(() => {
       clearInterval(interval)
       this.playRound()
-    }, (this.totalDrawTime + intervalDuration) * 1000)
+    }, (this.totalDrawTime + intervalDuration) * 1000) // add 2 seconds because the interval waits 2 seconds before running
   }
 
   totalRoundTimer() {
@@ -119,7 +119,6 @@ class Game {
 
     console.log('about to start interval')
 
-    // interval waits for intervalDuration (2 seconds) before running the function for the first time
     const interval = setInterval(() => {
       this.io.to(this.roomCode).emit('roundTimer', {
         judges: this.judges,
@@ -136,25 +135,8 @@ class Game {
     setTimeout(() => {
       clearInterval(interval)
       this.totalRoundTimer()
-    }, (this.totalDrawTime + this.playerDrawTime) * 1000) // add 2 seconds because the interval waits 2 seconds before running
+    }, (this.totalDrawTime + this.playerDrawTime) * 1000)
   }
-
-  /*
-    timeRemaining = 120;
-    intervalDuration = 10;
-    let interval = setInterval(() => {
-      this.broadcast('!TIME:' + timeRemaining, this.players);
-      timeRemaining -= intervalDuration;
-    }, intervalDuration*1000);
-    this.isDay = true;
-    this.roomState = 'daytime';
-    this.broadcast(`!TIME:120`, this.players);
-    this.broadcast('!NEWSTATE:daytime', this.players);
-    setTimeout(() => {
-      clearInterval(interval);
-      this.switchTime();
-    }, 120000);
-  */
 }
 
 module.exports = {
