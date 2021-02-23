@@ -108,7 +108,35 @@ class Game {
     setTimeout(() => {
       clearInterval(interval)
       this.playRound()
-    }, (this.totalDrawTime + 2) * 1000) // add 2 seconds because the interval waits 2 seconds before running
+    }, (this.totalDrawTime + intervalDuration) * 1000)
+  }
+
+  totalRoundTimer() {
+    let timeRemaining = this.totalDrawTime
+    const intervalDuration = 1
+    console.log('totalDrawtime: ', this.totalDrawTime)
+    console.log('playerDrawtime: ', this.playerDrawTime)
+
+    console.log('about to start interval')
+
+    // interval waits for intervalDuration (2 seconds) before running the function for the first time
+    const interval = setInterval(() => {
+      this.io.to(this.roomCode).emit('roundTimer', {
+        judges: this.judges,
+        blueTeam: this.blueTeam,
+        whiteTeam: this.whiteTeam,
+        timeRemaining,
+      })
+      console.log('timeRemaining: ', timeRemaining)
+      console.log('interval duration:', intervalDuration)
+      timeRemaining -= intervalDuration
+    }, intervalDuration * 1000)
+
+    console.log('about to set timeout')
+    setTimeout(() => {
+      clearInterval(interval)
+      this.totalRoundTimer()
+    }, (this.totalDrawTime + this.playerDrawTime) * 1000) // add 2 seconds because the interval waits 2 seconds before running
   }
 
   /*

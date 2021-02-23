@@ -1,11 +1,13 @@
-import React, { useRef, useEffect, useContext } from 'react'
+import React, { useRef, useState, useEffect, useContext } from 'react'
 // import io from 'socket.io-client'
+import Typography from '@material-ui/core/Typography'
 import Context from '../../context/context'
 
 const Board = () => {
   const globalContext = useContext(Context)
   const canvasRef = useRef(null)
   const socketRef = useRef()
+  const [timer, setTimer] = useState(0)
 
   useEffect(() => {
     // --------------- getContext() method returns a drawing canvesContext on the canvas-----
@@ -145,12 +147,18 @@ const Board = () => {
       console.log('newDrawers: ')
       console.log(data)
     })
+    socketRef.current.on('roundTimer', (data) => {
+      console.log('round timer: ')
+      console.log(data)
+      setTimer(data.timeRemaining)
+    })
   }, [])
 
   // ------------- The Canvas --------------------------
 
   return (
     <div>
+      <Typography>{timer}</Typography>
       <canvas ref={canvasRef} aria-label="canvas" />
     </div>
   )

@@ -98,6 +98,7 @@ io.on('connection', (socket) => {
       const game = new Game(room, 5, roomCode, io)
       game.assignRoles()
       game.playRound()
+      game.totalRoundTimer()
     }
 
     // send users room info
