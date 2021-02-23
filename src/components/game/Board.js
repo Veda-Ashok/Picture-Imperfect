@@ -137,6 +137,9 @@ const Board = () => {
 
     socketRef.current = globalContext.socket
     socketRef.current.on('drawing', onDrawingEvent)
+    socketRef.current.on('roomRoles', (data) => {
+      console.log(data)
+    })
   }, [])
 
   // ------------- The Canvas --------------------------

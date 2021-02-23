@@ -84,7 +84,6 @@ export default function IconBoard({ setIcon }) {
     }
 
     const onMouseMove = (e) => {
-      console.log('on mouse move')
       if (!drawing) {
         return
       }
@@ -102,7 +101,6 @@ export default function IconBoard({ setIcon }) {
     }
 
     const onMouseUp = (e) => {
-      console.log('on mouse up')
       if (!drawing) {
         return
       }

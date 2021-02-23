@@ -72,15 +72,13 @@ export default function LobbyPage() {
   useEffect(() => {
     if (!globalContext.roomCode || !globalContext.socket) {
       history.push('/')
+      return () => {}
     }
-
     globalContext.socket.once('everyoneReady', () => {
-      console.log('starting game')
       history.push('/game')
     })
 
     globalContext.socket.on('roomUsers', handleRoomUsers)
-
     return () => {
       // before the component is destroyed
       // unbind all event handlers used in this component
@@ -91,8 +89,6 @@ export default function LobbyPage() {
   const handleReady = async (event) => {
     event.preventDefault()
     try {
-      // console.log(globalContext.myInfo.username)
-      console.log('socket id', globalContext.socket.id)
       if (isReady) {
         globalContext.socket.emit('notReady', globalContext.socket.id)
       } else {

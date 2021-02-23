@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Typography } from '@material-ui/core'
+import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
+import Avatar from '@material-ui/core/Avatar'
 import { makeStyles } from '@material-ui/core/styles'
+import { PropTypes } from 'prop-types'
 import Context from '../../context/context'
 import ChatInput from './ChatInput'
 
@@ -29,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function Chatbox() {
+export default function Chatbox({ judges }) {
   const classes = useStyles()
   const [chatLog, setChatLog] = useState([
     { name: 'tester', text: 'this is what a chat would look like', id: 0 },
@@ -37,7 +39,7 @@ export default function Chatbox() {
     {
       name: 'tester2',
       text: 'this messsage is long long long londsjkghjk ghjfdks lhgjkfdlsh sjkghs dshjfkh',
-      id: 2,
+      id: 3,
     },
   ])
   const globalContext = useContext(Context)
@@ -61,6 +63,13 @@ export default function Chatbox() {
   return (
     <div>
       <Paper className={classes.outerPaper}>
+        {judges &&
+          judges.map((judge) => (
+            <div key={judge.username}>
+              <Avatar src={judge.icon ? judge.icon : '/logo192.png'} alt={judge.username} />
+              <Typography variant="subtitle1">{judge.username}</Typography>
+            </div>
+          ))}
         <Typography variant="h4">What do you think it is?!</Typography>
         <Paper className={classes.chatLog}>
           <Typography variant="subtitle1">
@@ -78,4 +87,15 @@ export default function Chatbox() {
       </Paper>
     </div>
   )
+}
+
+Chatbox.propTypes = {
+  judges: PropTypes.arrayOf(
+    PropTypes.shape({
+      username: PropTypes.string,
+      icon: PropTypes.string,
+      ready: PropTypes.bool,
+      room: PropTypes.string,
+    }),
+  ).isRequired,
 }
