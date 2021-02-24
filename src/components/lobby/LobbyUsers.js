@@ -49,7 +49,7 @@ export default function LobbyUsers() {
     <div className={classes.format}>
       {Object.values(globalContext.users).map((user) => {
         return (
-          <div className={classes.avatars}>
+          <div className={classes.avatars} key={user.username}>
             <Avatar src={user.icon ? user.icon : '/logo192.png'} alt={user.username} />
             <Typography variant="subtitle1">{user.username}</Typography>
             <Typography variant="subtitle1">

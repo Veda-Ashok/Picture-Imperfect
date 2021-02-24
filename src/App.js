@@ -4,7 +4,7 @@ import { ThemeProvider } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import HomePage from './components/home/HomePage'
 import LobbyPage from './components/lobby/LobbyPage'
-import Board from './components/game/Board'
+import GamePage from './components/game/GamePage'
 import theme from './theme'
 import GlobalState from './context/GlobalState'
 
@@ -28,7 +28,7 @@ export default function App() {
               <h1>Join Game</h1>
             </Route>
             <Route exact path="/game">
-              <Board />
+              <GamePage />
             </Route>
             <Route exact path="/">
               <HomePage />

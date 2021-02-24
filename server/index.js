@@ -97,7 +97,7 @@ io.on('connection', (socket) => {
 
       const game = new Game(room, 5, roomCode, io)
       // game.assignRoles()
-      game.playRound()
+      game.playGame()
       game.totalRoundTimer()
     }
 
@@ -125,6 +125,14 @@ io.on('connection', (socket) => {
     const user = getUserById(socket.id)
 
     socket.broadcast.to(user.room).emit('drawing', data)
+  })
+
+  // send messages in chat
+  socket.on('chat', ({ message }) => {
+    const user = getUserById(socket.id)
+    console.log('chat recieved', message, 'room', user.room)
+    const payload = { text: message, name: user.username }
+    io.to(user.room).emit('chat', payload)
   })
 })
 
