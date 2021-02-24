@@ -18,6 +18,7 @@
 // module.exports = {
 //   runGame,
 // }
+const { getRandomDifficulty, getRandomWord } = require('./words')
 
 function chooseRandomPlayer(players) {
   const index = Math.floor(Math.random() * players.length)
@@ -38,10 +39,12 @@ class Game {
     this.playerDrawTime = 2
     this.blueTeamWord = ''
     this.whiteTeamWord = ''
+    this.wordDifficulty = 'medium'
     this.possibleJudges = JSON.parse(JSON.stringify(room))
     this.possiblePlayers = JSON.parse(JSON.stringify(room))
     this.roomCode = roomCode
     this.io = io
+    this.pastWords = new Set()
   }
 
   assignJudge() {
@@ -76,6 +79,25 @@ class Game {
     })
   }
 
+  pickRandomWord() {
+    let newWord = getRandomWord(this.difficulty)
+    while (this.pastWords.has(newWord)) {
+      newWord = getRandomWord(this.difficulty)
+    }
+    this.pastWords.add(newWord)
+    return newWord
+  }
+
+  assignWords() {
+    this.difficulty = getRandomDifficulty()
+    this.blueTeamWord = this.pickRandomWord()
+    this.whiteTeamWord = this.pickRandomWord()
+    this.io.to(this.roomCode).emit('wordAssignment', {
+      blueTeamWord: this.blueTeamWord,
+      whiteTeamWord: this.whiteTeamWord,
+    })
+  }
+
   rotateDrawers() {
     const currentBlueDrawer = this.blueTeam[0]
     const currentWhiteDrawer = this.whiteTeam[0]
@@ -92,6 +114,8 @@ class Game {
     console.log('about to start interval')
 
     // interval waits for intervalDuration (2 seconds) before running the function for the first time
+    this.assignRoles()
+    this.assignWords()
     const interval = setInterval(() => {
       this.io.to(this.roomCode).emit('newDrawers', {
         judges: this.judges,
@@ -107,9 +131,24 @@ class Game {
     console.log('about to set timeout')
     setTimeout(() => {
       clearInterval(interval)
+      //   this.assignRoles()
+      //   this.assignWords()
       this.playRound()
     }, (this.totalDrawTime + intervalDuration) * 1000) // add 2 seconds because the interval waits 2 seconds before running
   }
+
+  //   playGame() {
+  //     const gameTime = this.totalDrawTime * this.totalRounds
+  //     this.assignRoles()
+  //     this.playRound()
+  //     const interval = setTimeout(() => {
+  //       this.assignRoles()
+  //       this.playRound()
+  //     }, this.totalDrawTime + this.playerDrawTime)
+  //     setTimeout(() => {
+  //       clearInterval(interval)
+  //     })
+  //   }
 
   totalRoundTimer() {
     let timeRemaining = this.totalDrawTime

@@ -96,7 +96,7 @@ io.on('connection', (socket) => {
       const roomCode = user.room
 
       const game = new Game(room, 5, roomCode, io)
-      game.assignRoles()
+      // game.assignRoles()
       game.playRound()
       game.totalRoundTimer()
     }
