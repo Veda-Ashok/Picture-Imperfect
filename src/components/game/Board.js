@@ -152,6 +152,10 @@ const Board = () => {
       console.log(data)
       setTimer(data.timeRemaining)
     })
+    socketRef.current.on('wordAssignment', (data) => {
+      console.log('word assignment: ')
+      console.log(data)
+    })
   }, [])
 
   // ------------- The Canvas --------------------------
