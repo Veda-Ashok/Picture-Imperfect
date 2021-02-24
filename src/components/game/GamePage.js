@@ -11,11 +11,23 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     justifyContent: 'center',
+    flexDirection: 'column',
+    alignItems: 'center',
     height: '100vh',
   },
   chatBox: {
-    border: '3px solid black',
+    width: '30%',
+    // border: '3px solid black',
     margin: theme.spacing(1),
+  },
+  banner: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  content: {
+    display: 'flex',
+    justifyContent: 'center',
   },
 }))
 
@@ -35,7 +47,8 @@ export default function GamePage() {
     globalContext.socket.on('roomRoles', (data) => {
       setBlueTeam(data.blueTeam)
       setWhiteTeam(data.whiteTeam)
-      setJudges(Object.keys(data.judges))
+      setJudges(Object.values(data.judges))
+      console.log(Object.values(data.judges))
     })
 
     return () => {
@@ -46,25 +59,30 @@ export default function GamePage() {
 
   return (
     <div className={classes.root}>
-      <Typography>White Team</Typography>
-      {whiteTeam.length > 0 &&
-        whiteTeam.map((player) => (
-          <div key={player.username}>
-            <Avatar src={player.icon ? player.icon : '/logo192.png'} alt={player.username} />
-            <Typography variant="subtitle1">{player.username}</Typography>
-          </div>
-        ))}
-      <Typography>Blue Team</Typography>
-      {blueTeam.length > 0 &&
-        blueTeam.map((player) => (
-          <div key={player.username}>
-            <Avatar src={player.icon ? player.icon : '/logo192.png'} alt={player.username} />
-            <Typography variant="subtitle1">{player.username}</Typography>
-          </div>
-        ))}
       <Rules />
-      <div className={classes.chatBox}>
-        {globalContext.socket && judges.length > 0 && <Chatbox judges={judges} />}
+      <div className={classes.banner}>
+        <Typography variant="h2"> v.s </Typography>
+      </div>
+      <div className={classes.content}>
+        <Typography>White Team</Typography>
+        {whiteTeam.length > 0 &&
+          whiteTeam.map((player) => (
+            <div key={player.username}>
+              <Avatar src={player.icon ? player.icon : '/logo192.png'} alt={player.username} />
+              <Typography variant="subtitle1">{player.username}</Typography>
+            </div>
+          ))}
+        <Typography>Blue Team</Typography>
+        {blueTeam.length > 0 &&
+          blueTeam.map((player) => (
+            <div key={player.username}>
+              <Avatar src={player.icon ? player.icon : '/logo192.png'} alt={player.username} />
+              <Typography variant="subtitle1">{player.username}</Typography>
+            </div>
+          ))}
+        <div className={classes.chatBox}>
+          {globalContext.socket && judges.length > 0 && <Chatbox judges={judges} />}
+        </div>
       </div>
     </div>
   )

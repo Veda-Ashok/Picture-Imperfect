@@ -115,5 +115,10 @@ theme.overrides = {
       background: 'white',
     },
   },
+  MuiDivider: {
+    root: {
+      backgroundColor: 'black',
+    },
+  },
 }
 export default theme

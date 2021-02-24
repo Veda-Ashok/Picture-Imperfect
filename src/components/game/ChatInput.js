@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core/styles'
+import { PropTypes } from 'prop-types'
+import Context from '../../context/context'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -15,7 +17,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function ChatInput() {
+export default function ChatInput({ judges }) {
+  const globalContext = useContext(Context)
+  const isJudge = judges.find((player) => globalContext.myInfo.username === player.username)
   const classes = useStyles()
   const [chat, setChat] = useState('')
 
@@ -39,7 +43,7 @@ export default function ChatInput() {
           size="small"
           variant="outlined"
           type="text"
-          label="Enter message..."
+          label={isJudge ? 'Give your best guess...' : 'Enter message...'}
           value={chat}
           onChange={(e) => setChat(e.target.value)}
         />
@@ -55,4 +59,15 @@ export default function ChatInput() {
       </form>
     </div>
   )
+}
+
+ChatInput.propTypes = {
+  judges: PropTypes.arrayOf(
+    PropTypes.shape({
+      username: PropTypes.string,
+      icon: PropTypes.string,
+      ready: PropTypes.bool,
+      room: PropTypes.string,
+    }),
+  ).isRequired,
 }
