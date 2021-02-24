@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
 import Avatar from '@material-ui/core/Avatar'
@@ -51,33 +51,32 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Chatbox({ judges }) {
   const classes = useStyles()
-  const [chatLog, setChatLog] = useState([
-    { name: 'tester', text: 'this is what a chat would look like', id: 0 },
-    { name: 'dfhgdh', text: 'im replying', id: 2 },
-    {
-      name: 'tester2',
-      text: 'this messsage is long long long londsjkghjk ghjfdks lhgjkfdlsh sjkghs dshjfkh',
-      id: 3,
-    },
-  ])
+  const [chatLog, setChatLog] = useState([])
   const globalContext = useContext(Context)
   let messageCount = 0
 
-  const handleChatUpdate = (data) => {
-    setChatLog([...chatLog, { name: data.username, text: data.message, id: messageCount }])
-    messageCount += 1
+  function handleChatUpdate(data) {
+    console.log('server chat: ', data)
+    setChatLog([...chatLog, { name: data.name, text: data.text, id: messageCount }])
+    // messageCount += 1
   }
 
   useEffect(() => {
-    globalContext.socket.on('chat', handleChatUpdate)
+    console.log('using effect in chat')
+    globalContext.socket.on('chat', (data) => {
+      console.log('chatLog before adding to array', chatLog)
+      handleChatUpdate(data)
+      // setChatLog([...chatLog, { name: data.name, text: data.text, id: messageCount }])
+      console.log('after:', chatLog)
+      messageCount += 1
+    })
 
     return () => {
       // before the component is destroyed
       // unbind all event handlers used in this component
-      globalContext.socket.off('chat', handleChatUpdate)
+      // globalContext.socket.off('chat', handleChatUpdate)
     }
   }, [])
-  console.log(judges)
 
   return (
     <div>
@@ -97,8 +96,10 @@ export default function Chatbox({ judges }) {
         </Typography>
         <Paper className={classes.chatLog}>
           <Typography variant="subtitle1">
+            {console.log('chatLog', chatLog)}
             {chatLog.map((chat) => (
               <span key={chat.id} className={classes.texts}>
+                {console.log('chatid: ', chat.id, chat)}
                 <Typography
                   className={classes.names}
                   style={{

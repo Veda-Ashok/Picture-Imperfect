@@ -1,13 +1,11 @@
-import React, { useRef, useState, useEffect, useContext } from 'react'
+import React, { useRef, useEffect, useContext } from 'react'
 // import io from 'socket.io-client'
-import Typography from '@material-ui/core/Typography'
 import Context from '../../context/context'
 
 const Board = () => {
   const globalContext = useContext(Context)
   const canvasRef = useRef(null)
   const socketRef = useRef()
-  const [timer, setTimer] = useState(0)
 
   useEffect(() => {
     // --------------- getContext() method returns a drawing canvesContext on the canvas-----
@@ -139,30 +137,29 @@ const Board = () => {
 
     socketRef.current = globalContext.socket
     socketRef.current.on('drawing', onDrawingEvent)
-    socketRef.current.on('roomRoles', (data) => {
-      console.log('roomRoles: ')
-      console.log(data)
-    })
-    socketRef.current.on('newDrawers', (data) => {
-      console.log('newDrawers: ')
-      console.log(data)
-    })
-    socketRef.current.on('roundTimer', (data) => {
-      console.log('round timer: ')
-      console.log(data)
-      setTimer(data.timeRemaining)
-    })
-    socketRef.current.on('wordAssignment', (data) => {
-      console.log('word assignment: ')
-      console.log(data)
-    })
+    // socketRef.current.on('roomRoles', (data) => {
+    //   console.log('roomRoles: ')
+    //   console.log(data)
+    // })
+    // socketRef.current.on('newDrawers', (data) => {
+    //   console.log('newDrawers: ')
+    //   console.log(data)
+    // })
+    // socketRef.current.on('roundTimer', (data) => {
+    //   console.log('round timer: ')
+    //   console.log(data)
+    //   setTimer(data.timeRemaining)
+    // })
+    // socketRef.current.on('wordAssignment', (data) => {
+    //   console.log('word assignment: ')
+    //   console.log(data)
+    // })
   }, [])
 
   // ------------- The Canvas --------------------------
 
   return (
     <div>
-      <Typography>{timer}</Typography>
       <canvas ref={canvasRef} aria-label="canvas" />
     </div>
   )

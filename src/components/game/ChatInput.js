@@ -24,8 +24,8 @@ export default function ChatInput({ judges }) {
   const [chat, setChat] = useState('')
 
   const handleSubmitChat = (message) => {
-    console.log(message)
-    // socket emit chat event, emit message and username lol
+    // console.log(message)
+    globalContext.socket.emit('chat', { message })
   }
 
   return (

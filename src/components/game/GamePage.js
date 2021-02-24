@@ -6,6 +6,7 @@ import Avatar from '@material-ui/core/Avatar'
 import Context from '../../context/context'
 import Chatbox from './Chatbox'
 import Rules from '../reusable/Rules'
+import Board from './Board'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,17 +39,33 @@ export default function GamePage() {
   const [blueTeam, setBlueTeam] = useState([])
   const [whiteTeam, setWhiteTeam] = useState([])
   const [judges, setJudges] = useState([])
+  const [timer, setTimer] = useState(0)
+  const [blueTeamWord, setBlueTeamWord] = useState('')
+  const [whiteTeamWord, setWhiteTeamWord] = useState('')
+
+  // const socketRef = useRef()
 
   useEffect(() => {
     if (!globalContext.roomCode || !globalContext.socket) {
       history.push('/')
       return () => {}
     }
+    // socketRef.current = globalContext.socket
     globalContext.socket.on('roomRoles', (data) => {
       setBlueTeam(data.blueTeam)
       setWhiteTeam(data.whiteTeam)
       setJudges(Object.values(data.judges))
-      console.log(Object.values(data.judges))
+    })
+    globalContext.socket.on('newDrawers', (data) => {
+      setBlueTeam(data.blueTeam)
+      setWhiteTeam(data.whiteTeam)
+    })
+    globalContext.socket.on('roundTimer', (data) => {
+      setTimer(data.timeRemaining)
+    })
+    globalContext.socket.on('wordAssignment', (data) => {
+      setBlueTeamWord(data.blueTeamWord)
+      setWhiteTeamWord(data.whiteTeamWord)
     })
 
     return () => {
@@ -59,12 +76,22 @@ export default function GamePage() {
 
   return (
     <div className={classes.root}>
+      <Board />
       <Rules />
       <div className={classes.banner}>
         <Typography variant="h2"> v.s </Typography>
       </div>
       <div className={classes.content}>
-        <Typography>White Team</Typography>
+        <div>
+          <Typography>
+            Timer:
+            {timer}
+          </Typography>
+        </div>
+        <Typography>
+          White Team:
+          {whiteTeamWord}
+        </Typography>
         {whiteTeam.length > 0 &&
           whiteTeam.map((player) => (
             <div key={player.username}>
@@ -72,7 +99,10 @@ export default function GamePage() {
               <Typography variant="subtitle1">{player.username}</Typography>
             </div>
           ))}
-        <Typography>Blue Team</Typography>
+        <Typography>
+          Blue Team:
+          {blueTeamWord}
+        </Typography>
         {blueTeam.length > 0 &&
           blueTeam.map((player) => (
             <div key={player.username}>
