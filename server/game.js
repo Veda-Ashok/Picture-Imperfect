@@ -85,7 +85,7 @@ class Game {
 
   pickRandomWord() {
     // DELETE THIS CHECK WHEN WE HAVE ENOUGH WORDS TO NOT RUN OUT IN A GAME
-    words.forEach((word) => {
+    words[this.difficulty].forEach((word) => {
       if (!this.pastWords.has(word)) {
         this.pastWords = new Set()
       }
