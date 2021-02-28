@@ -57,7 +57,10 @@ export default function Chatbox({ judges }) {
 
   function handleChatUpdate(data) {
     console.log('server chat: ', data)
-    setChatLog([...chatLog, { name: data.name, text: data.text, id: messageCount }])
+    setChatLog((oldChatLog) => [
+      ...oldChatLog,
+      { name: data.name, text: data.text, id: messageCount },
+    ])
     // messageCount += 1
   }
 
