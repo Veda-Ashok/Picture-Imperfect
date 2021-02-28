@@ -13,6 +13,11 @@ const Board = () => {
     const canvas = canvasRef.current
     const context = canvas.getContext('2d')
 
+    // --------------------- Memory canvas for resizing ------------------------------------
+
+    const memCanvas = document.createElement('canvas')
+    const memCtx = memCanvas.getContext('2d')
+
     // ----------------------- Colors --------------------------------------------------
 
     // set the current color
@@ -25,9 +30,30 @@ const Board = () => {
     // ------------------------------- create the drawing ----------------------------
 
     const drawLine = (x0, y0, x1, y1, emit) => {
+      const bounds = canvas.getBoundingClientRect()
+      let mousex0 = x0
+      let mousex1 = x1
+      let mousey0 = y0
+      let mousey1 = y1
+
+      mousex0 -= bounds.left
+      mousex1 -= bounds.left
+      mousey0 -= bounds.top
+      mousey1 -= bounds.top
+
+      mousex0 /= bounds.width
+      mousex1 /= bounds.width
+      mousey0 /= bounds.height
+      mousey1 /= bounds.height
+
+      mousex0 *= canvas.width
+      mousex1 *= canvas.width
+      mousey0 *= canvas.height
+      mousey1 *= canvas.height
+
       context.beginPath()
-      context.moveTo(x0, y0)
-      context.lineTo(x1, y1)
+      context.moveTo(mousex0, mousey0)
+      context.lineTo(mousex1, mousey1)
       context.lineWidth = 3
       context.stroke()
       context.closePath()
@@ -121,8 +147,14 @@ const Board = () => {
     // -------------- make the canvas fill its parent component -----------------
 
     const onResize = () => {
+      memCanvas.width = canvas.width
+      memCanvas.height = canvas.height
+      memCtx.drawImage(canvas, 0, 0)
       canvas.width = window.innerWidth
       canvas.height = window.innerHeight
+      canvas.style.width = '100%' // Note you must post fix the unit type %,px,em
+      canvas.style.height = '100%'
+      context.drawImage(memCanvas, 0, 0, canvas.width, canvas.height)
     }
 
     window.addEventListener('resize', onResize, false)
@@ -137,23 +169,6 @@ const Board = () => {
 
     socketRef.current = globalContext.socket
     socketRef.current.on('drawing', onDrawingEvent)
-    // socketRef.current.on('roomRoles', (data) => {
-    //   console.log('roomRoles: ')
-    //   console.log(data)
-    // })
-    // socketRef.current.on('newDrawers', (data) => {
-    //   console.log('newDrawers: ')
-    //   console.log(data)
-    // })
-    // socketRef.current.on('roundTimer', (data) => {
-    //   console.log('round timer: ')
-    //   console.log(data)
-    //   setTimer(data.timeRemaining)
-    // })
-    // socketRef.current.on('wordAssignment', (data) => {
-    //   console.log('word assignment: ')
-    //   console.log(data)
-    // })
   }, [])
 
   // ------------- The Canvas --------------------------
