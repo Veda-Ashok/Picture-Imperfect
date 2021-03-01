@@ -3,7 +3,7 @@ const { addUserToRoom, removeUserFromRoom, getUsersInRoom, updateUserInRoom } = 
 const users = {}
 
 function userJoin(id, username, room, icon) {
-  users[id] = { username, room, icon, ready: false }
+  users[id] = { username, room, icon, ready: false, points: 0, id }
   addUserToRoom(room, id, users[id])
   return users[id]
 }

@@ -1,10 +1,9 @@
-// const {
-//   userJoin,
-//   getUserById,
-//   userLeave,
-//   getUserByUsernameAndRoom,
-//   updateUser,
-// } = require('./users')
+const {
+  // userLeave,
+  updateUser,
+} = require('./users')
+const { getUsersInRoom } = require('./rooms')
+
 // const { createRoom, getUsersInRoom } = require('./rooms')
 
 // function runGame(room) {
@@ -26,7 +25,7 @@ function chooseRandomPlayer(players) {
 }
 
 class Game {
-  constructor(room, totalRounds, roomCode, io) {
+  constructor(room, totalRounds, roomCode, io, socket) {
     this.room = room
     this.roles = ['Judge', 'Team 1', 'Team 2']
     this.judges = {}
@@ -44,7 +43,21 @@ class Game {
     this.possiblePlayers = JSON.parse(JSON.stringify(room))
     this.roomCode = roomCode
     this.io = io
+    this.socket = socket
     this.pastWords = new Set()
+    this.skipToNext = false
+  }
+
+  getJudges() {
+    return this.judges
+  }
+
+  getBlueTeamWord() {
+    return this.blueTeamWord
+  }
+
+  getWhiteTeamWord() {
+    return this.whiteTeamWord
   }
 
   assignJudge() {
@@ -99,6 +112,18 @@ class Game {
     return newWord
   }
 
+  // checkWord(currentWord) {
+  //   // send messages in chat
+  //   this.socket.on('correctAnswer', ({ message }) => {
+  //     // const user = getUserById(socket.id)
+  //     // console.log('chat recieved', message, 'room', user.room)
+  //     if (message.equals(currentWord)) {
+  //       const payload = { text: message, name: user.username }
+  //       this.io.to(this.room).emit('correctAnswer', payload)
+  //     }
+  //   })
+  // }
+
   assignWords() {
     console.log('about to getRandomDifficulty')
     this.difficulty = getRandomDifficulty()
@@ -106,6 +131,9 @@ class Game {
     this.blueTeamWord = this.pickRandomWord()
     console.log('about to pick white word')
     this.whiteTeamWord = this.pickRandomWord()
+    while (this.whiteTeamWord === this.blueTeamWord) {
+      this.whiteTeamWord = this.pickRandomWord()
+    }
     console.log('about to emit wordAssignment')
     this.io.to(this.roomCode).emit('wordAssignment', {
       blueTeamWord: this.blueTeamWord,
@@ -122,7 +150,34 @@ class Game {
     this.whiteTeam.push(currentWhiteDrawer)
   }
 
+  // END ROUND AFTER THEY GUESS THE WORD
+  roundWin(teamName, judge) {
+    console.log('blueTeam', this.blueTeam)
+    console.log('whiteTeam', this.whiteTeam)
+    if (teamName === 'blueTeam') {
+      this.blueTeam.forEach((member) => {
+        console.log('member id: ', member.id)
+        console.log('member points: ', member.points)
+
+        const newPoints = member.points + 1
+        updateUser(member.id, 'points', newPoints)
+      })
+    } else if (teamName === 'whiteTeam') {
+      this.whiteTeam.forEach((member) => {
+        console.log('member id', member.id)
+        console.log('member points: ', member.points)
+
+        const newPoints = member.points + 1
+        updateUser(member.id, 'points', newPoints)
+      })
+    }
+    const judgePoints = judge.points + 1
+    updateUser(judge.id, 'points', judgePoints)
+    this.skipToNext = true
+  }
+
   playGame() {
+    this.skipToNext = false
     let timeRemaining = this.totalDrawTime
     const intervalDuration = this.playerDrawTime
     console.log('totalDrawtime: ', this.totalDrawTime)
@@ -148,20 +203,41 @@ class Game {
     }, intervalDuration * 1000)
 
     console.log('about to set timeout')
+
+    if (this.skipToNext) {
+      clearInterval(interval)
+      this.goNext()
+    }
     setTimeout(() => {
       clearInterval(interval)
+      this.goNext()
 
-      if (Object.keys(this.possibleJudges).length <= 0) {
-        this.possibleJudges = JSON.parse(JSON.stringify(this.room))
-        this.possiblePlayers = JSON.parse(JSON.stringify(this.room))
-        this.round = +1
-      }
-      if (this.round <= this.totalRounds) {
-        this.playGame()
-      }
+      // this.room = getUsersInRoom(this.roomCode)
+
+      // if (Object.keys(this.possibleJudges).length <= 0) {
+      //   this.possibleJudges = JSON.parse(JSON.stringify(this.room))
+      //   this.possiblePlayers = JSON.parse(JSON.stringify(this.room))
+      //   this.round = +1
+      // }
+      // if (this.round <= this.totalRounds) {
+      //   this.playGame()
+      // }
       //   this.assignRoles()
       //   this.assignWords()
     }, (this.totalDrawTime + intervalDuration) * 1000) // add 2 seconds because the interval waits 2 seconds before running
+  }
+
+  goNext() {
+    this.room = getUsersInRoom(this.roomCode)
+
+    if (Object.keys(this.possibleJudges).length <= 0) {
+      this.possibleJudges = JSON.parse(JSON.stringify(this.room))
+      this.possiblePlayers = JSON.parse(JSON.stringify(this.room))
+      this.round = +1
+    }
+    if (this.round <= this.totalRounds) {
+      this.playGame()
+    }
   }
 
   // playRound() {
