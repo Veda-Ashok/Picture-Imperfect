@@ -152,9 +152,9 @@ const Board = () => {
       memCtx.drawImage(canvas, 0, 0)
       canvas.width = window.innerWidth
       canvas.height = window.innerHeight
+      context.drawImage(memCanvas, 0, 0, canvas.width, canvas.height)
       canvas.style.width = '100%' // Note you must post fix the unit type %,px,em
       canvas.style.height = '100%'
-      context.drawImage(memCanvas, 0, 0, canvas.width, canvas.height)
     }
 
     window.addEventListener('resize', onResize, false)

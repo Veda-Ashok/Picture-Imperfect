@@ -12,12 +12,12 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
-    height: '100vh',
+    height: '100%',
   },
   whiteBg: {
     position: 'absolute',
     width: '50%',
-    height: '100vh',
+    height: '100%',
     top: 0,
     left: 0,
     backgroundColor: 'white',
@@ -50,6 +50,10 @@ const useStyles = makeStyles((theme) => ({
   board: {
     backgroundColor: 'white',
     border: 'solid 3px black',
+    // height: 'px',
+    // width: '854px',
+    // flex: 'none',
+    // position: 'relative',
   },
   avatars: {
     display: 'flex',
@@ -153,6 +157,8 @@ export default function GamePage() {
             <div key={player.username}>
               <Avatar src={player.icon ? player.icon : '/logo192.png'} alt={player.username} />
               <Typography variant="subtitle1">{player.username}</Typography>
+              <Typography variant="subtitle1">points</Typography>
+              <Typography variant="subtitle1">{player.points}</Typography>
             </div>
           ))}
         <Typography>
@@ -164,6 +170,8 @@ export default function GamePage() {
             <div key={player.username}>
               <Avatar src={player.icon ? player.icon : '/logo192.png'} alt={player.username} />
               <Typography variant="subtitle1">{player.username}</Typography>
+              <Typography variant="subtitle1">points</Typography>
+              <Typography variant="subtitle1">{player.points}</Typography>
             </div>
           ))}
         <div className={classes.board}>
