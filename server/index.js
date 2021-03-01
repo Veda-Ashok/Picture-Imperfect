@@ -19,6 +19,7 @@ const io = socketio(server, {
     methods: ['GET', 'POST'],
   },
 })
+let game
 
 io.on('connection', (socket) => {
   console.log('hello')
@@ -95,10 +96,9 @@ io.on('connection', (socket) => {
       const room = getUsersInRoom(user.room)
       const roomCode = user.room
 
-      const game = new Game(room, 5, roomCode, io)
+      game = new Game(room, 5, roomCode, io, socket)
       // game.assignRoles()
       game.playGame()
-      game.totalRoundTimer()
     }
 
     // send users room info
@@ -130,6 +130,15 @@ io.on('connection', (socket) => {
   // send messages in chat
   socket.on('chat', ({ message }) => {
     const user = getUserById(socket.id)
+    if (Object.prototype.hasOwnProperty.call(game.getJudges(), socket.id)) {
+      if (message.toLowerCase() === game.getBlueTeamWord().toLowerCase()) {
+        game.roundWin('blueTeam', user)
+        console.log('blueTeam win')
+      } else if (message.toLowerCase() === game.getWhiteTeamWord().toLowerCase()) {
+        game.roundWin('whiteTeam', user)
+        console.log('whiteTeam win')
+      }
+    }
     console.log('chat recieved', message, 'room', user.room)
     const payload = { text: message, name: user.username }
     io.to(user.room).emit('chat', payload)
