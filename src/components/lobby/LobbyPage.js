@@ -48,9 +48,9 @@ const useStyles = makeStyles((theme) => ({
     float: 'right',
     width: '70%',
     // border: '5px solid black',
-    height: '80vh',
+    height: '85vh',
     overflow: 'auto',
-    marginTop: theme.spacing(15),
+    marginTop: theme.spacing(5),
   },
 }))
 

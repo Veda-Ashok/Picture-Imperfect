@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { useContext, useEffect, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { useHistory } from 'react-router-dom'
@@ -78,6 +79,7 @@ export default function GamePage() {
   const [timer, setTimer] = useState(0)
   const [blueTeamWord, setBlueTeamWord] = useState('')
   const [whiteTeamWord, setWhiteTeamWord] = useState('')
+  const [currentTeam, setCurrentTeam] = useState(undefined)
 
   // const socketRef = useRef()
 
@@ -91,6 +93,12 @@ export default function GamePage() {
       setBlueTeam(data.blueTeam)
       setWhiteTeam(data.whiteTeam)
       setJudges(Object.values(data.judges))
+      if (!Object.prototype.hasOwnProperty.call(data.judges, globalContext.socket.id)) {
+        const team = data.blueTeam.filter((member) => member.id === globalContext.socket.id)
+          ? 'whiteTeam'
+          : 'blueTeam'
+        setCurrentTeam(team)
+      }
     })
     globalContext.socket.on('newDrawers', (data) => {
       setBlueTeam(data.blueTeam)
@@ -114,6 +122,7 @@ export default function GamePage() {
     <div className={classes.root}>
       <div className={classes.whiteBg} />
       <Rules />
+      <Typography />
 
       <div className={classes.banner}>
         <div className={classes.bannerElement}>
@@ -140,6 +149,15 @@ export default function GamePage() {
           )}
         </div>
         <div className={classes.bannerElement}>
+          <Typography variant="h5">
+            {currentTeam === 'whiteTeam'
+              ? `White team: ${whiteTeamWord}`
+              : currentTeam === 'blueTeam'
+              ? `Blue team: ${blueTeamWord}`
+              : 'You are a judge'}
+          </Typography>
+        </div>
+        <div className={classes.bannerElement}>
           <Typography variant="h3">{timer}</Typography>
           <Typography variant="h5" className={classes.secondsRemaining}>
             {' '}
@@ -147,21 +165,31 @@ export default function GamePage() {
           </Typography>
         </div>
       </div>
+
       <div className={classes.content}>
-        <Typography>
-          White Team:
-          {whiteTeamWord}
-        </Typography>
+        <Typography>Whos Up Next?!</Typography>
         {whiteTeam.length > 0 &&
-          whiteTeam.map((player) => (
-            <div key={player.username}>
-              <Avatar src={player.icon ? player.icon : '/logo192.png'} alt={player.username} />
-              <Typography variant="subtitle1">{player.username}</Typography>
-              <Typography variant="subtitle1">points</Typography>
-              <Typography variant="subtitle1">{player.points}</Typography>
+          blueTeam.length > 0 &&
+          whiteTeam.map((player, index) => (
+            <div>
+              <div key={player.username}>
+                <Avatar src={player.icon ? player.icon : '/logo192.png'} alt={player.username} />
+                <Typography variant="subtitle1">{player.username}</Typography>
+                <Typography variant="subtitle1">points</Typography>
+                <Typography variant="subtitle1">{player.points}</Typography>
+              </div>
+              <div key={blueTeam[index].username}>
+                <Avatar
+                  src={blueTeam[index].icon ? blueTeam[index].icon : '/logo192.png'}
+                  alt={blueTeam[index].username}
+                />
+                <Typography variant="subtitle1">{blueTeam[index].username}</Typography>
+                <Typography variant="subtitle1">points</Typography>
+                <Typography variant="subtitle1">{blueTeam[index].points}</Typography>
+              </div>
             </div>
           ))}
-        <Typography>
+        {/* <Typography>
           Blue Team:
           {blueTeamWord}
         </Typography>
@@ -173,7 +201,7 @@ export default function GamePage() {
               <Typography variant="subtitle1">points</Typography>
               <Typography variant="subtitle1">{player.points}</Typography>
             </div>
-          ))}
+          ))} */}
         <div className={classes.board}>
           <Board />
         </div>
