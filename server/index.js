@@ -99,7 +99,6 @@ io.on('connection', (socket) => {
       game = new Game(room, 5, roomCode, io, socket)
       // game.assignRoles()
       game.playGame()
-      game.totalRoundTimer()
     }
 
     // send users room info

@@ -35,7 +35,7 @@ class Game {
     this.round = 1
     this.totalRounds = totalRounds
     this.totalDrawTime = 30
-    this.playerDrawTime = 2
+    this.playerDrawTime = 2 // SHOULD BE: totalDrawTime / (numberOfPLayersOnTeam * numberOfDrawRotations(aka how many times we loop thru a team))
     this.blueTeamWord = ''
     this.whiteTeamWord = ''
     this.wordDifficulty = 'medium'
@@ -46,6 +46,8 @@ class Game {
     this.socket = socket
     this.pastWords = new Set()
     this.skipToNext = false
+    this.turnInterval = undefined
+    this.timerInterval = undefined
   }
 
   getJudges() {
@@ -152,6 +154,8 @@ class Game {
 
   // END ROUND AFTER THEY GUESS THE WORD
   roundWin(teamName, judge) {
+    clearInterval(this.turnInterval)
+    clearInterval(this.timerInterval)
     console.log('blueTeam', this.blueTeam)
     console.log('whiteTeam', this.whiteTeam)
     if (teamName === 'blueTeam') {
@@ -174,12 +178,13 @@ class Game {
     const judgePoints = judge.points + 1
     updateUser(judge.id, 'points', judgePoints)
     this.skipToNext = true
+    this.goNextRound()
   }
 
   playGame() {
     this.skipToNext = false
     let timeRemaining = this.totalDrawTime
-    const intervalDuration = this.playerDrawTime
+    const intervalDuration = 1
     console.log('totalDrawtime: ', this.totalDrawTime)
     console.log('playerDrawtime: ', this.playerDrawTime)
 
@@ -189,45 +194,41 @@ class Game {
     console.log('assigning words')
     this.assignWords()
     console.log('about to start interval')
-    const interval = setInterval(() => {
-      this.rotateDrawers()
-      this.io.to(this.roomCode).emit('newDrawers', {
-        judges: this.judges,
-        blueTeam: this.blueTeam,
-        whiteTeam: this.whiteTeam,
+    this.turnInterval = setInterval(() => {
+      const newTurn = timeRemaining % this.playerDrawTime === 0
+      if (newTurn) {
+        this.rotateDrawers()
+        this.io.to(this.roomCode).emit('newDrawers', {
+          judges: this.judges,
+          blueTeam: this.blueTeam,
+          whiteTeam: this.whiteTeam,
+          timeRemaining,
+        })
+      }
+      this.io.to(this.roomCode).emit('roundTimer', {
         timeRemaining,
       })
+      // the odd seconds
+      // emit timer event
       console.log('timeRemaining: ', timeRemaining)
       console.log('interval duration:', intervalDuration)
       timeRemaining -= intervalDuration
+
+      if (timeRemaining <= 0) {
+        // they couldnt guess it
+        clearInterval(this.turnInterval)
+        this.goNextRound()
+      }
     }, intervalDuration * 1000)
 
     console.log('about to set timeout')
 
-    if (this.skipToNext) {
-      clearInterval(interval)
-      this.goNext()
-    }
-    setTimeout(() => {
-      clearInterval(interval)
-      this.goNext()
+    // setTimeout(() => {
 
-      // this.room = getUsersInRoom(this.roomCode)
-
-      // if (Object.keys(this.possibleJudges).length <= 0) {
-      //   this.possibleJudges = JSON.parse(JSON.stringify(this.room))
-      //   this.possiblePlayers = JSON.parse(JSON.stringify(this.room))
-      //   this.round = +1
-      // }
-      // if (this.round <= this.totalRounds) {
-      //   this.playGame()
-      // }
-      //   this.assignRoles()
-      //   this.assignWords()
-    }, (this.totalDrawTime + intervalDuration) * 1000) // add 2 seconds because the interval waits 2 seconds before running
+    // }, (this.totalDrawTime + intervalDuration) * 1000) // add 2 seconds because the interval waits 2 seconds before running
   }
 
-  goNext() {
+  goNextRound() {
     this.room = getUsersInRoom(this.roomCode)
 
     if (Object.keys(this.possibleJudges).length <= 0) {
@@ -239,43 +240,52 @@ class Game {
       this.playGame()
     }
   }
-
-  // playRound() {
-  //   this.playTurn()
-  //   while (Object.keys(this.possibleJudges).length > 0) {
-  //     setTimeout(() => {
-  //       this.playTurn()
-  //     }, (this.totalDrawTime + this.playerDrawTime) * 1000)
-  //   }
-  // }
-
-  // playGame() {
-  //   for (let round = 1; round <= this.totalRounds; round += 1) {
-  //     this.possibleJudges = JSON.parse(JSON.stringify(this.room))
-  //     this.possiblePlayers = JSON.parse(JSON.stringify(this.room))
-  //     this.playRound()
-  //   }
-  // }
-
-  totalRoundTimer() {
-    let timeRemaining = this.totalDrawTime
-    const intervalDuration = 1
-
-    const interval = setInterval(() => {
-      this.io.to(this.roomCode).emit('roundTimer', {
-        judges: this.judges,
-        blueTeam: this.blueTeam,
-        whiteTeam: this.whiteTeam,
-        timeRemaining,
-      })
-      timeRemaining -= intervalDuration
-    }, intervalDuration * 1000)
-    setTimeout(() => {
-      clearInterval(interval)
-      this.totalRoundTimer()
-    }, (this.totalDrawTime + this.playerDrawTime) * 1000)
-  }
 }
+
+// playRound() {
+//   this.playTurn()
+//   while (Object.keys(this.possibleJudges).length > 0) {
+//     setTimeout(() => {
+//       this.playTurn()
+//     }, (this.totalDrawTime + this.playerDrawTime) * 1000)
+//   }
+// }
+
+// playGame() {
+//   for (let round = 1; round <= this.totalRounds; round += 1) {
+//     this.possibleJudges = JSON.parse(JSON.stringify(this.room))
+//     this.possiblePlayers = JSON.parse(JSON.stringify(this.room))
+//     this.playRound()
+//   }
+// }
+
+//   totalRoundTimer() {
+//     let timeRemaining = this.totalDrawTime
+//     const intervalDuration = 1
+
+//     this.timerInterval = setInterval(() => {
+//       this.io.to(this.roomCode).emit('roundTimer', {
+//         judges: this.judges,
+//         blueTeam: this.blueTeam,
+//         whiteTeam: this.whiteTeam,
+//         timeRemaining,
+//       })
+//       timeRemaining -= intervalDuration
+//       if (timeRemaining <= 0) {
+//         // nobody could get it
+//         console.log('about to clear timer interval')
+//         clearInterval(this.timerInterval)
+//       }
+//     }, intervalDuration * 1000)
+//     // setTimeout(() => {
+//     //   console.log(`SKIPTONEXT IS: ${this.skipToNext}`)
+//     //   if (!this.skipToNext) {
+//     //     console.log('CLEARING ROUND TIMER IN TOTALROUNDTIMER')
+//     //     clearInterval(this.timerInterval)
+//     //     this.totalRoundTimer()
+//     //   }
+//     // }, (this.totalDrawTime + this.playerDrawTime) * 1000)
+//   }
 
 module.exports = {
   Game,
