@@ -132,10 +132,10 @@ io.on('connection', (socket) => {
   socket.on('chat', ({ message }) => {
     const user = getUserById(socket.id)
     if (Object.prototype.hasOwnProperty.call(game.getJudges(), socket.id)) {
-      if (message === game.getBlueTeamWord()) {
+      if (message.toLowerCase() === game.getBlueTeamWord().toLowerCase()) {
         game.roundWin('blueTeam', user)
         console.log('blueTeam win')
-      } else if (message === game.getWhiteTeamWord()) {
+      } else if (message.toLowerCase() === game.getWhiteTeamWord().toLowerCase()) {
         game.roundWin('whiteTeam', user)
         console.log('whiteTeam win')
       }
