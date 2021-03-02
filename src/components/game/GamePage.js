@@ -8,6 +8,7 @@ import Context from '../../context/context'
 import Chatbox from './Chatbox'
 import Rules from '../reusable/Rules'
 import Board from './Board'
+import PlayerQueue from './PlayerQueue'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,6 +29,10 @@ const useStyles = makeStyles((theme) => ({
     width: '30%',
     margin: theme.spacing(1),
   },
+  queue: {
+    width: '30%',
+    margin: theme.spacing(1),
+  },
   banner: {
     width: '100%',
     display: 'flex',
@@ -42,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
   },
   bannerElement: {
     display: 'flex',
-    margin: theme.spacing(1),
+    marginBottom: theme.spacing(1),
   },
   secondsRemaining: {
     paddingTop: theme.spacing(1.5),
@@ -67,6 +72,11 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: theme.spacing(5),
     paddingLeft: theme.spacing(5),
   },
+  round: {
+    position: 'absolute',
+    top: 5,
+    left: 10,
+  },
 }))
 
 export default function GamePage() {
@@ -79,26 +89,23 @@ export default function GamePage() {
   const [timer, setTimer] = useState(0)
   const [blueTeamWord, setBlueTeamWord] = useState('')
   const [whiteTeamWord, setWhiteTeamWord] = useState('')
-  const [currentTeam, setCurrentTeam] = useState(undefined)
-
-  // const socketRef = useRef()
+  const [role, setRole] = useState(undefined)
 
   useEffect(() => {
     if (!globalContext.roomCode || !globalContext.socket) {
       history.push('/')
       return () => {}
     }
-    // socketRef.current = globalContext.socket
     globalContext.socket.on('roomRoles', (data) => {
       setBlueTeam(data.blueTeam)
       setWhiteTeam(data.whiteTeam)
       setJudges(Object.values(data.judges))
-      if (!Object.prototype.hasOwnProperty.call(data.judges, globalContext.socket.id)) {
-        const team = data.blueTeam.filter((member) => member.id === globalContext.socket.id)
-          ? 'whiteTeam'
-          : 'blueTeam'
-        setCurrentTeam(team)
-      }
+      const currentRole = data.blueTeam.find((member) => member.id === globalContext.socket.id)
+        ? 'blueTeam'
+        : data.whiteTeam.find((member) => member.id === globalContext.socket.id)
+        ? 'whiteTeam'
+        : 'judge'
+      setRole(currentRole)
     })
     globalContext.socket.on('newDrawers', (data) => {
       setBlueTeam(data.blueTeam)
@@ -122,7 +129,10 @@ export default function GamePage() {
     <div className={classes.root}>
       <div className={classes.whiteBg} />
       <Rules />
-      <Typography />
+      <div className={classes.round}>
+        <Typography variant="h4">Round TBD</Typography>
+        <Typography variant="h5">Turn TBD</Typography>
+      </div>
 
       <div className={classes.banner}>
         <div className={classes.bannerElement}>
@@ -149,15 +159,6 @@ export default function GamePage() {
           )}
         </div>
         <div className={classes.bannerElement}>
-          <Typography variant="h5">
-            {currentTeam === 'whiteTeam'
-              ? `White team: ${whiteTeamWord}`
-              : currentTeam === 'blueTeam'
-              ? `Blue team: ${blueTeamWord}`
-              : 'You are a judge'}
-          </Typography>
-        </div>
-        <div className={classes.bannerElement}>
           <Typography variant="h3">{timer}</Typography>
           <Typography variant="h5" className={classes.secondsRemaining}>
             {' '}
@@ -165,45 +166,16 @@ export default function GamePage() {
           </Typography>
         </div>
       </div>
-
       <div className={classes.content}>
-        <Typography>Whos Up Next?!</Typography>
-        {whiteTeam.length > 0 &&
-          blueTeam.length > 0 &&
-          whiteTeam.map((player, index) => (
-            <div>
-              <div key={player.username}>
-                <Avatar src={player.icon ? player.icon : '/logo192.png'} alt={player.username} />
-                <Typography variant="subtitle1">{player.username}</Typography>
-                <Typography variant="subtitle1">points</Typography>
-                <Typography variant="subtitle1">{player.points}</Typography>
-              </div>
-              <div key={blueTeam[index].username}>
-                <Avatar
-                  src={blueTeam[index].icon ? blueTeam[index].icon : '/logo192.png'}
-                  alt={blueTeam[index].username}
-                />
-                <Typography variant="subtitle1">{blueTeam[index].username}</Typography>
-                <Typography variant="subtitle1">points</Typography>
-                <Typography variant="subtitle1">{blueTeam[index].points}</Typography>
-              </div>
-            </div>
-          ))}
-        {/* <Typography>
-          Blue Team:
-          {blueTeamWord}
-        </Typography>
-        {blueTeam.length > 0 &&
-          blueTeam.map((player) => (
-            <div key={player.username}>
-              <Avatar src={player.icon ? player.icon : '/logo192.png'} alt={player.username} />
-              <Typography variant="subtitle1">{player.username}</Typography>
-              <Typography variant="subtitle1">points</Typography>
-              <Typography variant="subtitle1">{player.points}</Typography>
-            </div>
-          ))} */}
+        {whiteTeam.length > 1 && blueTeam.length > 1 ? (
+          <div className={classes.queue}>
+            <PlayerQueue whiteTeam={whiteTeam.slice(1)} blueTeam={blueTeam.slice(1)} />
+          </div>
+        ) : (
+          <></>
+        )}
         <div className={classes.board}>
-          <Board />
+          <Board role={role} whiteTeamWord={whiteTeamWord} blueTeamWord={blueTeamWord} />
         </div>
         <div className={classes.chatBox}>
           {globalContext.socket && judges.length > 0 && <Chatbox judges={judges} />}
