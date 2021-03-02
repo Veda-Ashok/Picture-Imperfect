@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
     borderBottom: '1px solid black',
     borderTop: '1px solid black',
     borderRadius: 0,
-    maxHeight: theme.spacing(40),
+    height: '20vh',
   },
   outerPaper: {
     border: '3px solid black',
@@ -45,7 +45,6 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    margin: theme.spacing(1),
   },
 }))
 
@@ -56,21 +55,16 @@ export default function Chatbox({ judges }) {
   let messageCount = 0
 
   function handleChatUpdate(data) {
-    console.log('server chat: ', data)
     setChatLog((oldChatLog) => [
       ...oldChatLog,
       { name: data.name, text: data.text, id: messageCount },
     ])
-    // messageCount += 1
   }
 
   useEffect(() => {
     console.log('using effect in chat')
     globalContext.socket.on('chat', (data) => {
-      console.log('chatLog before adding to array', chatLog)
       handleChatUpdate(data)
-      // setChatLog([...chatLog, { name: data.name, text: data.text, id: messageCount }])
-      console.log('after:', chatLog)
       messageCount += 1
     })
 
@@ -82,47 +76,43 @@ export default function Chatbox({ judges }) {
   }, [])
 
   return (
-    <div>
-      <Paper className={classes.outerPaper}>
-        <div className={classes.center}>
-          {judges &&
-            judges.map((judge) => (
-              <div className={classes.avatars} key={judge.username}>
-                <Avatar src={judge.icon ? judge.icon : '/logo192.png'} alt={judge.username} />
-                <Typography variant="subtitle1">{judge.username}</Typography>
-              </div>
-            ))}
-        </div>
-        <Divider />
-        <Typography className={classes.center} variant="h4">
-          What do you think it is?!
+    <Paper className={classes.outerPaper}>
+      <div className={classes.center}>
+        {judges &&
+          judges.map((judge) => (
+            <div className={classes.avatars} key={judge.username}>
+              <Avatar src={judge.icon ? judge.icon : '/logo192.png'} alt={judge.username} />
+              <Typography variant="subtitle1">{judge.username}</Typography>
+            </div>
+          ))}
+      </div>
+      <Divider />
+      <Typography className={classes.center} variant="h5">
+        What do you think it is?!
+      </Typography>
+      <Paper className={classes.chatLog}>
+        <Typography variant="subtitle1">
+          {chatLog.map((chat) => (
+            <span key={chat.id} className={classes.texts}>
+              <Typography
+                className={classes.names}
+                style={{
+                  backgroundColor: judges.find((person) => chat.name === person.username)
+                    ? amber[200]
+                    : '#ffffff',
+                }}
+              >
+                {chat.name}
+              </Typography>
+              <Typography>{chat.text}</Typography>
+            </span>
+          ))}
         </Typography>
-        <Paper className={classes.chatLog}>
-          <Typography variant="subtitle1">
-            {console.log('chatLog', chatLog)}
-            {chatLog.map((chat) => (
-              <span key={chat.id} className={classes.texts}>
-                {console.log('chatid: ', chat.id, chat)}
-                <Typography
-                  className={classes.names}
-                  style={{
-                    backgroundColor: judges.find((person) => chat.name === person.username)
-                      ? amber[200]
-                      : '#ffffff',
-                  }}
-                >
-                  {chat.name}
-                </Typography>
-                <Typography>{chat.text}</Typography>
-              </span>
-            ))}
-          </Typography>
-        </Paper>
-        <div className={classes.center}>
-          <ChatInput judges={judges} />
-        </div>
       </Paper>
-    </div>
+      <div className={classes.center}>
+        <ChatInput judges={judges} />
+      </div>
+    </Paper>
   )
 }
 
@@ -133,6 +123,7 @@ Chatbox.propTypes = {
       icon: PropTypes.string,
       ready: PropTypes.bool,
       room: PropTypes.string,
+      points: PropTypes.number,
     }),
   ).isRequired,
 }

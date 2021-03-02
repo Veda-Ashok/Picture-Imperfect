@@ -1,8 +1,22 @@
+/* eslint-disable no-nested-ternary */
 import React, { useRef, useEffect, useContext } from 'react'
+import { PropTypes } from 'prop-types'
+import Typography from '@material-ui/core/Typography'
+import { makeStyles } from '@material-ui/core/styles'
+
 // import io from 'socket.io-client'
 import Context from '../../context/context'
 
-const Board = () => {
+const useStyles = makeStyles(() => ({
+  banner: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+  },
+}))
+
+export default function Board({ role, whiteTeamWord, blueTeamWord }) {
+  const classes = useStyles()
   const globalContext = useContext(Context)
   const canvasRef = useRef(null)
   const socketRef = useRef()
@@ -175,9 +189,20 @@ const Board = () => {
 
   return (
     <div>
+      <Typography variant="h5" className={classes.banner}>
+        {role === 'whiteTeam'
+          ? `You're on the white team, your word is ${whiteTeamWord}`
+          : role === 'blueTeam'
+          ? `You're on the blue team, your word is ${blueTeamWord}`
+          : 'You are a judge'}
+      </Typography>
       <canvas ref={canvasRef} aria-label="canvas" />
     </div>
   )
 }
 
-export default Board
+Board.propTypes = {
+  whiteTeamWord: PropTypes.string.isRequired,
+  blueTeamWord: PropTypes.string.isRequired,
+  role: PropTypes.string.isRequired,
+}

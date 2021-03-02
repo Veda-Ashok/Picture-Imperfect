@@ -4,6 +4,7 @@ import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import { makeStyles } from '@material-ui/core/styles'
 import { useHistory } from 'react-router-dom'
+import { amber } from '@material-ui/core/colors'
 
 import Context from '../../context/context'
 import LobbyUsers from './LobbyUsers'
@@ -18,6 +19,14 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(2),
     background: '#B2DAFF',
     borderRadius: '5px',
+  },
+  button: {
+    backgroundColor: 'Transparent',
+    backgroundRepeat: 'no-repeat',
+    border: 'none',
+    cursor: 'pointer',
+    overflow: 'hidden',
+    outline: 'none',
   },
   textContent: {
     float: 'left',
@@ -43,14 +52,17 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '5px',
     margin: theme.spacing(2),
     padding: theme.spacing(1),
+    '&:hover': {
+      backgroundColor: amber[200],
+    },
   },
   users: {
     float: 'right',
     width: '70%',
     // border: '5px solid black',
-    height: '80vh',
+    height: '85vh',
     overflow: 'auto',
-    marginTop: theme.spacing(15),
+    marginTop: theme.spacing(5),
   },
 }))
 
@@ -60,6 +72,7 @@ export default function LobbyPage() {
   const globalContext = useContext(Context)
   const [isReady, setIsReady] = useState(false)
   const [message, setMessage] = useState('')
+  const [copied, setCopied] = useState('copy room code to clipboard')
 
   const handleRoomUsers = (data) => {
     if (Object.keys(data.users).length < 3) {
@@ -67,6 +80,11 @@ export default function LobbyPage() {
     } else {
       setMessage('')
     }
+  }
+
+  const handleRoomCode = () => {
+    navigator.clipboard.writeText(globalContext.roomCode)
+    setCopied('room code copied')
   }
 
   useEffect(() => {
@@ -112,11 +130,14 @@ export default function LobbyPage() {
       <Rules />
       <div className={classes.textContent}>
         <Typography>{message}</Typography>
-        <Typography variant="h4" className={classes.roomCode}>
-          Roomcode:
-          {'  '}
-          {globalContext.roomCode}
-        </Typography>
+        <button className={classes.button} type="button" onClick={handleRoomCode}>
+          <Typography variant="h4" className={classes.roomCode}>
+            Roomcode:
+            {'  '}
+            {globalContext.roomCode}
+            <Typography variant="subtitle2">{copied}</Typography>
+          </Typography>
+        </button>
         {globalContext.customWords && (
           <TextField
             label="Enter custom words"

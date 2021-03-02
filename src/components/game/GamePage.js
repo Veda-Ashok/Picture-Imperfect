@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { useContext, useEffect, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { useHistory } from 'react-router-dom'
@@ -7,6 +8,7 @@ import Context from '../../context/context'
 import Chatbox from './Chatbox'
 import Rules from '../reusable/Rules'
 import Board from './Board'
+import PlayerQueue from './PlayerQueue'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,6 +29,10 @@ const useStyles = makeStyles((theme) => ({
     width: '30%',
     margin: theme.spacing(1),
   },
+  queue: {
+    width: '30%',
+    margin: theme.spacing(1),
+  },
   banner: {
     width: '100%',
     display: 'flex',
@@ -41,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
   },
   bannerElement: {
     display: 'flex',
-    margin: theme.spacing(1),
+    marginBottom: theme.spacing(1),
   },
   secondsRemaining: {
     paddingTop: theme.spacing(1.5),
@@ -66,6 +72,11 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: theme.spacing(5),
     paddingLeft: theme.spacing(5),
   },
+  round: {
+    position: 'absolute',
+    top: 5,
+    left: 10,
+  },
 }))
 
 export default function GamePage() {
@@ -78,19 +89,23 @@ export default function GamePage() {
   const [timer, setTimer] = useState(0)
   const [blueTeamWord, setBlueTeamWord] = useState('')
   const [whiteTeamWord, setWhiteTeamWord] = useState('')
-
-  // const socketRef = useRef()
+  const [role, setRole] = useState(undefined)
 
   useEffect(() => {
     if (!globalContext.roomCode || !globalContext.socket) {
       history.push('/')
       return () => {}
     }
-    // socketRef.current = globalContext.socket
     globalContext.socket.on('roomRoles', (data) => {
       setBlueTeam(data.blueTeam)
       setWhiteTeam(data.whiteTeam)
       setJudges(Object.values(data.judges))
+      const currentRole = data.blueTeam.find((member) => member.id === globalContext.socket.id)
+        ? 'blueTeam'
+        : data.whiteTeam.find((member) => member.id === globalContext.socket.id)
+        ? 'whiteTeam'
+        : 'judge'
+      setRole(currentRole)
     })
     globalContext.socket.on('newDrawers', (data) => {
       setBlueTeam(data.blueTeam)
@@ -114,6 +129,10 @@ export default function GamePage() {
     <div className={classes.root}>
       <div className={classes.whiteBg} />
       <Rules />
+      <div className={classes.round}>
+        <Typography variant="h4">Round TBD</Typography>
+        <Typography variant="h5">Turn TBD</Typography>
+      </div>
 
       <div className={classes.banner}>
         <div className={classes.bannerElement}>
@@ -148,34 +167,15 @@ export default function GamePage() {
         </div>
       </div>
       <div className={classes.content}>
-        <Typography>
-          White Team:
-          {whiteTeamWord}
-        </Typography>
-        {whiteTeam.length > 0 &&
-          whiteTeam.map((player) => (
-            <div key={player.username}>
-              <Avatar src={player.icon ? player.icon : '/logo192.png'} alt={player.username} />
-              <Typography variant="subtitle1">{player.username}</Typography>
-              <Typography variant="subtitle1">points</Typography>
-              <Typography variant="subtitle1">{player.points}</Typography>
-            </div>
-          ))}
-        <Typography>
-          Blue Team:
-          {blueTeamWord}
-        </Typography>
-        {blueTeam.length > 0 &&
-          blueTeam.map((player) => (
-            <div key={player.username}>
-              <Avatar src={player.icon ? player.icon : '/logo192.png'} alt={player.username} />
-              <Typography variant="subtitle1">{player.username}</Typography>
-              <Typography variant="subtitle1">points</Typography>
-              <Typography variant="subtitle1">{player.points}</Typography>
-            </div>
-          ))}
+        {whiteTeam.length > 1 && blueTeam.length > 1 ? (
+          <div className={classes.queue}>
+            <PlayerQueue whiteTeam={whiteTeam.slice(1)} blueTeam={blueTeam.slice(1)} />
+          </div>
+        ) : (
+          <></>
+        )}
         <div className={classes.board}>
-          <Board />
+          <Board role={role} whiteTeamWord={whiteTeamWord} blueTeamWord={blueTeamWord} />
         </div>
         <div className={classes.chatBox}>
           {globalContext.socket && judges.length > 0 && <Chatbox judges={judges} />}
