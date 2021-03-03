@@ -3,19 +3,74 @@ import React, { useRef, useEffect, useContext } from 'react'
 import { PropTypes } from 'prop-types'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
+import withWidth from '@material-ui/core/withWidth'
 
 // import io from 'socket.io-client'
 import Context from '../../context/context'
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   banner: {
     width: '100%',
     display: 'flex',
     justifyContent: 'center',
+    textAlign: 'center',
+    padding: theme.spacing(0.5),
+    [theme.breakpoints.down('sm')]: {
+      width: '100px',
+    },
+    [theme.breakpoints.between('sm', 'md')]: {
+      width: '150px',
+    },
+    [theme.breakpoints.between('md', 'lg')]: {
+      width: '400px',
+    },
+    [theme.breakpoints.between('lg', 'xl')]: {
+      width: '700px',
+    },
+    [theme.breakpoints.up('xl')]: {
+      width: '1250px',
+    },
+  },
+  canvas: {
+    [theme.breakpoints.down('sm')]: {
+      width: '148px',
+      height: '89px',
+      flex: '0 0 150px',
+      borderTop: '1px solid black',
+      borderBottom: '1px solid black',
+    },
+    [theme.breakpoints.between('sm', 'md')]: {
+      width: '377px',
+      height: '226px',
+      flex: '0 0 377px',
+      borderTop: '1px solid black',
+      borderBottom: '1px solid black',
+    },
+    [theme.breakpoints.between('md', 'lg')]: {
+      width: '500px',
+      height: '300px',
+      flex: '0 0 500px',
+      borderTop: '1px solid black',
+      borderBottom: '1px solid black',
+    },
+    [theme.breakpoints.between('lg', 'xl')]: {
+      width: '712px',
+      height: '428px',
+      flex: '0 0 712px',
+      borderTop: '1px solid black',
+      borderBottom: '1px solid black',
+    },
+    [theme.breakpoints.up('xl')]: {
+      width: '1188px',
+      height: '714px',
+      flex: '0 0 1188px',
+      borderTop: '1px solid black',
+      borderBottom: '1px solid black',
+    },
   },
 }))
 
-export default function Board({ role, whiteTeamWord, blueTeamWord }) {
+function Board({ role, whiteTeamWord, blueTeamWord }) {
   const classes = useStyles()
   const globalContext = useContext(Context)
   const canvasRef = useRef(null)
@@ -79,10 +134,10 @@ export default function Board({ role, whiteTeamWord, blueTeamWord }) {
       const h = canvas.height
 
       socketRef.current.emit('drawing', {
-        x0: x0 / w,
-        y0: y0 / h,
-        x1: x1 / w,
-        y1: y1 / h,
+        x0: mousex0 / w,
+        y0: mousey0 / h,
+        x1: mousex1 / w,
+        y1: mousey1 / h,
       })
     }
 
@@ -163,12 +218,14 @@ export default function Board({ role, whiteTeamWord, blueTeamWord }) {
     const onResize = () => {
       memCanvas.width = canvas.width
       memCanvas.height = canvas.height
-      memCtx.drawImage(canvas, 0, 0)
+      memCanvas.style.width = '100%' // Note you must post fix the unit type %,px,em
+      memCanvas.style.height = '100%'
+      memCtx.drawImage(canvas, 0, 0, canvas.width, canvas.height)
       canvas.width = window.innerWidth
       canvas.height = window.innerHeight
-      context.drawImage(memCanvas, 0, 0, canvas.width, canvas.height)
       canvas.style.width = '100%' // Note you must post fix the unit type %,px,em
       canvas.style.height = '100%'
+      context.drawImage(memCanvas, 0, 0, canvas.width, canvas.height)
     }
 
     window.addEventListener('resize', onResize, false)
@@ -196,7 +253,9 @@ export default function Board({ role, whiteTeamWord, blueTeamWord }) {
           ? `You're on the blue team, your word is ${blueTeamWord}`
           : 'You are a judge'}
       </Typography>
-      <canvas ref={canvasRef} aria-label="canvas" />
+      <div className={classes.canvas}>
+        <canvas ref={canvasRef} aria-label="canvas" />
+      </div>
     </div>
   )
 }
@@ -206,3 +265,5 @@ Board.propTypes = {
   blueTeamWord: PropTypes.string.isRequired,
   role: PropTypes.string.isRequired,
 }
+
+export default withWidth()(Board)

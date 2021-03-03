@@ -56,10 +56,8 @@ const useStyles = makeStyles((theme) => ({
   board: {
     backgroundColor: 'white',
     border: 'solid 3px black',
-    // height: 'px',
-    // width: '854px',
-    // flex: 'none',
-    // position: 'relative',
+    margin: theme.spacing(1),
+    flex: 'none',
   },
   avatars: {
     display: 'flex',
