@@ -131,12 +131,14 @@ export default function LobbyPage() {
       <div className={classes.textContent}>
         <Typography>{message}</Typography>
         <button className={classes.button} type="button" onClick={handleRoomCode}>
-          <Typography variant="h4" className={classes.roomCode}>
-            Roomcode:
-            {'  '}
-            {globalContext.roomCode}
+          <div className={classes.roomCode}>
+            <Typography variant="h4">
+              Roomcode:
+              {'  '}
+              {globalContext.roomCode}
+            </Typography>
             <Typography variant="subtitle2">{copied}</Typography>
-          </Typography>
+          </div>
         </button>
         {globalContext.customWords && (
           <TextField

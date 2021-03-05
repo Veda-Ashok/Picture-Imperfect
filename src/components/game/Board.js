@@ -105,16 +105,25 @@ function Board({ role, whiteTeamWord, blueTeamWord }) {
       let mousey0 = y0
       let mousey1 = y1
 
-      mousex0 -= bounds.left
-      mousex1 -= bounds.left
-      mousey0 -= bounds.top
-      mousey1 -= bounds.top
-
-      mousex0 /= bounds.width
-      mousex1 /= bounds.width
-      mousey0 /= bounds.height
-      mousey1 /= bounds.height
-
+      // if emit is false then the data came from the server so this has already been done
+      if (emit) {
+        mousex0 -= bounds.left
+        mousex1 -= bounds.left
+        mousey0 -= bounds.top
+        mousey1 -= bounds.top
+        console.log('bounds width', bounds.width)
+        mousex0 /= bounds.width
+        mousex1 /= bounds.width
+        mousey0 /= bounds.height
+        mousey1 /= bounds.height
+        socketRef.current.emit('drawing', {
+          x0: mousex0,
+          y0: mousey0,
+          x1: mousex1,
+          y1: mousey1,
+        })
+      }
+      console.log('canvas width', canvas.width)
       mousex0 *= canvas.width
       mousex1 *= canvas.width
       mousey0 *= canvas.height
@@ -127,18 +136,11 @@ function Board({ role, whiteTeamWord, blueTeamWord }) {
       context.stroke()
       context.closePath()
 
-      if (!emit) {
-        return
-      }
-      const w = canvas.width
-      const h = canvas.height
-
-      socketRef.current.emit('drawing', {
-        x0: x0 / w,
-        y0: y0 / h,
-        x1: x1 / w,
-        y1: y1 / h,
-      })
+      // if (!emit) {
+      //   return
+      // }
+      // const w = canvas.width
+      // const h = canvas.height
     }
 
     // ---------------- mouse movement --------------------------------------
@@ -221,8 +223,9 @@ function Board({ role, whiteTeamWord, blueTeamWord }) {
       memCanvas.style.width = '100%' // Note you must post fix the unit type %,px,em
       memCanvas.style.height = '100%'
       memCtx.drawImage(canvas, 0, 0, canvas.width, canvas.height)
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
+      const bounds = canvas.getBoundingClientRect()
+      canvas.width = bounds.width
+      canvas.height = bounds.height
       canvas.style.width = '100%' // Note you must post fix the unit type %,px,em
       canvas.style.height = '100%'
       context.drawImage(memCanvas, 0, 0, canvas.width, canvas.height)
@@ -233,27 +236,7 @@ function Board({ role, whiteTeamWord, blueTeamWord }) {
 
     // ----------------------- socket.io connection ----------------------------
     const onDrawingEvent = (data) => {
-      const bounds = canvas.getBoundingClientRect()
-
-      let mousex0 = data.x0
-      let mousex1 = data.x1
-      let mousey0 = data.y0
-      let mousey1 = data.y1
-
-      mousex0 -= bounds.left
-      mousex1 -= bounds.left
-      mousey0 -= bounds.top
-      mousey1 -= bounds.top
-
-      mousex0 /= bounds.width
-      mousex1 /= bounds.width
-      mousey0 /= bounds.height
-      mousey1 /= bounds.height
-
-      const w = canvas.width
-      const h = canvas.height
-
-      drawLine(mousex0 * w, mousey0 * h, mousex1 * w, mousey1 * h, data.color)
+      drawLine(data.x0, data.y0, data.x1, data.y1, false)
     }
 
     socketRef.current = globalContext.socket
@@ -272,7 +255,7 @@ function Board({ role, whiteTeamWord, blueTeamWord }) {
           : 'You are a judge'}
       </Typography>
       <div className={classes.canvas}>
-        <canvas ref={canvasRef} aria-label="canvas" />
+        <canvas ref={canvasRef} aria-label="canvas" className={classes.canvas} />
       </div>
     </div>
   )
