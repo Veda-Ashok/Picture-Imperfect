@@ -1,7 +1,12 @@
 const express = require('express')
 const socketio = require('socket.io')
-const http = require('http')
+// const http = require('http')
 const path = require('path')
+
+const app = express()
+// const server = http.createServer(app)
+const server = require('http').createServer(app)
+
 const {
   userJoin,
   getUserById,
@@ -11,8 +16,6 @@ const {
 } = require('./users')
 const { createRoom, getUsersInRoom } = require('./rooms')
 
-const app = express()
-const server = http.createServer(app)
 const io = socketio(server, {
   cors: {
     // origin: 'http://localhost:3000',
@@ -27,6 +30,7 @@ console.log(__dirname)
 app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, '../build', 'index.html'))
 })
+// app.get('/', (req, res, next) => res.sendFile(`${__dirname}./index.html`))
 
 io.on('connection', (socket) => {
   console.log('hello')
