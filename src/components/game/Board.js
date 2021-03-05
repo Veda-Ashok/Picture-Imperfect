@@ -16,26 +16,26 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     padding: theme.spacing(0.5),
     [theme.breakpoints.down('sm')]: {
-      width: '100px',
+      width: '148px',
     },
     [theme.breakpoints.between('sm', 'md')]: {
-      width: '150px',
+      width: '377px',
     },
     [theme.breakpoints.between('md', 'lg')]: {
-      width: '400px',
+      width: '500px',
     },
     [theme.breakpoints.between('lg', 'xl')]: {
-      width: '700px',
+      width: '712px',
     },
     [theme.breakpoints.up('xl')]: {
-      width: '1250px',
+      width: '1188px',
     },
   },
   canvas: {
     [theme.breakpoints.down('sm')]: {
       width: '148px',
       height: '89px',
-      flex: '0 0 150px',
+      flex: '0 0 148px',
       borderTop: '1px solid black',
       borderBottom: '1px solid black',
     },
@@ -111,7 +111,6 @@ function Board({ role, whiteTeamWord, blueTeamWord }) {
         mousex1 -= bounds.left
         mousey0 -= bounds.top
         mousey1 -= bounds.top
-        console.log('bounds width', bounds.width)
         mousex0 /= bounds.width
         mousex1 /= bounds.width
         mousey0 /= bounds.height
@@ -123,7 +122,6 @@ function Board({ role, whiteTeamWord, blueTeamWord }) {
           y1: mousey1,
         })
       }
-      console.log('canvas width', canvas.width)
       mousex0 *= canvas.width
       mousex1 *= canvas.width
       mousey0 *= canvas.height
