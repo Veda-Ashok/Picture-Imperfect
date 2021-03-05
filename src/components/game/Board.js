@@ -134,10 +134,10 @@ function Board({ role, whiteTeamWord, blueTeamWord }) {
       const h = canvas.height
 
       socketRef.current.emit('drawing', {
-        x0: mousex0 / w,
-        y0: mousey0 / h,
-        x1: mousex1 / w,
-        y1: mousey1 / h,
+        x0: x0 / w,
+        y0: y0 / h,
+        x1: x1 / w,
+        y1: y1 / h,
       })
     }
 
@@ -233,9 +233,27 @@ function Board({ role, whiteTeamWord, blueTeamWord }) {
 
     // ----------------------- socket.io connection ----------------------------
     const onDrawingEvent = (data) => {
+      const bounds = canvas.getBoundingClientRect()
+
+      let mousex0 = data.x0
+      let mousex1 = data.x1
+      let mousey0 = data.y0
+      let mousey1 = data.y1
+
+      mousex0 -= bounds.left
+      mousex1 -= bounds.left
+      mousey0 -= bounds.top
+      mousey1 -= bounds.top
+
+      mousex0 /= bounds.width
+      mousex1 /= bounds.width
+      mousey0 /= bounds.height
+      mousey1 /= bounds.height
+
       const w = canvas.width
       const h = canvas.height
-      drawLine(data.x0 * w, data.y0 * h, data.x1 * w, data.y1 * h, data.color)
+
+      drawLine(mousex0 * w, mousey0 * h, mousex1 * w, mousey1 * h, data.color)
     }
 
     socketRef.current = globalContext.socket
