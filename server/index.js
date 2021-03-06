@@ -78,6 +78,10 @@ io.on('connection', (socket) => {
         room: user.room,
         users: getUsersInRoom(user.room),
       })
+
+      if (game) {
+        game.removePlayer(user)
+      }
     }
   })
 

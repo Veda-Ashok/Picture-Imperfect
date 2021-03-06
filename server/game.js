@@ -240,6 +240,31 @@ class Game {
       this.playGame()
     }
   }
+
+  removePlayer(player) {
+    delete this.room[player]
+    delete this.judges[player]
+    delete this.currentDrawers[player]
+    delete this.possibleJudges[player]
+    delete this.possiblePlayers[player]
+
+    this.blueTeam = this.blueTeam.filter((user) => user.id !== player.id)
+    this.whiteTeam = this.whiteTeam.filter((user) => user.id !== player.id)
+
+    if (Object.keys(this.room).length < 3) {
+      this.io.to(this.roomCode).emit('gameOver', {
+        judges: this.judges,
+        blueTeam: this.blueTeam,
+        whiteTeam: this.whiteTeam,
+      })
+    } else {
+      this.io.to(this.roomCode).emit('roomRoles', {
+        judges: this.judges,
+        blueTeam: this.blueTeam,
+        whiteTeam: this.whiteTeam,
+      })
+    }
+  }
 }
 
 // playRound() {

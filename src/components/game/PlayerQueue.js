@@ -56,8 +56,8 @@ export default function PlayerQueue({ whiteTeam, blueTeam }) {
         Whos Up Next?!
       </Typography>
       <Divider />
-      {whiteTeam.map((player, index) => (
-        <div key={player.username + blueTeam[index].username} className={classes.pair}>
+      {whiteTeam.map((player) => (
+        <div key={player.username} className={classes.pair}>
           <div className={classes.whiteElement}>
             <Avatar src={player.icon ? player.icon : '/logo192.png'} alt={player.username} />
             <div className={classes.elementText}>
@@ -65,20 +65,21 @@ export default function PlayerQueue({ whiteTeam, blueTeam }) {
               <Typography variant="subtitle2">{`points: ${player.points}`}</Typography>
             </div>
           </div>
-          <Divider />
-          <div className={classes.blueElement}>
-            <Avatar
-              src={blueTeam[index].icon ? blueTeam[index].icon : '/logo192.png'}
-              alt={blueTeam[index].username}
-            />
-            <div className={classes.elementText}>
-              <Typography variant="subtitle1">{blueTeam[index].username}</Typography>
-              <Typography variant="subtitle2">{`points: ${blueTeam[index].points}`}</Typography>
-            </div>
-          </div>
-          <Divider />
         </div>
       ))}
+      <Divider />
+      {blueTeam.map((player) => (
+        <div key={player.username} className={classes.pair}>
+          <div className={classes.blueElement}>
+            <Avatar src={player.icon ? player.icon : '/logo192.png'} alt={player.username} />
+            <div className={classes.elementText}>
+              <Typography variant="subtitle1">{player.username}</Typography>
+              <Typography variant="subtitle2">{`points: ${player.points}`}</Typography>
+            </div>
+          </div>
+        </div>
+      ))}
+      <Divider />
     </Paper>
   )
 }
