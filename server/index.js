@@ -6,7 +6,7 @@ const path = require('path')
 const app = express()
 // const server = http.createServer(app)
 // const server = require('http').createServer(app)
-const server = require('http').Server(app)
+const server = require('http').createServer(app)
 
 // const io = require('socket.io').listen(server)
 
