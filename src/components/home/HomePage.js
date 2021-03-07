@@ -15,8 +15,6 @@ import Context from '../../context/context'
 import IconBoard from './IconBoard'
 import Rules from '../reusable/Rules'
 
-// import PORT from '../../../server/index'
-
 // git push heroku heroku-deployment:main
 
 const useStyles = makeStyles((theme) => ({
@@ -128,7 +126,6 @@ export default function HomePage() {
           // socket = io.connect(`ws://localhost:${process.env.PORT || 8080}`, () =>
           //   console.log('HEREEEEE'),
           // )
-          // socket = io.connect('ws://localhost:8080')
           socket = io.connect('https://picture-imperfect.herokuapp.com/', () =>
             console.log('HEREEEEE'),
           )

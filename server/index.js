@@ -33,7 +33,6 @@ console.log(__dirname)
 app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, '../build', 'index.html'))
 })
-// app.get('/', (req, res, next) => res.sendFile(`${__dirname}./index.html`))
 
 io.on('connection', (socket) => {
   console.log('hello')
@@ -140,5 +139,3 @@ app.use(express.static(`${__dirname}/../build`))
 
 const PORT = process.env.PORT || 8080
 server.listen(PORT, () => console.log(`server is running on port ${PORT}`))
-// app.listen(PORT)
-// export default PORT
