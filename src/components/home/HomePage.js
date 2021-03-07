@@ -126,9 +126,10 @@ export default function HomePage() {
           // socket = io.connect(`ws://localhost:${process.env.PORT || 8080}`, () =>
           //   console.log('HEREEEEE'),
           // )
-          socket = io.connect('https://picture-imperfect.herokuapp.com/', () =>
-            console.log('HEREEEEE'),
-          )
+          // socket = io.connect('https://picture-imperfect.herokuapp.com/', () =>
+          //   console.log('HEREEEEE'),
+          // )
+          socket = io()
 
           globalContext.addSocket(socket, globalContext)
         } else {

@@ -1,12 +1,11 @@
 const express = require('express')
 const socketio = require('socket.io')
-// const http = require('http')
 const path = require('path')
 
 const app = express()
 // const server = http.createServer(app)
 // const server = require('http').createServer(app)
-const server = require('http').createServer(app)
+const http = require('http').createServer(app)
 
 // const io = require('socket.io').listen(server)
 
@@ -20,7 +19,7 @@ const {
 const { createRoom, getUsersInRoom } = require('./rooms')
 const { Game } = require('./game')
 
-const io = socketio(server, {
+const io = socketio(http, {
   cors: {
     // origin: 'http://localhost:3000',
     origin: 'https://picture-imperfect.herokuapp.com/',
@@ -163,4 +162,4 @@ io.on('connection', (socket) => {
 app.use(express.static(`${__dirname}/../build`))
 
 const PORT = process.env.PORT || 8080
-server.listen(PORT, () => console.log(`server is running on port ${PORT}`))
+http.listen(PORT, () => console.log(`server is running on port ${PORT}`))
