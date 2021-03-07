@@ -18,6 +18,7 @@ const {
   updateUser,
 } = require('./users')
 const { createRoom, getUsersInRoom } = require('./rooms')
+const { Game } = require('./game')
 
 const io = socketio(server, {
   cors: {
@@ -26,6 +27,7 @@ const io = socketio(server, {
     methods: ['GET', 'POST'],
   },
 })
+let game
 
 app.use(express.static(path.join(__dirname, '../build')))
 console.log(__dirname)
@@ -106,6 +108,12 @@ io.on('connection', (socket) => {
     })
     if (everyoneReady) {
       io.to(user.room).emit('everyoneReady')
+      const room = getUsersInRoom(user.room)
+      const roomCode = user.room
+
+      game = new Game(room, 5, roomCode, io, socket)
+      // game.assignRoles()
+      game.playGame()
     }
 
     // send users room info
@@ -132,6 +140,23 @@ io.on('connection', (socket) => {
     const user = getUserById(socket.id)
 
     socket.broadcast.to(user.room).emit('drawing', data)
+  })
+
+  // send messages in chat
+  socket.on('chat', ({ message }) => {
+    const user = getUserById(socket.id)
+    if (Object.prototype.hasOwnProperty.call(game.getJudges(), socket.id)) {
+      if (message.toLowerCase() === game.getBlueTeamWord().toLowerCase()) {
+        game.roundWin('blueTeam', user)
+        console.log('blueTeam win')
+      } else if (message.toLowerCase() === game.getWhiteTeamWord().toLowerCase()) {
+        game.roundWin('whiteTeam', user)
+        console.log('whiteTeam win')
+      }
+    }
+    console.log('chat recieved', message, 'room', user.room)
+    const payload = { text: message, name: user.username }
+    io.to(user.room).emit('chat', payload)
   })
 })
 

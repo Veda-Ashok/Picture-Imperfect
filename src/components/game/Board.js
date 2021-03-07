@@ -1,8 +1,22 @@
+/* eslint-disable no-nested-ternary */
 import React, { useRef, useEffect, useContext } from 'react'
+import { PropTypes } from 'prop-types'
+import Typography from '@material-ui/core/Typography'
+import { makeStyles } from '@material-ui/core/styles'
+
 // import io from 'socket.io-client'
 import Context from '../../context/context'
 
-const Board = () => {
+const useStyles = makeStyles(() => ({
+  banner: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+  },
+}))
+
+export default function Board({ role, whiteTeamWord, blueTeamWord }) {
+  const classes = useStyles()
   const globalContext = useContext(Context)
   const canvasRef = useRef(null)
   const socketRef = useRef()
@@ -12,6 +26,11 @@ const Board = () => {
 
     const canvas = canvasRef.current
     const context = canvas.getContext('2d')
+
+    // --------------------- Memory canvas for resizing ------------------------------------
+
+    const memCanvas = document.createElement('canvas')
+    const memCtx = memCanvas.getContext('2d')
 
     // ----------------------- Colors --------------------------------------------------
 
@@ -25,9 +44,30 @@ const Board = () => {
     // ------------------------------- create the drawing ----------------------------
 
     const drawLine = (x0, y0, x1, y1, emit) => {
+      const bounds = canvas.getBoundingClientRect()
+      let mousex0 = x0
+      let mousex1 = x1
+      let mousey0 = y0
+      let mousey1 = y1
+
+      mousex0 -= bounds.left
+      mousex1 -= bounds.left
+      mousey0 -= bounds.top
+      mousey1 -= bounds.top
+
+      mousex0 /= bounds.width
+      mousex1 /= bounds.width
+      mousey0 /= bounds.height
+      mousey1 /= bounds.height
+
+      mousex0 *= canvas.width
+      mousex1 *= canvas.width
+      mousey0 *= canvas.height
+      mousey1 *= canvas.height
+
       context.beginPath()
-      context.moveTo(x0, y0)
-      context.lineTo(x1, y1)
+      context.moveTo(mousex0, mousey0)
+      context.lineTo(mousex1, mousey1)
       context.lineWidth = 3
       context.stroke()
       context.closePath()
@@ -121,8 +161,14 @@ const Board = () => {
     // -------------- make the canvas fill its parent component -----------------
 
     const onResize = () => {
+      memCanvas.width = canvas.width
+      memCanvas.height = canvas.height
+      memCtx.drawImage(canvas, 0, 0)
       canvas.width = window.innerWidth
       canvas.height = window.innerHeight
+      context.drawImage(memCanvas, 0, 0, canvas.width, canvas.height)
+      canvas.style.width = '100%' // Note you must post fix the unit type %,px,em
+      canvas.style.height = '100%'
     }
 
     window.addEventListener('resize', onResize, false)
@@ -143,9 +189,20 @@ const Board = () => {
 
   return (
     <div>
+      <Typography variant="h5" className={classes.banner}>
+        {role === 'whiteTeam'
+          ? `You're on the white team, your word is ${whiteTeamWord}`
+          : role === 'blueTeam'
+          ? `You're on the blue team, your word is ${blueTeamWord}`
+          : 'You are a judge'}
+      </Typography>
       <canvas ref={canvasRef} aria-label="canvas" />
     </div>
   )
 }
 
-export default Board
+Board.propTypes = {
+  whiteTeamWord: PropTypes.string.isRequired,
+  blueTeamWord: PropTypes.string.isRequired,
+  role: PropTypes.string.isRequired,
+}

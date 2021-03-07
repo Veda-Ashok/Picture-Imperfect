@@ -18,8 +18,11 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     // flexDirection: 'row',
     alignItems: 'center',
-    alignContent: 'center',
     height: '100%',
+    overflow: 'auto',
+  },
+  flexItem: {
+    margin: 'auto',
   },
 }))
 
@@ -49,12 +52,14 @@ export default function LobbyUsers() {
     <div className={classes.format}>
       {Object.values(globalContext.users).map((user) => {
         return (
-          <div className={classes.avatars}>
-            <Avatar src={user.icon ? user.icon : '/logo192.png'} alt={user.username} />
-            <Typography variant="subtitle1">{user.username}</Typography>
-            <Typography variant="subtitle1">
-              {user.ready ? 'LET ME INNNNNNNNNN' : 'HOLD THE F*CKING PHONE!!'}
-            </Typography>
+          <div className={classes.flexItem}>
+            <div className={classes.avatars} key={user.username}>
+              <Avatar src={user.icon ? user.icon : '/logo192.png'} alt={user.username} />
+              <Typography variant="subtitle1">{user.username}</Typography>
+              <Typography variant="subtitle1">
+                {user.ready ? 'LET ME INNNNNNNNNN' : 'HOLD THE F*CKING PHONE!!'}
+              </Typography>
+            </div>
           </div>
         )
       })}
