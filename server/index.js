@@ -1,5 +1,5 @@
 const express = require('express')
-// const socketio = require('socket.io')
+const socketio = require('socket.io')
 // const http = require('http')
 const path = require('path')
 
@@ -8,7 +8,7 @@ const app = express()
 // const server = require('http').createServer(app)
 const server = require('http').Server(app)
 
-const io = require('socket.io').listen(server)
+// const io = require('socket.io').listen(server)
 
 const {
   userJoin,
@@ -19,14 +19,13 @@ const {
 } = require('./users')
 const { createRoom, getUsersInRoom } = require('./rooms')
 
-// const io = socketio(server)
-// const io = socketio(server, {
-//   cors: {
-//     // origin: 'http://localhost:3000',
-//     origin: 'https://picture-imperfect.herokuapp.com/',
-//     methods: ['GET', 'POST'],
-//   },
-// })
+const io = socketio(server, {
+  cors: {
+    // origin: 'http://localhost:3000',
+    origin: 'https://picture-imperfect.herokuapp.com/',
+    methods: ['GET', 'POST'],
+  },
+})
 
 app.use(express.static(path.join(__dirname, '../build')))
 console.log(__dirname)
@@ -140,7 +139,6 @@ io.on('connection', (socket) => {
 app.use(express.static(`${__dirname}/../build`))
 
 const PORT = process.env.PORT || 8080
-// server.listen(PORT, () => console.log(`server is running on port ${PORT}`))
 server.listen(PORT, () => console.log(`server is running on port ${PORT}`))
 // app.listen(PORT)
 // export default PORT

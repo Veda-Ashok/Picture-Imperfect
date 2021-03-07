@@ -125,10 +125,13 @@ export default function HomePage() {
         let usernameTaken = false
         let invalidRoom = false
         if (!globalContext.socket) {
-          socket = io.connect(`ws://localhost:${process.env.PORT || 8080}`, () =>
+          // socket = io.connect(`ws://localhost:${process.env.PORT || 8080}`, () =>
+          //   console.log('HEREEEEE'),
+          // )
+          // socket = io.connect('ws://localhost:8080')
+          socket = io.connect('https://picture-imperfect.herokuapp.com/', () =>
             console.log('HEREEEEE'),
           )
-          // socket = io.connect('ws://localhost:8080')
 
           globalContext.addSocket(socket, globalContext)
         } else {
