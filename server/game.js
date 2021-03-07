@@ -251,19 +251,24 @@ class Game {
     this.blueTeam = this.blueTeam.filter((user) => user.id !== player.id)
     this.whiteTeam = this.whiteTeam.filter((user) => user.id !== player.id)
 
-    if (Object.keys(this.room).length < 3) {
-      this.io.to(this.roomCode).emit('gameOver', {
-        judges: this.judges,
-        blueTeam: this.blueTeam,
-        whiteTeam: this.whiteTeam,
-      })
-    } else {
-      this.io.to(this.roomCode).emit('roomRoles', {
-        judges: this.judges,
-        blueTeam: this.blueTeam,
-        whiteTeam: this.whiteTeam,
-      })
-    }
+    // if (Object.keys(this.room).length < 3) {
+    //   this.io.to(this.roomCode).emit('gameOver', {
+    //     judges: this.judges,
+    //     blueTeam: this.blueTeam,
+    //     whiteTeam: this.whiteTeam,
+    //   })
+    // } else {
+    //   this.io.to(this.roomCode).emit('roomRoles', {
+    //     judges: this.judges,
+    //     blueTeam: this.blueTeam,
+    //     whiteTeam: this.whiteTeam,
+    //   })
+    // }
+  }
+
+  killMySelf() {
+    clearInterval(this.turnInterval)
+    clearInterval(this.timerInterval)
   }
 }
 

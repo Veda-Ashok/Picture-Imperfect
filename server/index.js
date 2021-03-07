@@ -9,7 +9,8 @@ const {
   updateUser,
 } = require('./users')
 const { createRoom, getUsersInRoom } = require('./rooms')
-const { Game } = require('./game')
+// const { Game } = require('./game')
+const { createGame, deleteGame, getGame } = require('./games')
 
 const app = express()
 const server = http.createServer(app)
@@ -19,7 +20,7 @@ const io = socketio(server, {
     methods: ['GET', 'POST'],
   },
 })
-let game
+// let game
 
 io.on('connection', (socket) => {
   console.log('hello')
@@ -79,8 +80,60 @@ io.on('connection', (socket) => {
         users: getUsersInRoom(user.room),
       })
 
+      const game = getGame(user.room)
       if (game) {
         game.removePlayer(user)
+
+        if (Object.keys(game.room).length < 3) {
+          game.io.to(game.roomCode).emit('gameOver', {
+            judges: game.judges,
+            blueTeam: game.blueTeam,
+            whiteTeam: game.whiteTeam,
+          })
+          deleteGame(game.roomCode)
+        } else {
+          game.io.to(game.roomCode).emit('roomRoles', {
+            judges: game.judges,
+            blueTeam: game.blueTeam,
+            whiteTeam: game.whiteTeam,
+          })
+        }
+      }
+    }
+  })
+
+  // handle disconnect
+  socket.on('manualDisconnect', () => {
+    console.log('Later Nerd')
+
+    const user = userLeave(socket.id)
+    if (user) {
+      io.to(user.room).emit('message', `${user.username} has disconnected`)
+
+      // send users room info
+      io.to(user.room).emit('roomUsers', {
+        room: user.room,
+        users: getUsersInRoom(user.room),
+      })
+
+      const game = getGame(user.room)
+      if (game) {
+        game.removePlayer(user)
+
+        if (Object.keys(game.room).length < 3) {
+          game.io.to(game.roomCode).emit('gameOver', {
+            judges: game.judges,
+            blueTeam: game.blueTeam,
+            whiteTeam: game.whiteTeam,
+          })
+          deleteGame(game.roomCode)
+        } else {
+          game.io.to(game.roomCode).emit('roomRoles', {
+            judges: game.judges,
+            blueTeam: game.blueTeam,
+            whiteTeam: game.whiteTeam,
+          })
+        }
       }
     }
   })
@@ -100,7 +153,10 @@ io.on('connection', (socket) => {
       const room = getUsersInRoom(user.room)
       const roomCode = user.room
 
-      game = new Game(room, 5, roomCode, io, socket)
+      // const game = new Game(room, 5, roomCode, io, socket)
+      createGame(room, 5, roomCode, io, socket)
+      const game = getGame(roomCode)
+      // startGame(game.roomCode)
       // game.assignRoles()
       game.playGame()
     }
@@ -134,11 +190,14 @@ io.on('connection', (socket) => {
   // send messages in chat
   socket.on('chat', ({ message }) => {
     const user = getUserById(socket.id)
+    const game = getGame(user.room)
     if (Object.prototype.hasOwnProperty.call(game.getJudges(), socket.id)) {
       if (message.toLowerCase() === game.getBlueTeamWord().toLowerCase()) {
+        // roundWin('blueTeam', user, user.room)
         game.roundWin('blueTeam', user)
         console.log('blueTeam win')
       } else if (message.toLowerCase() === game.getWhiteTeamWord().toLowerCase()) {
+        // roundWin('whiteTeam', user, user.room)
         game.roundWin('whiteTeam', user)
         console.log('whiteTeam win')
       }
