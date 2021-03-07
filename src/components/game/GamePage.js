@@ -12,6 +12,7 @@ import PlayerQueue from './PlayerQueue'
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    position: 'relative',
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
@@ -28,10 +29,18 @@ const useStyles = makeStyles((theme) => ({
   chatBox: {
     width: '30%',
     margin: theme.spacing(1),
+    [theme.breakpoints.down('xs')]: {
+      width: '70%',
+      margin: theme.spacing(1),
+    },
   },
   queue: {
     width: '30%',
     margin: theme.spacing(1),
+    [theme.breakpoints.down('xs')]: {
+      width: '70%',
+      margin: theme.spacing(1),
+    },
   },
   banner: {
     width: '100%',
@@ -44,6 +53,12 @@ const useStyles = makeStyles((theme) => ({
   content: {
     display: 'flex',
     justifyContent: 'center',
+    [theme.breakpoints.down('xs')]: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
   },
   bannerElement: {
     display: 'flex',
@@ -54,10 +69,9 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(2),
   },
   board: {
-    backgroundColor: 'white',
-    border: 'solid 3px black',
-    margin: theme.spacing(1),
-    flex: 'none',
+    marginTop: theme.spacing(1),
+    paddingTop: theme.spacing(1),
+    alignItems: 'center',
   },
   avatars: {
     display: 'flex',

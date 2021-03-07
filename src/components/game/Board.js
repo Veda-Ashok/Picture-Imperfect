@@ -10,32 +10,47 @@ import Context from '../../context/context'
 
 const useStyles = makeStyles((theme) => ({
   banner: {
+    backgroundColor: 'white',
+    borderTop: 'solid 3px black',
+    borderRight: 'solid 3px black',
+    borderLeft: 'solid 3px black',
+    borderBottom: 'solid 1px black',
     width: '100%',
     display: 'flex',
     justifyContent: 'center',
     textAlign: 'center',
     padding: theme.spacing(0.5),
     [theme.breakpoints.down('sm')]: {
-      width: '148px',
+      fontSize: '.8em',
+      width: '377px',
     },
     [theme.breakpoints.between('sm', 'md')]: {
+      marginTop: theme.spacing(5),
+      fontSize: '.8em',
       width: '377px',
     },
     [theme.breakpoints.between('md', 'lg')]: {
+      marginTop: theme.spacing(3),
+      fontSize: '1.1em',
       width: '500px',
     },
     [theme.breakpoints.between('lg', 'xl')]: {
+      marginTop: theme.spacing(0),
+      fontSize: '1.4em',
       width: '712px',
     },
     [theme.breakpoints.up('xl')]: {
+      fontSize: '1.7em',
       width: '1188px',
     },
   },
   canvas: {
+    backgroundColor: 'white',
+    border: 'solid 2px black',
     [theme.breakpoints.down('sm')]: {
-      width: '148px',
-      height: '89px',
-      flex: '0 0 148px',
+      width: '377px',
+      height: '226px',
+      flex: '0 0 377px',
       borderTop: '1px solid black',
       borderBottom: '1px solid black',
     },
@@ -245,7 +260,7 @@ function Board({ role, whiteTeamWord, blueTeamWord }) {
 
   return (
     <div>
-      <Typography variant="h5" className={classes.banner}>
+      <Typography className={classes.banner}>
         {role === 'whiteTeam'
           ? `You're on the white team, your word is ${whiteTeamWord}`
           : role === 'blueTeam'
