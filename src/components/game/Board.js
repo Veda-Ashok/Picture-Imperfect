@@ -4,6 +4,7 @@ import { PropTypes } from 'prop-types'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import withWidth from '@material-ui/core/withWidth'
+import { amber } from '@material-ui/core/colors'
 
 // import io from 'socket.io-client'
 import Context from '../../context/context'
@@ -21,26 +22,26 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     padding: theme.spacing(0.5),
     [theme.breakpoints.down('sm')]: {
-      fontSize: '.8em',
+      fontSize: '.9em',
       width: '377px',
     },
     [theme.breakpoints.between('sm', 'md')]: {
-      marginTop: theme.spacing(5),
-      fontSize: '.8em',
-      width: '377px',
+      marginTop: theme.spacing(3),
+      fontSize: '1.2em',
+      width: '500px',
     },
     [theme.breakpoints.between('md', 'lg')]: {
       marginTop: theme.spacing(3),
-      fontSize: '1.1em',
+      fontSize: '1.3em',
       width: '500px',
     },
     [theme.breakpoints.between('lg', 'xl')]: {
       marginTop: theme.spacing(0),
-      fontSize: '1.4em',
+      fontSize: '1.5em',
       width: '712px',
     },
     [theme.breakpoints.up('xl')]: {
-      fontSize: '1.7em',
+      fontSize: '1.9em',
       width: '1188px',
     },
   },
@@ -55,9 +56,9 @@ const useStyles = makeStyles((theme) => ({
       borderBottom: '1px solid black',
     },
     [theme.breakpoints.between('sm', 'md')]: {
-      width: '377px',
-      height: '226px',
-      flex: '0 0 377px',
+      width: '500px',
+      height: '300px',
+      flex: '0 0 500px',
       borderTop: '1px solid black',
       borderBottom: '1px solid black',
     },
@@ -85,7 +86,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-function Board({ role, whiteTeamWord, blueTeamWord }) {
+function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
   const classes = useStyles()
   const globalContext = useContext(Context)
   const canvasRef = useRef(null)
@@ -235,13 +236,13 @@ function Board({ role, whiteTeamWord, blueTeamWord }) {
       memCanvas.height = canvas.height
       memCanvas.style.width = '100%' // Note you must post fix the unit type %,px,em
       memCanvas.style.height = '100%'
-      memCtx.drawImage(canvas, 0, 0, canvas.width, canvas.height)
+      memCtx.drawImage(canvas, 0, 0)
       const bounds = canvas.getBoundingClientRect()
       canvas.width = bounds.width
       canvas.height = bounds.height
       canvas.style.width = '100%' // Note you must post fix the unit type %,px,em
       canvas.style.height = '100%'
-      context.drawImage(memCanvas, 0, 0, canvas.width, canvas.height)
+      context.drawImage(memCanvas, 0, 0)
     }
 
     window.addEventListener('resize', onResize, false)
@@ -268,7 +269,11 @@ function Board({ role, whiteTeamWord, blueTeamWord }) {
           : 'You are a judge'}
       </Typography>
       <div className={classes.canvas}>
-        <canvas ref={canvasRef} aria-label="canvas" className={classes.canvas} />
+        <canvas
+          ref={canvasRef}
+          aria-label="canvas"
+          style={{ backgroundColor: yourTurn ? amber[200] : 'white' }}
+        />
       </div>
     </div>
   )
@@ -278,6 +283,7 @@ Board.propTypes = {
   whiteTeamWord: PropTypes.string.isRequired,
   blueTeamWord: PropTypes.string.isRequired,
   role: PropTypes.string.isRequired,
+  yourTurn: PropTypes.bool.isRequired,
 }
 
 export default withWidth()(Board)

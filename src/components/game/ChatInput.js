@@ -43,7 +43,7 @@ export default function ChatInput({ judges }) {
           size="small"
           variant="outlined"
           type="text"
-          label={isJudge ? 'Give your best guess...' : 'Enter message...'}
+          label={isJudge ? 'Guess...' : 'Enter message...'}
           value={chat}
           onChange={(e) => setChat(e.target.value)}
         />
