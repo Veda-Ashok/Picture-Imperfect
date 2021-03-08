@@ -27,6 +27,12 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: 'white',
     height: '100vh',
     zIndex: -900,
+    [theme.breakpoints.up('xl')]: {
+      height: '140vh',
+    },
+    [theme.breakpoints.down('sm')]: {
+      height: '100%',
+    },
   },
   chatBox: {
     width: '30%',
@@ -36,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(1),
     },
     [theme.breakpoints.between('sm', 'md')]: {
-      width: '50%',
+      width: '60%',
       margin: theme.spacing(1),
     },
   },
@@ -66,6 +72,7 @@ const useStyles = makeStyles((theme) => ({
   content: {
     display: 'flex',
     justifyContent: 'center',
+    alignItems: 'center',
     [theme.breakpoints.down('sm')]: {
       display: 'flex',
       flexDirection: 'column',
@@ -93,8 +100,8 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(2),
   },
   board: {
-    marginTop: theme.spacing(1),
-    paddingTop: theme.spacing(1),
+    margin: theme.spacing(1),
+    padding: theme.spacing(1),
     alignItems: 'center',
   },
   avatars: {

@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import React, { useRef, useEffect, useContext } from 'react'
+import React, { useRef, useEffect, useContext, useState } from 'react'
 import { PropTypes } from 'prop-types'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
@@ -26,17 +26,14 @@ const useStyles = makeStyles((theme) => ({
       width: '377px',
     },
     [theme.breakpoints.between('sm', 'md')]: {
-      marginTop: theme.spacing(3),
       fontSize: '1.2em',
       width: '500px',
     },
     [theme.breakpoints.between('md', 'lg')]: {
-      marginTop: theme.spacing(3),
       fontSize: '1.3em',
       width: '500px',
     },
     [theme.breakpoints.between('lg', 'xl')]: {
-      marginTop: theme.spacing(0),
       fontSize: '1.5em',
       width: '712px',
     },
@@ -46,7 +43,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   canvas: {
-    backgroundColor: 'white',
     border: 'solid 2px black',
     [theme.breakpoints.down('sm')]: {
       width: '377px',
@@ -91,6 +87,18 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
   const globalContext = useContext(Context)
   const canvasRef = useRef(null)
   const socketRef = useRef()
+  const [scale, setScale] = useState({ x: 1, y: 1 })
+
+  const resized = () => {
+    const { width, height } = canvasRef.current.getBoundingClientRect()
+
+    if (canvasRef.current.width !== width || canvasRef.current.height !== height) {
+      const { devicePixelRatio: ratio = 1 } = window
+      canvasRef.current.width = canvasRef.current.clientWidth * ratio
+      canvasRef.current.height = canvasRef.current.clientHeight * ratio
+      setScale({ x: ratio, y: ratio })
+    }
+  }
 
   useEffect(() => {
     // --------------- getContext() method returns a drawing canvesContext on the canvas-----
@@ -100,8 +108,8 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
 
     // --------------------- Memory canvas for resizing ------------------------------------
 
-    const memCanvas = document.createElement('canvas')
-    const memCtx = memCanvas.getContext('2d')
+    // const memCanvas = document.createElement('canvas')
+    // const memCtx = memCanvas.getContext('2d')
 
     // ----------------------- Colors --------------------------------------------------
 
@@ -229,24 +237,25 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
     canvas.addEventListener('touchcancel', onMouseUp, false)
     canvas.addEventListener('touchmove', throttle(onMouseMove, 10), false)
 
-    // -------------- make the canvas fill its parent component -----------------
+    // -------------- call resized function -----------------
+    resized()
 
-    const onResize = () => {
-      memCanvas.width = canvas.width
-      memCanvas.height = canvas.height
-      memCanvas.style.width = '100%' // Note you must post fix the unit type %,px,em
-      memCanvas.style.height = '100%'
-      memCtx.drawImage(canvas, 0, 0)
-      const bounds = canvas.getBoundingClientRect()
-      canvas.width = bounds.width
-      canvas.height = bounds.height
-      canvas.style.width = '100%' // Note you must post fix the unit type %,px,em
-      canvas.style.height = '100%'
-      context.drawImage(memCanvas, 0, 0)
-    }
+    // const onResize = () => {
+    //   memCanvas.width = canvas.width
+    //   memCanvas.height = canvas.height
+    //   memCanvas.style.width = '100%' // Note you must post fix the unit type %,px,em
+    //   memCanvas.style.height = '100%'
+    //   memCtx.drawImage(canvas, 0, 0)
+    //   const bounds = canvas.getBoundingClientRect()
+    //   canvas.width = bounds.width
+    //   canvas.height = bounds.height
+    //   canvas.style.width = '100%' // Note you must post fix the unit type %,px,em
+    //   canvas.style.height = '100%'
+    //   context.drawImage(memCanvas, 0, 0)
+    // }
 
-    window.addEventListener('resize', onResize, false)
-    onResize()
+    // window.addEventListener('resize', onResize, false)
+    // onResize()
 
     // ----------------------- socket.io connection ----------------------------
     const onDrawingEvent = (data) => {
@@ -256,6 +265,22 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
     socketRef.current = globalContext.socket
     socketRef.current.on('drawing', onDrawingEvent)
   }, [])
+
+  useEffect(() => {
+    const currentCanvas = canvasRef.current
+    currentCanvas.addEventListener('resize', resized)
+    return () => currentCanvas.removeEventListener('resize', resized)
+  })
+
+  function draw(canvas, scaleX, scaleY) {
+    const context = canvas.getContext('2d')
+    context.scale(scaleX, scaleY)
+    context.drawImage(canvas, 0, 0, canvas.clientWidth, canvas.clientHeight)
+  }
+
+  useEffect(() => {
+    draw(canvasRef.current, scale.x, scale.y)
+  }, [scale])
 
   // ------------- The Canvas --------------------------
 
@@ -268,10 +293,11 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
           ? `You're on the blue team, your word is ${blueTeamWord}`
           : 'You are a judge'}
       </Typography>
-      <div className={classes.canvas}>
+      <div>
         <canvas
           ref={canvasRef}
           aria-label="canvas"
+          className={classes.canvas}
           style={{ backgroundColor: yourTurn ? amber[200] : 'white' }}
         />
       </div>
