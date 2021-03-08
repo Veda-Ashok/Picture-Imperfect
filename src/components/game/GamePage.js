@@ -22,10 +22,10 @@ const useStyles = makeStyles((theme) => ({
   whiteBg: {
     position: 'absolute',
     width: '50%',
-    height: '100%',
     top: 0,
     left: 0,
     backgroundColor: 'white',
+    height: '100vh',
     zIndex: -900,
   },
   chatBox: {
