@@ -1,9 +1,11 @@
 /* eslint-disable no-nested-ternary */
 import React, { useContext, useEffect, useState } from 'react'
+import { PropTypes } from 'prop-types'
 import { makeStyles } from '@material-ui/core/styles'
 import { useHistory } from 'react-router-dom'
 import Typography from '@material-ui/core/Typography'
 import Avatar from '@material-ui/core/Avatar'
+import withWidth, { isWidthDown, isWidthUp } from '@material-ui/core/withWidth'
 import Context from '../../context/context'
 import Chatbox from './Chatbox'
 import Rules from '../reusable/Rules'
@@ -12,6 +14,7 @@ import PlayerQueue from './PlayerQueue'
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    position: 'relative',
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
@@ -19,19 +22,41 @@ const useStyles = makeStyles((theme) => ({
   whiteBg: {
     position: 'absolute',
     width: '50%',
-    height: '100%',
     top: 0,
     left: 0,
     backgroundColor: 'white',
+    height: '100vh',
     zIndex: -900,
+    [theme.breakpoints.up('xl')]: {
+      height: '140vh',
+    },
+    [theme.breakpoints.down('sm')]: {
+      height: '100%',
+    },
   },
   chatBox: {
     width: '30%',
     margin: theme.spacing(1),
+    [theme.breakpoints.down('xs')]: {
+      width: '100%',
+      margin: theme.spacing(1),
+    },
+    [theme.breakpoints.between('sm', 'md')]: {
+      width: '60%',
+      margin: theme.spacing(1),
+    },
   },
   queue: {
     width: '30%',
     margin: theme.spacing(1),
+    [theme.breakpoints.down('xs')]: {
+      width: '100%',
+      margin: theme.spacing(1),
+    },
+    [theme.breakpoints.between('sm', 'md')]: {
+      width: '50%',
+      margin: theme.spacing(1),
+    },
   },
   banner: {
     width: '100%',
@@ -40,10 +65,31 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     alignItems: 'center',
     marginTop: theme.spacing(3),
+    [theme.breakpoints.down('xs')]: {
+      marginTop: theme.spacing(7),
+    },
   },
   content: {
     display: 'flex',
     justifyContent: 'center',
+    alignItems: 'center',
+    [theme.breakpoints.down('sm')]: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+  },
+  pair: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    [theme.breakpoints.down('xs')]: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
   },
   bannerElement: {
     display: 'flex',
@@ -54,12 +100,9 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(2),
   },
   board: {
-    backgroundColor: 'white',
-    border: 'solid 3px black',
-    // height: 'px',
-    // width: '854px',
-    // flex: 'none',
-    // position: 'relative',
+    margin: theme.spacing(1),
+    padding: theme.spacing(1),
+    alignItems: 'center',
   },
   avatars: {
     display: 'flex',
@@ -79,7 +122,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function GamePage() {
+function GamePage({ width }) {
   const classes = useStyles()
   const history = useHistory()
   const globalContext = useContext(Context)
@@ -124,14 +167,30 @@ export default function GamePage() {
       // unbind all event handlers used in this component
     }
   }, [])
+  const chatbox = (
+    <div className={classes.chatBox}>
+      {globalContext.socket && judges.length > 0 && <Chatbox judges={judges} />}
+    </div>
+  )
+  const playerQueue = (
+    <>
+      {whiteTeam.length > 1 && blueTeam.length > 1 ? (
+        <div className={classes.queue}>
+          <PlayerQueue whiteTeam={whiteTeam.slice(1)} blueTeam={blueTeam.slice(1)} />
+        </div>
+      ) : (
+        <></>
+      )}
+    </>
+  )
 
   return (
     <div className={classes.root}>
       <div className={classes.whiteBg} />
       <Rules />
       <div className={classes.round}>
-        <Typography variant="h4">Round TBD</Typography>
-        <Typography variant="h5">Turn TBD</Typography>
+        <Typography variant="h5">Round TBD</Typography>
+        <Typography variant="h6">Turn TBD</Typography>
       </div>
 
       <div className={classes.banner}>
@@ -159,28 +218,44 @@ export default function GamePage() {
           )}
         </div>
         <div className={classes.bannerElement}>
-          <Typography variant="h3">{timer}</Typography>
-          <Typography variant="h5" className={classes.secondsRemaining}>
+          <Typography variant="h4">{timer}</Typography>
+          <Typography variant="h6" className={classes.secondsRemaining}>
             {' '}
             second(s) remaining
           </Typography>
         </div>
       </div>
+
       <div className={classes.content}>
-        {whiteTeam.length > 1 && blueTeam.length > 1 ? (
-          <div className={classes.queue}>
-            <PlayerQueue whiteTeam={whiteTeam.slice(1)} blueTeam={blueTeam.slice(1)} />
+        {isWidthUp('md', width) && chatbox}
+        <div className={classes.board}>
+          {blueTeam.length > 0 && whiteTeam.length > 0 && (
+            <Board
+              role={role}
+              whiteTeamWord={whiteTeamWord}
+              blueTeamWord={blueTeamWord}
+              yourTurn={
+                blueTeam[0].username === globalContext.myInfo.username ||
+                whiteTeam[0].username === globalContext.myInfo.username
+              }
+            />
+          )}
+        </div>
+        {isWidthDown('sm', width) ? (
+          <div className={classes.pair}>
+            {chatbox}
+            {playerQueue}
           </div>
         ) : (
-          <></>
+          playerQueue
         )}
-        <div className={classes.board}>
-          <Board role={role} whiteTeamWord={whiteTeamWord} blueTeamWord={blueTeamWord} />
-        </div>
-        <div className={classes.chatBox}>
-          {globalContext.socket && judges.length > 0 && <Chatbox judges={judges} />}
-        </div>
       </div>
     </div>
   )
 }
+
+GamePage.propTypes = {
+  width: PropTypes.string.isRequired,
+}
+
+export default withWidth()(GamePage)
