@@ -17,7 +17,7 @@ const { getUsersInRoom } = require('./rooms')
 // module.exports = {
 //   runGame,
 // }
-const { words, getRandomDifficulty, getRandomWord } = require('./words')
+const { getRandomDifficulty, getRandomWord } = require('./words')
 
 function chooseRandomPlayer(players) {
   const index = Math.floor(Math.random() * players.length)
@@ -38,7 +38,7 @@ class Game {
     this.playerDrawTime = 4 // SHOULD BE: totalDrawTime / (numberOfPLayersOnTeam * numberOfDrawRotations(aka how many times we loop thru a team))
     this.blueTeamWord = ''
     this.whiteTeamWord = ''
-    this.wordDifficulty = 'medium'
+    this.difficulty = 'medium'
     this.possibleJudges = JSON.parse(JSON.stringify(room))
     this.possiblePlayers = JSON.parse(JSON.stringify(room))
     this.roomCode = roomCode
@@ -48,6 +48,14 @@ class Game {
     this.skipToNext = false
     this.turnInterval = undefined
     this.timerInterval = undefined
+    // this.words = JSON.parse(JSON.stringify(words))
+
+    // if (customWords.length > 0) {
+    //   Object.keys(this.words).forEach((difficulty) => {
+    //     this.words[difficulty] = [...this.words[difficulty], ...customWords]
+    //     // this.words[difficulty].concat(customWords)
+    //   })
+    // }
   }
 
   getJudges() {
@@ -100,17 +108,18 @@ class Game {
 
   pickRandomWord() {
     // DELETE THIS CHECK WHEN WE HAVE ENOUGH WORDS TO NOT RUN OUT IN A GAME
-    words[this.difficulty].forEach((word) => {
-      if (!this.pastWords.has(word)) {
-        this.pastWords = new Set()
-      }
-    })
+    // words[this.difficulty].forEach((word) => {
+    //   if (!this.pastWords.has(word)) {
+    //     this.pastWords = new Set()
+    //   }
+    // })
     // END OF BLOCK TO BE DELETED
-    let newWord = getRandomWord(this.difficulty)
+    let newWord = getRandomWord(this.difficulty, this.roomCode)
     while (this.pastWords.has(newWord)) {
-      newWord = getRandomWord(this.difficulty)
+      newWord = getRandomWord(this.difficulty, this.roomCode)
     }
-    this.pastWords.add(newWord)
+    // this.pastWords.add(newWord)
+
     return newWord
   }
 
@@ -129,6 +138,7 @@ class Game {
   assignWords() {
     console.log('about to getRandomDifficulty')
     this.difficulty = getRandomDifficulty()
+    console.log('gettingRandomDifficulty', this.difficulty)
     console.log('about to pick blue word')
     this.blueTeamWord = this.pickRandomWord()
     console.log('about to pick white word')

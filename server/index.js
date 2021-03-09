@@ -17,6 +17,7 @@ const {
   updateUser,
 } = require('./users')
 const { createRoom, getUsersInRoom } = require('./rooms')
+const { addCustomWord } = require('./words')
 const { Game } = require('./game')
 
 const io = socketio(http, {
@@ -156,6 +157,13 @@ io.on('connection', (socket) => {
     console.log('chat recieved', message, 'room', user.room)
     const payload = { text: message, name: user.username }
     io.to(user.room).emit('chat', payload)
+  })
+
+  socket.on('addCustom', ({ customWord }) => {
+    const user = getUserById(socket.id)
+
+    addCustomWord(user.room, customWord)
+    console.log('added custom word', customWord)
   })
 })
 
