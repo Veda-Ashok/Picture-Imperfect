@@ -34,8 +34,8 @@ class Game {
     this.currentDrawers = {}
     this.round = 1
     this.totalRounds = totalRounds
-    this.totalDrawTime = 30
-    this.playerDrawTime = 2 // SHOULD BE: totalDrawTime / (numberOfPLayersOnTeam * numberOfDrawRotations(aka how many times we loop thru a team))
+    this.totalDrawTime = 60
+    this.playerDrawTime = 4 // SHOULD BE: totalDrawTime / (numberOfPLayersOnTeam * numberOfDrawRotations(aka how many times we loop thru a team))
     this.blueTeamWord = ''
     this.whiteTeamWord = ''
     this.difficulty = 'medium'
