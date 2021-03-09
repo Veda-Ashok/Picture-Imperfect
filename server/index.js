@@ -230,7 +230,7 @@ io.on('connection', (socket) => {
   })
 })
 
-app.use(express.static(`${__dirname}/../build`))
+// app.use(express.static(`${__dirname}/../build`))
 
 const PORT = process.env.PORT || 8080
 http.listen(PORT, () => console.log(`server is running on port ${PORT}`))
