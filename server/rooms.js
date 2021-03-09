@@ -1,3 +1,5 @@
+const { clearCustomWords } = require('./words')
+
 const rooms = {}
 
 function generateUID() {
@@ -26,6 +28,7 @@ function addUserToRoom(room, userId, user) {
 function removeUserFromRoom(room, userId) {
   delete rooms[room][userId]
   if (Object.keys(rooms[room]).length === 0) {
+    clearCustomWords()
     delete rooms[room]
   }
 }
