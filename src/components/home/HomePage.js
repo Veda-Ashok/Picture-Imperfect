@@ -1,7 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
 import Button from '@material-ui/core/Button'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Checkbox from '@material-ui/core/Checkbox'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -53,7 +51,6 @@ export default function HomePage() {
   const [username, setUsername] = useState(undefined)
   const [command, setCommand] = useState(undefined)
   const [errorMessage, setErrorMessage] = useState('')
-  const [customWords, setCustomWords] = useState(false)
   const [openCreateGame, setOpenCreateGame] = useState(false)
   const [openJoinGame, setOpenJoinGame] = useState(false)
   const [openError, setOpenError] = useState(false)
@@ -62,7 +59,7 @@ export default function HomePage() {
   // if they are in a room right now remove them from the room
   useEffect(() => {
     if (globalContext.roomCode) {
-      globalContext.socket.emit('disconnect')
+      globalContext.socket.emit('manualDisconnect')
       globalContext.addRoomCode(undefined, globalContext)
       globalContext.addSocket(undefined, globalContext)
     }
@@ -136,7 +133,7 @@ export default function HomePage() {
           socket = globalContext.socket
         }
         if (command === 'createRoom') {
-          socket.emit(command, { username, customWords, icon })
+          socket.emit(command, { username, icon })
         } else if (command === 'joinRoom') {
           socket.emit('joinRoom', { username, room: roomCode, icon })
         }
@@ -171,10 +168,6 @@ export default function HomePage() {
         console.error(error)
       }
     }
-  }
-
-  const handleCustomWords = (event) => {
-    setCustomWords(event.target.checked)
   }
 
   return (
@@ -229,19 +222,6 @@ export default function HomePage() {
               variant="outlined"
               onChange={(e) => handleUsername(e)}
               className={classes.textfields}
-            />
-            <FormControlLabel
-              /* eslint-disable */
-              control={
-                <Checkbox
-                  checked={customWords}
-                  onChange={handleCustomWords}
-                  color="primary"
-                  name="custom-words-checkbox"
-                />
-              }
-              /* eslint-disable */
-              label="Add your own custom words?"
             />
           </DialogContent>
           <DialogActions>

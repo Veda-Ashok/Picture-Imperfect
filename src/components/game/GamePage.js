@@ -140,6 +140,7 @@ function GamePage({ width }) {
       return () => {}
     }
     globalContext.socket.on('roomRoles', (data) => {
+      console.log('ROOM ROLES: ', data)
       setBlueTeam(data.blueTeam)
       setWhiteTeam(data.whiteTeam)
       setJudges(Object.values(data.judges))
@@ -160,6 +161,10 @@ function GamePage({ width }) {
     globalContext.socket.on('wordAssignment', (data) => {
       setBlueTeamWord(data.blueTeamWord)
       setWhiteTeamWord(data.whiteTeamWord)
+    })
+    globalContext.socket.on('gameOver', () => {
+      console.log('GAME OVER')
+      history.push('/')
     })
 
     return () => {

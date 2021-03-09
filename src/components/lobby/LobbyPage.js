@@ -70,6 +70,7 @@ export default function LobbyPage() {
   const [isReady, setIsReady] = useState(false)
   const [message, setMessage] = useState('')
   const [copied, setCopied] = useState('copy room code to clipboard')
+  const [customWord, setCustomWord] = useState('')
 
   const handleRoomUsers = (data) => {
     if (Object.keys(data.users).length < 3) {
@@ -82,6 +83,12 @@ export default function LobbyPage() {
   const handleRoomCode = () => {
     navigator.clipboard.writeText(globalContext.roomCode)
     setCopied('room code copied')
+  }
+
+  const handleCustomWords = () => {
+    console.log('before emitting custom')
+    globalContext.socket.emit('addCustom', { customWord })
+    console.log('after emitting custom')
   }
 
   useEffect(() => {
@@ -138,12 +145,22 @@ export default function LobbyPage() {
           </div>
         </button>
         {globalContext.customWords && (
-          <TextField
-            label="Enter custom words"
-            variant="outlined"
-            onChange={() => alert('add Custom Words')}
-            className={classes.textfields}
-          />
+          <form
+            action="."
+            onSubmit={(e) => {
+              e.preventDefault()
+              handleCustomWords(customWord)
+              setCustomWord('')
+            }}
+          >
+            <TextField
+              label="Enter custom words"
+              variant="outlined"
+              value={customWord}
+              onChange={(e) => setCustomWord(e.target.value)}
+              className={classes.textfields}
+            />
+          </form>
         )}
         <Typography variant="h5" className={classes.margin}>
           Game starts when everyone is ready
