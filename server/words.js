@@ -40,7 +40,11 @@ function getRandomDifficulty() {
 function getRandomWord(difficulty, roomCode) {
   let wordList
   if (difficulty === 'custom') {
-    wordList = custom[roomCode]
+    if (!Object.prototype.hasOwnProperty.call(custom, roomCode)) {
+      wordList = words[getRandomDifficulty()]
+    } else {
+      wordList = custom[roomCode]
+    }
   } else {
     wordList = words[difficulty]
   }
