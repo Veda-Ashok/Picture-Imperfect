@@ -167,11 +167,22 @@ function GamePage({ width }) {
       history.push('/')
     })
 
+    globalContext.socket.on('screenshotTimer', (data) => {
+      console.log('screenshotTimer', data.currentTime)
+    })
+
+    globalContext.socket.on('screenshotPage', (data) => {
+      console.log('players', data.players)
+      console.log('winningTeam', data.winningTeam)
+      console.log('winningJudge', data.winningJudge)
+    })
+
     return () => {
       // before the component is destroyed
       // unbind all event handlers used in this component
     }
   }, [])
+
   const chatbox = (
     <div className={classes.chatBox}>
       {globalContext.socket && judges.length > 0 && <Chatbox judges={judges} />}
