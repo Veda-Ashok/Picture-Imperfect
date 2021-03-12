@@ -164,8 +164,6 @@ class Game {
 
   // END ROUND AFTER THEY GUESS THE WORD
   roundWin(teamName, judge) {
-    clearInterval(this.turnInterval)
-    clearInterval(this.timerInterval)
     console.log('blueTeam', this.blueTeam)
     console.log('whiteTeam', this.whiteTeam)
     if (teamName === 'blueTeam') {
@@ -239,6 +237,8 @@ class Game {
   }
 
   goNextRound() {
+    clearInterval(this.turnInterval)
+    clearInterval(this.timerInterval)
     this.room = getUsersInRoom(this.roomCode)
 
     if (Object.keys(this.possibleJudges).length <= 0) {
@@ -253,13 +253,27 @@ class Game {
 
   removePlayer(player) {
     delete this.room[player]
-    delete this.judges[player]
+    delete this.judges[player.id]
     delete this.currentDrawers[player]
     delete this.possibleJudges[player]
     delete this.possiblePlayers[player]
 
     this.blueTeam = this.blueTeam.filter((user) => user.id !== player.id)
     this.whiteTeam = this.whiteTeam.filter((user) => user.id !== player.id)
+
+    console.log(this.judges)
+    console.log(Object.keys(this.judges).length)
+
+    // Check if any of the teams are empty and there are more than 3 players
+    if (
+      (this.blueTeam.length === 0 ||
+        this.whiteTeam.length === 0 ||
+        Object.keys(this.judges).length === 0) &&
+      Object.keys(this.room).length >= 3
+    ) {
+      console.log('in if')
+      this.goNextRound()
+    }
 
     // if (Object.keys(this.room).length < 3) {
     //   this.io.to(this.roomCode).emit('gameOver', {
