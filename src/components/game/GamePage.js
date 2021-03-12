@@ -150,6 +150,8 @@ function GamePage({ width }) {
         ? 'whiteTeam'
         : 'judge'
       setRole(currentRole)
+
+      console.log('Assigned Role: ', role)
     })
     globalContext.socket.on('newDrawers', (data) => {
       setBlueTeam(data.blueTeam)

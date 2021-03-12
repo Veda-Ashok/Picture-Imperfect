@@ -3,11 +3,7 @@ const socketio = require('socket.io')
 const path = require('path')
 
 const app = express()
-// const server = http.createServer(app)
-// const server = require('http').createServer(app)
 const http = require('http').createServer(app)
-
-// const io = require('socket.io').listen(server)
 
 const {
   userJoin,
@@ -17,14 +13,13 @@ const {
   updateUser,
 } = require('./users')
 const { createRoom, getUsersInRoom } = require('./rooms')
-// const { Game } = require('./game')
 const { createGame, deleteGame, getGame } = require('./games')
 const { addCustomWord } = require('./words')
 
 const io = socketio(http, {
   cors: {
-    // origin: 'http://localhost:3000',
-    origin: 'https://picture-imperfect.herokuapp.com/',
+    origin: 'http://localhost:3000',
+    // origin: 'https://picture-imperfect.herokuapp.com/',
     methods: ['GET', 'POST'],
   },
 })
@@ -230,7 +225,6 @@ io.on('connection', (socket) => {
   })
 })
 
-// app.use(express.static(`${__dirname}/../build`))
-
-const PORT = process.env.PORT || 8080
+//const PORT = process.env.PORT || 8080 // comment this to run locally
+const PORT = 8080 // then uncomment this
 http.listen(PORT, () => console.log(`server is running on port ${PORT}`))

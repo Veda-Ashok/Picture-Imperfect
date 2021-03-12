@@ -168,6 +168,8 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
     // ---------------- mouse movement --------------------------------------
 
     const onMouseDown = (e) => {
+      console.log('roleee', role)
+      console.log(role)
       drawing = true
       current.x = e.clientX || e.touches[0].clientX
       current.y = e.clientY || e.touches[0].clientY
@@ -177,6 +179,7 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
       if (!drawing) {
         return
       }
+
       drawLine(
         current.x,
 
@@ -258,6 +261,7 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
     // onResize()
 
     // ----------------------- socket.io connection ----------------------------
+
     const onDrawingEvent = (data) => {
       drawLine(data.x0, data.y0, data.x1, data.y1, false)
     }

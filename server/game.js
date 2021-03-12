@@ -220,8 +220,8 @@ class Game {
       })
       // the odd seconds
       // emit timer event
-      console.log('timeRemaining: ', timeRemaining)
-      console.log('interval duration:', intervalDuration)
+      // console.log('timeRemaining: ', timeRemaining)
+      // console.log('interval duration:', intervalDuration)
       timeRemaining -= intervalDuration
 
       if (timeRemaining <= 0) {
