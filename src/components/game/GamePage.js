@@ -50,12 +50,15 @@ export default function GamePage() {
         ? 'whiteTeam'
         : 'judge'
       setRole(currentRole)
+      setScreenshotTime(false)
     })
     globalContext.socket.on('newDrawers', (data) => {
       setBlueTeam(data.blueTeam)
       setWhiteTeam(data.whiteTeam)
     })
     globalContext.socket.on('roundTimer', (data) => {
+      console.log('roundTimer', data.timeRemaining)
+      setScreenshotTime(false)
       setTimer(data.timeRemaining)
     })
     globalContext.socket.on('wordAssignment', (data) => {
@@ -70,16 +73,16 @@ export default function GamePage() {
     globalContext.socket.on('screenshotTimer', (data) => {
       setScreenshotTimer(data.currentTime)
       console.log('screenshotTimer', data.currentTime)
-      if (parseInt(data.currentTime, 10) <= 0) {
+      if (parseInt(data.currentTime, 10) <= 1) {
         setScreenshotTime(false)
       }
     })
 
     globalContext.socket.on('screenshotPage', (data) => {
       setScreenshotTime(true)
-      setPlayers(data.players)
-      setWinningTeam(data.winningTeam)
-      setWinningJudge(data.winningJudge)
+      setPlayers(Object.values(data.players))
+      setWinningTeam(data.winningTeam === undefined ? 'timeOut' : data.winningTeam)
+      setWinningJudge(data.winningJudge === undefined ? 'timeOut' : data.winningTeam)
       console.log('players', data.players)
       console.log('winningTeam', data.winningTeam)
       console.log('winningJudge', data.winningJudge)

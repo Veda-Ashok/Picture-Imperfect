@@ -251,7 +251,7 @@ GamePlayPage.propTypes = {
     }),
   ).isRequired,
   role: PropTypes.string.isRequired,
-  timer: PropTypes.string.isRequired,
+  timer: PropTypes.number.isRequired,
   blueTeamWord: PropTypes.string.isRequired,
   whiteTeamWord: PropTypes.string.isRequired,
 }

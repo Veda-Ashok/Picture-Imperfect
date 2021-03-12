@@ -34,7 +34,7 @@ class Game {
     this.currentDrawers = {}
     this.round = 1
     this.totalRounds = totalRounds
-    this.totalDrawTime = 60
+    this.totalDrawTime = 30
     this.playerDrawTime = 4 // SHOULD BE: totalDrawTime / (numberOfPLayersOnTeam * numberOfDrawRotations(aka how many times we loop thru a team))
     this.blueTeamWord = ''
     this.whiteTeamWord = ''
@@ -47,6 +47,7 @@ class Game {
     this.pastWords = new Set()
     this.skipToNext = false
     this.turnInterval = undefined
+    this.screenshotInterval = undefined
     // this.timerInterval = undefined
     // this.words = JSON.parse(JSON.stringify(words))
 
@@ -188,7 +189,7 @@ class Game {
     const judgePoints = judge.points + 1
     updateUser(judge.id, 'points', judgePoints)
     this.skipToNext = true
-    this.goNextRound(teamName, judge)
+    this.goToScreenshot(teamName, judge)
   }
 
   playGame() {
@@ -227,7 +228,7 @@ class Game {
       if (timeRemaining <= 0) {
         // they couldnt guess it
         clearInterval(this.turnInterval)
-        this.goNextRound()
+        this.goToScreenshot()
       }
     }, intervalDuration * 1000)
 
@@ -238,42 +239,39 @@ class Game {
     // }, (this.totalDrawTime + intervalDuration) * 1000) // add 2 seconds because the interval waits 2 seconds before running
   }
 
-  goNextRound(teamName, judge) {
-    // ITS NOT WAITING 15 SECOND :(((((((....
-    function screenshotCallback(afterScreenshot) {
-      // if winningTeam is undefined then its a time out
-      this.room = getUsersInRoom(this.roomCode)
-      this.io.to(this.roomCode).emit('screenshotPage', {
-        winningTeam: teamName,
-        winningJudge: judge,
-        players: this.room,
-      })
-      // wait for screenshot page here
-      const screenshotTime = 15
-      let currentTime = screenshotTime
-
-      const screenshotInterval = setInterval(() => {
-        this.io.to(this.roomCode).emit('screenshotTimer', {
-          currentTime,
-        })
-        currentTime -= 1
-        if (currentTime <= 0) {
-          clearInterval(screenshotInterval)
-          afterScreenshot()
-        }
-      }, 1000)
-    }
-
-    screenshotCallback(() => {
-      if (Object.keys(this.possibleJudges).length <= 0) {
-        this.possibleJudges = JSON.parse(JSON.stringify(this.room))
-        this.possiblePlayers = JSON.parse(JSON.stringify(this.room))
-        this.round = +1
-      }
-      if (this.round <= this.totalRounds) {
-        this.playGame()
-      }
+  goToScreenshot(teamName, judge) {
+    // if winningTeam is undefined then its a time out
+    this.room = getUsersInRoom(this.roomCode)
+    this.io.to(this.roomCode).emit('screenshotPage', {
+      winningTeam: teamName,
+      winningJudge: judge,
+      players: this.room,
     })
+    // wait for screenshot page here
+    const screenshotTime = 15
+    let currentTime = screenshotTime
+
+    this.screenshotInterval = setInterval(() => {
+      this.io.to(this.roomCode).emit('screenshotTimer', {
+        currentTime,
+      })
+      currentTime -= 1
+      if (currentTime <= 0) {
+        clearInterval(this.screenshotInterval)
+        this.goToNextRound()
+      }
+    }, 1000)
+  }
+
+  goToNextRound() {
+    if (Object.keys(this.possibleJudges).length <= 0) {
+      this.possibleJudges = JSON.parse(JSON.stringify(this.room))
+      this.possiblePlayers = JSON.parse(JSON.stringify(this.room))
+      this.round = +1
+    }
+    if (this.round <= this.totalRounds) {
+      this.playGame()
+    }
   }
 
   removePlayer(player) {
