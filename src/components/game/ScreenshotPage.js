@@ -10,7 +10,6 @@
 // import Dialog from '@material-ui/core/Dialog'
 // import { makeStyles } from '@material-ui/core/styles'
 // import Context from '../../context/context'
-// import IconBoard from './IconBoard'
 // import Rules from '../reusable/Rules'
 
 // const useStyles = makeStyles((theme) => ({
@@ -31,3 +30,7 @@
 //     maxWidth: '192px',
 //   },
 // }))
+
+// export default function ScreenshotPage() {
+//   return <Rules />
+// }
