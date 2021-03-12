@@ -1,19 +1,38 @@
 /* eslint-disable no-nested-ternary */
 import React, { useContext, useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
+import { makeStyles } from '@material-ui/core/styles'
 import Context from '../../context/context'
 import GamePlayPage from './GamePlayPage'
+import ScreenshotPage from './ScreenshotPage'
+import Loading from '../reusable/Loading'
+
+const useStyles = makeStyles(() => ({
+  loading: {
+    display: 'flex',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    alignItems: 'center',
+    height: '100vh',
+  },
+}))
 
 export default function GamePage() {
+  const classes = useStyles()
   const history = useHistory()
   const globalContext = useContext(Context)
-  const [blueTeam, setBlueTeam] = useState([])
-  const [whiteTeam, setWhiteTeam] = useState([])
-  const [judges, setJudges] = useState([])
-  const [timer, setTimer] = useState(0)
-  const [blueTeamWord, setBlueTeamWord] = useState('')
-  const [whiteTeamWord, setWhiteTeamWord] = useState('')
+  const [blueTeam, setBlueTeam] = useState(undefined)
+  const [whiteTeam, setWhiteTeam] = useState(undefined)
+  const [judges, setJudges] = useState(undefined)
+  const [timer, setTimer] = useState(undefined)
+  const [blueTeamWord, setBlueTeamWord] = useState(undefined)
+  const [whiteTeamWord, setWhiteTeamWord] = useState(undefined)
   const [role, setRole] = useState(undefined)
+  const [screenshotTime, setScreenshotTime] = useState(undefined)
+  const [players, setPlayers] = useState(undefined)
+  const [winningTeam, setWinningTeam] = useState(undefined)
+  const [winningJudge, setWinningJudge] = useState(undefined)
+  const [screenshotTimer, setScreenshotTimer] = useState(undefined)
 
   useEffect(() => {
     if (!globalContext.roomCode || !globalContext.socket) {
@@ -49,10 +68,18 @@ export default function GamePage() {
     })
 
     globalContext.socket.on('screenshotTimer', (data) => {
+      setScreenshotTimer(data.currentTime)
       console.log('screenshotTimer', data.currentTime)
+      if (parseInt(data.currentTime, 10) <= 0) {
+        setScreenshotTime(false)
+      }
     })
 
     globalContext.socket.on('screenshotPage', (data) => {
+      setScreenshotTime(true)
+      setPlayers(data.players)
+      setWinningTeam(data.winningTeam)
+      setWinningJudge(data.winningJudge)
       console.log('players', data.players)
       console.log('winningTeam', data.winningTeam)
       console.log('winningJudge', data.winningJudge)
@@ -64,15 +91,54 @@ export default function GamePage() {
     }
   }, [])
 
+  const loadingPage = (
+    <div className={classes.loading}>
+      <Loading />
+    </div>
+  )
+
   return (
-    <GamePlayPage
-      judges={judges}
-      blueTeam={blueTeam}
-      whiteTeam={whiteTeam}
-      whiteTeamWord={whiteTeamWord}
-      blueTeamWord={blueTeamWord}
-      role={role}
-      timer={timer}
-    />
+    <>
+      {screenshotTime ? (
+        <>
+          {players &&
+          winningJudge &&
+          winningTeam &&
+          blueTeam &&
+          whiteTeam &&
+          whiteTeamWord &&
+          blueTeamWord ? (
+            <ScreenshotPage
+              players={players}
+              winningTeam={winningTeam}
+              winningJudge={winningJudge}
+              whiteTeam={whiteTeam}
+              blueTeam={blueTeam}
+              whiteTeamWord={whiteTeamWord}
+              blueTeamWord={blueTeamWord}
+              screenshotTimer={screenshotTimer}
+            />
+          ) : (
+            loadingPage
+          )}
+        </>
+      ) : (
+        <>
+          {judges && blueTeam && whiteTeam && whiteTeamWord && blueTeamWord && role && timer ? (
+            <GamePlayPage
+              judges={judges}
+              blueTeam={blueTeam}
+              whiteTeam={whiteTeam}
+              whiteTeamWord={whiteTeamWord}
+              blueTeamWord={blueTeamWord}
+              role={role}
+              timer={timer}
+            />
+          ) : (
+            loadingPage
+          )}
+        </>
+      )}
+    </>
   )
 }
