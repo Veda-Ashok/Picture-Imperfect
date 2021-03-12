@@ -21,12 +21,6 @@ export default function App() {
             <Route exact path="/lobby">
               <LobbyPage />
             </Route>
-            <Route exact path="/create">
-              <h1>Create Game</h1>
-            </Route>
-            <Route exact path="/join">
-              <h1>Join Game</h1>
-            </Route>
             <Route exact path="/game">
               <GamePage />
             </Route>
