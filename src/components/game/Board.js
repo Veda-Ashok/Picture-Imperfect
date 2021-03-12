@@ -168,7 +168,6 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
     // ---------------- mouse movement --------------------------------------
 
     const onMouseDown = (e) => {
-      console.log('roleee', role)
       console.log(role)
       drawing = true
       current.x = e.clientX || e.touches[0].clientX
