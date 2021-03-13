@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react/no-array-index-key */
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { PropTypes } from 'prop-types'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
@@ -55,20 +55,33 @@ export default function ScreenshotPage({
 }) {
   const classes = useStyles()
   const globalContext = useContext(Context)
-  const playersGettingPoints =
-    winningTeam === 'whiteTeam'
-      ? [winningJudge, ...whiteTeam]
-      : winningTeam === 'blueTeam'
-      ? [winningJudge, ...blueTeam]
-      : []
-  const wordGuessed =
-    winningTeam === 'whiteTeam'
-      ? whiteTeamWord
-      : winningTeam === 'blueTeam'
-      ? blueTeamWord
-      : 'No one'
-  const winningTeamDisplay =
-    winningTeam === 'whiteTeam' ? 'White Team' : winningTeam === 'blueTeam' ? 'Blue Team' : 'No one'
+  const [openRanking, setOpenRanking] = useState(false)
+  const handleCloseRanking = () => {
+    setOpenRanking(false)
+  }
+  const handleOpenRanking = () => {
+    setOpenRanking(true)
+  }
+  let playersGettingPoints
+  let wordGuessed
+  let turnResult
+  if (winningTeam === 'whiteTeam') {
+    playersGettingPoints = [winningJudge, ...whiteTeam]
+    wordGuessed = whiteTeamWord
+    turnResult = `Points go to ${winningJudge.username} and the white team...`
+  } else if (winningTeam === 'blueTeam') {
+    playersGettingPoints = [winningJudge, ...blueTeam]
+    wordGuessed = blueTeamWord
+    turnResult = `Points go to ${winningJudge.username} and the blue team...`
+  } else if (winningTeam === 'timeOut') {
+    wordGuessed = 'No one'
+    playersGettingPoints = []
+    turnResult = 'Sorry! Time ran out...'
+  } else if (winningTeam === 'playersLeft') {
+    wordGuessed = 'No one'
+    playersGettingPoints = []
+    turnResult = 'Sorry! People left so we had to end early...'
+  }
   return (
     <div className={classes.body}>
       <div className={classes.round}>
@@ -77,16 +90,10 @@ export default function ScreenshotPage({
       </div>
       <Rules />
       <Typography variant="h1">{`${wordGuessed} won!`}</Typography>
-      {winningTeamDisplay === 'No one' ? (
-        <Typography variant="h5">Sorry! Time ran out...</Typography>
-      ) : (
-        <Typography variant="h5">
-          {`Points go to ${winningJudge.username} and the 
-        ${winningTeamDisplay}...`}
-        </Typography>
-      )}
+      <Typography variant="h5">{turnResult}</Typography>
+
       <div>
-        {winningTeamDisplay !== 'No one' &&
+        {playersGettingPoints.length > 1 &&
           playersGettingPoints.map((player, index) => {
             return (
               <div key={`playersGettingPoints${index}`} className={classes.avatars}>
@@ -107,28 +114,36 @@ export default function ScreenshotPage({
           second(s) remaining to save the image!
         </Typography>
       </div>
-      <Button variant="contained" color="primary" size="large">
+      <Button variant="contained" color="primary" size="large" onClick={handleOpenRanking}>
         Player Ranking 👑
       </Button>
-      <Dialog>
+      <Dialog onClose={handleCloseRanking} aria-labelledby="player-ranking" open={openRanking}>
         <DialogTitle>Current Player Ranking</DialogTitle>
         <DialogContent>
           {players
             .sort((playera, playerb) => {
               return playerb.points - playera.points
             })
-            .map((player) => {
+            .map((player, index, array) => {
               return (
-                <span
-                  key={player.username}
-                  className={
-                    globalContext.myInfo.username === player.username
-                      ? classes.yourRank
-                      : classes.othersRank
-                  }
-                >
-                  <Player color="white" player={player} />
-                </span>
+                <div key={player.username}>
+                  <span
+                    className={
+                      globalContext.myInfo.username === player.username
+                        ? classes.yourRank
+                        : classes.othersRank
+                    }
+                  >
+                    <Typography>
+                      {`${index === 0 ? '👑' : ''} # ${
+                        index > 0 && array[index - 1].points === array[index].points
+                          ? '--'
+                          : index + 1
+                      }`}
+                    </Typography>
+                    <Player color="white" player={player} />
+                  </span>
+                </div>
               )
             })}
         </DialogContent>
