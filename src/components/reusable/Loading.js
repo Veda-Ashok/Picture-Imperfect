@@ -9,8 +9,8 @@ const useStyles = makeStyles({
     display: 'grid',
   },
   avatar: {
-    marginTop: '3px',
-    marginRight: '3px',
+    marginTop: '10px',
+    marginLeft: '10px',
     gridColumn: 2,
     gridRow: 1,
   },
@@ -22,7 +22,6 @@ const useStyles = makeStyles({
   text: {
     gridColumn: 2,
     gridRow: 2,
-    marginTop: '.5rem',
   },
 })
 
@@ -31,7 +30,7 @@ export default function Loading() {
   return (
     <div className={classes.loading}>
       <Avatar src="/media/Logo.svg" alt="logo" className={classes.avatar} />
-      <CircularProgress className={classes.circle} size={100} color="secondary" />
+      <CircularProgress className={classes.circle} size={100} color="black" />
       <Typography className={classes.text} variant="h6">
         Loading...
       </Typography>
