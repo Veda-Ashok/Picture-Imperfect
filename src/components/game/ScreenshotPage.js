@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react/no-array-index-key */
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { PropTypes } from 'prop-types'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
@@ -10,6 +10,8 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import Dialog from '@material-ui/core/Dialog'
 import { makeStyles } from '@material-ui/core/styles'
 import { amber } from '@material-ui/core/colors'
+import IconButton from '@material-ui/core/IconButton'
+import CloseIcon from '@material-ui/icons/Close'
 import Context from '../../context/context'
 import Rules from '../reusable/Rules'
 import Player from './Player'
@@ -49,10 +51,28 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
   },
   winningWord: {
-    padding: theme.spacing(2),
+    paddingTop: theme.spacing(2),
   },
   playersGettingPoints: {
     display: 'flex',
+  },
+  screenshot: {
+    width: '50%',
+    backgroundColor: 'white',
+    border: '3px solid black',
+    marginBottom: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    marginLeft: theme.spacing(1),
+  },
+  vs: {
+    width: '50%',
+    backgroundColor: 'white',
+    borderTop: '3px solid black',
+    borderRight: '3px solid black',
+    borderLeft: '3px solid black',
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: theme.spacing(1),
   },
   screenShotTimer: {
     display: 'flex',
@@ -61,6 +81,15 @@ const useStyles = makeStyles((theme) => ({
   secondsRemaining: {
     paddingTop: theme.spacing(0.7),
     paddingLeft: theme.spacing(1),
+  },
+  button: {
+    margin: theme.spacing(1),
+  },
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: 'black',
   },
 }))
 export default function ScreenshotPage({
@@ -102,6 +131,9 @@ export default function ScreenshotPage({
     playersGettingPoints = []
     turnResult = 'Sorry! People left so we had to end early...'
   }
+  useEffect(() => {
+    console.log(globalContext.screenshot)
+  }, [])
   return (
     <div className={classes.body}>
       <div className={classes.round}>
@@ -123,9 +155,11 @@ export default function ScreenshotPage({
             )
           })}
       </div>
+      <Typography className={classes.vs}>{`It was ${whiteTeamWord} vs ${blueTeamWord}`}</Typography>
       <img
-        src="https://www.google.com/imgres?imgurl=https%3A%2F%2Fassets.newatlas.com%2Fdims4%2Fdefault%2F5ab0e1a%2F2147483647%2Fstrip%2Ftrue%2Fcrop%2F1999x1328%2B0%2B0%2Fresize%2F1440x957!%2Fquality%2F90%2F%3Furl%3Dhttp%253A%252F%252Fnewatlas-brightspot.s3.amazonaws.com%252Ffe%252F06%252F75f2c8704c71ade9c8881c997c8f%252Fdepositphotos-41105113-l-2015.jpg&imgrefurl=https%3A%2F%2Fnewatlas.com%2Fenvironment%2Fstudy-ocean-absorbs-double-co2%2F&tbnid=MMpB81B34lvCFM&vet=12ahUKEwj9rY_y2qnvAhXxIH0KHQxwC6oQMygBegUIARDTAQ..i&docid=iOjM0MV61FtUGM&w=1440&h=957&q=ocean&ved=2ahUKEwj9rY_y2qnvAhXxIH0KHQxwC6oQMygBegUIARDTAQ"
-        alt="placeholder"
+        className={classes.screenshot}
+        src={globalContext.screenshot ? globalContext.screenshot : '/media/nobodyDrew.png'}
+        alt="screenshot"
       />
       <div className={classes.screenShotTimer}>
         <Typography variant="h4">{screenshotTimer}</Typography>
@@ -138,13 +172,25 @@ export default function ScreenshotPage({
         Player Ranking 👑
       </Button>
       <Dialog
+        className={classes.button}
         onClose={handleCloseRanking}
         fullWidth
         maxWidth="sm"
         aria-labelledby="player-ranking"
         open={openRanking}
       >
-        <DialogTitle>Current Player Ranking</DialogTitle>
+        <DialogTitle>
+          Current Player Ranking
+          {openRanking ? (
+            <IconButton
+              aria-label="close"
+              className={classes.closeButton}
+              onClick={handleCloseRanking}
+            >
+              <CloseIcon />
+            </IconButton>
+          ) : null}
+        </DialogTitle>
         <DialogContent dividers>
           {players
             .sort((playera, playerb) => {

@@ -41,6 +41,7 @@ export default function GamePage() {
     }
     globalContext.socket.on('roomRoles', (data) => {
       console.log('ROOM ROLES: ', data)
+      globalContext.updateScreenshot(undefined, globalContext)
       setBlueTeam(data.blueTeam)
       setWhiteTeam(data.whiteTeam)
       setJudges(Object.values(data.judges))
@@ -58,8 +59,8 @@ export default function GamePage() {
     })
     globalContext.socket.on('roundTimer', (data) => {
       console.log('roundTimer', data.timeRemaining)
-      setScreenshotTime(false)
       setTimer(data.timeRemaining)
+      setScreenshotTime(false)
     })
     globalContext.socket.on('wordAssignment', (data) => {
       setBlueTeamWord(data.blueTeamWord)
@@ -110,7 +111,8 @@ export default function GamePage() {
           blueTeam &&
           whiteTeam &&
           whiteTeamWord &&
-          blueTeamWord ? (
+          blueTeamWord &&
+          screenshotTimer ? (
             <ScreenshotPage
               players={players}
               winningTeam={winningTeam}

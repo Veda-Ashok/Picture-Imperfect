@@ -8,6 +8,7 @@ import {
   UPDATE_USERS,
   UPDATE_CUSTOM_WORDS,
   UPDATE_MY_INFO,
+  UPDATE_SCREENSHOT,
 } from './reducers'
 
 const GlobalState = (props) => {
@@ -18,6 +19,7 @@ const GlobalState = (props) => {
     users: {},
     customWords: true,
     myInfo: {},
+    screenshot: undefined,
   })
 
   const addSocket = (socket) => {
@@ -34,6 +36,10 @@ const GlobalState = (props) => {
 
   const updateMyInfo = (myInfo) => {
     dispatch({ type: UPDATE_MY_INFO, myInfo })
+  }
+
+  const updateScreenshot = (screenshot) => {
+    dispatch({ type: UPDATE_SCREENSHOT, screenshot })
   }
 
   const updateCustomWords = (customWords) => {
@@ -53,6 +59,8 @@ const GlobalState = (props) => {
         updateCustomWords,
         myInfo: appState.myInfo,
         updateMyInfo,
+        screenshot: appState.screenshot,
+        updateScreenshot,
       }}
     >
       {children}

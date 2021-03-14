@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from 'react'
 import Context from '../../context/context'
 import ScreenshotPage from '../game/ScreenshotPage'
+import sampleScreenshot from './image'
 
 const whiteTeamWord = 'pizza'
 const blueTeamWord = 'soda'
@@ -129,6 +130,7 @@ export default function Testing() {
   const globalContext = useContext(Context)
   useEffect(() => {
     globalContext.updateMyInfo({ username: 'rachel', icon: '/logo192.png' }, globalContext)
+    globalContext.updateScreenshot(sampleScreenshot, globalContext)
   }, [])
 
   return (

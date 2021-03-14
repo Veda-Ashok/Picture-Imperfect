@@ -1,6 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import React from 'react'
 import ScreenshotPage from '../src/components/game/ScreenshotPage'
+import sampleScreenshot from './image'
 import Context from '../src/context/context'
 
 /**
@@ -146,6 +147,7 @@ describe('ScreenshotPage', () => {
         addRoomCode: jest.fn(),
         users: {},
         customWords: true,
+        screenshot: { sampleScreenshot },
         myInfo: { username: 'tester', icon: '/logo192.png' },
       },
     }
@@ -175,6 +177,7 @@ describe('ScreenshotPage', () => {
         addRoomCode: jest.fn(),
         users: {},
         customWords: true,
+        screenshot: { sampleScreenshot },
         myInfo: { username: 'tester', icon: '/logo192.png' },
       },
     }
@@ -205,6 +208,7 @@ describe('ScreenshotPage', () => {
         addRoomCode: jest.fn(),
         users: {},
         customWords: true,
+        screenshot: { sampleScreenshot },
         myInfo: { username: 'tester', icon: '/logo192.png' },
       },
     }
@@ -235,6 +239,7 @@ describe('ScreenshotPage', () => {
         addRoomCode: jest.fn(),
         users: {},
         customWords: true,
+        screenshot: { sampleScreenshot },
         myInfo: { username: 'tester', icon: '/logo192.png' },
       },
     }
@@ -265,6 +270,7 @@ describe('ScreenshotPage', () => {
         addRoomCode: jest.fn(),
         users: {},
         customWords: true,
+        screenshot: { sampleScreenshot },
         myInfo: { username: 'tester', icon: '/logo192.png' },
       },
     }
