@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react/no-array-index-key */
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState } from 'react'
 import { PropTypes } from 'prop-types'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
@@ -131,9 +131,7 @@ export default function ScreenshotPage({
     playersGettingPoints = []
     turnResult = 'Sorry! People left so we had to end early...'
   }
-  useEffect(() => {
-    console.log(globalContext.screenshot)
-  }, [])
+
   return (
     <div className={classes.body}>
       <div className={classes.round}>
