@@ -3,20 +3,6 @@ const {
   updateUser,
 } = require('./users')
 const { getUsersInRoom } = require('./rooms')
-
-// const { createRoom, getUsersInRoom } = require('./rooms')
-
-// function runGame(room) {
-//   return room
-// }
-
-// function createTeams() {
-
-// }
-
-// module.exports = {
-//   runGame,
-// }
 const { getRandomDifficulty, getRandomWord } = require('./words')
 
 function chooseRandomPlayer(players) {
@@ -34,7 +20,7 @@ class Game {
     this.currentDrawers = {}
     this.round = 1
     this.totalRounds = totalRounds
-    this.totalDrawTime = 60
+    this.totalDrawTime = 30
     this.playerDrawTime = 4 // SHOULD BE: totalDrawTime / (numberOfPLayersOnTeam * numberOfDrawRotations(aka how many times we loop thru a team))
     this.blueTeamWord = ''
     this.whiteTeamWord = ''
@@ -47,15 +33,7 @@ class Game {
     this.pastWords = new Set()
     this.skipToNext = false
     this.turnInterval = undefined
-    this.timerInterval = undefined
-    // this.words = JSON.parse(JSON.stringify(words))
-
-    // if (customWords.length > 0) {
-    //   Object.keys(this.words).forEach((difficulty) => {
-    //     this.words[difficulty] = [...this.words[difficulty], ...customWords]
-    //     // this.words[difficulty].concat(customWords)
-    //   })
-    // }
+    this.screenshotInterval = undefined
   }
 
   getJudges() {
@@ -118,22 +96,10 @@ class Game {
     while (this.pastWords.has(newWord)) {
       newWord = getRandomWord(this.difficulty, this.roomCode)
     }
-    // this.pastWords.add(newWord)
+    // this.pastWords.add(newWord) Add back in when we have more words
 
     return newWord
   }
-
-  // checkWord(currentWord) {
-  //   // send messages in chat
-  //   this.socket.on('correctAnswer', ({ message }) => {
-  //     // const user = getUserById(socket.id)
-  //     // console.log('chat recieved', message, 'room', user.room)
-  //     if (message.equals(currentWord)) {
-  //       const payload = { text: message, name: user.username }
-  //       this.io.to(this.room).emit('correctAnswer', payload)
-  //     }
-  //   })
-  // }
 
   assignWords() {
     console.log('about to getRandomDifficulty')
@@ -164,8 +130,6 @@ class Game {
 
   // END ROUND AFTER THEY GUESS THE WORD
   roundWin(teamName, judge) {
-    clearInterval(this.turnInterval)
-    clearInterval(this.timerInterval)
     console.log('blueTeam', this.blueTeam)
     console.log('whiteTeam', this.whiteTeam)
     if (teamName === 'blueTeam') {
@@ -188,7 +152,7 @@ class Game {
     const judgePoints = judge.points + 1
     updateUser(judge.id, 'points', judgePoints)
     this.skipToNext = true
-    this.goNextRound()
+    this.goToScreenshot(teamName, judge)
   }
 
   playGame() {
@@ -226,21 +190,39 @@ class Game {
 
       if (timeRemaining <= 0) {
         // they couldnt guess it
-        clearInterval(this.turnInterval)
-        this.goNextRound()
+        this.goToScreenshot('timeOut')
       }
     }, intervalDuration * 1000)
 
     console.log('about to set timeout')
-
-    // setTimeout(() => {
-
-    // }, (this.totalDrawTime + intervalDuration) * 1000) // add 2 seconds because the interval waits 2 seconds before running
   }
 
-  goNextRound() {
+  goToScreenshot(teamName, judge) {
+    clearInterval(this.turnInterval)
+    // if winningTeam is undefined then its a time out
     this.room = getUsersInRoom(this.roomCode)
+    this.io.to(this.roomCode).emit('screenshotPage', {
+      winningTeam: teamName,
+      winningJudge: judge,
+      players: this.room,
+    })
+    // wait for screenshot page here
+    const screenshotTime = 15
+    let currentTime = screenshotTime
 
+    this.screenshotInterval = setInterval(() => {
+      this.io.to(this.roomCode).emit('screenshotTimer', {
+        currentTime,
+      })
+      currentTime -= 1
+      if (currentTime <= 0) {
+        clearInterval(this.screenshotInterval)
+        this.goToNextRound()
+      }
+    }, 1000)
+  }
+
+  goToNextRound() {
     if (Object.keys(this.possibleJudges).length <= 0) {
       this.possibleJudges = JSON.parse(JSON.stringify(this.room))
       this.possiblePlayers = JSON.parse(JSON.stringify(this.room))
@@ -253,7 +235,7 @@ class Game {
 
   removePlayer(player) {
     delete this.room[player]
-    delete this.judges[player]
+    delete this.judges[player.id]
     delete this.currentDrawers[player]
     delete this.possibleJudges[player]
     delete this.possiblePlayers[player]
@@ -261,71 +243,25 @@ class Game {
     this.blueTeam = this.blueTeam.filter((user) => user.id !== player.id)
     this.whiteTeam = this.whiteTeam.filter((user) => user.id !== player.id)
 
-    // if (Object.keys(this.room).length < 3) {
-    //   this.io.to(this.roomCode).emit('gameOver', {
-    //     judges: this.judges,
-    //     blueTeam: this.blueTeam,
-    //     whiteTeam: this.whiteTeam,
-    //   })
-    // } else {
-    //   this.io.to(this.roomCode).emit('roomRoles', {
-    //     judges: this.judges,
-    //     blueTeam: this.blueTeam,
-    //     whiteTeam: this.whiteTeam,
-    //   })
-    // }
+    console.log(this.judges)
+    console.log(Object.keys(this.judges).length)
+
+    // Check if any of the teams are empty and there are more than 3 players
+    if (
+      (this.blueTeam.length === 0 ||
+        this.whiteTeam.length === 0 ||
+        Object.keys(this.judges).length === 0) &&
+      Object.keys(this.room).length >= 3
+    ) {
+      console.log('in if')
+      this.goToScreenshot('playersLeft')
+    }
   }
 
   killMySelf() {
     clearInterval(this.turnInterval)
-    clearInterval(this.timerInterval)
   }
 }
-
-// playRound() {
-//   this.playTurn()
-//   while (Object.keys(this.possibleJudges).length > 0) {
-//     setTimeout(() => {
-//       this.playTurn()
-//     }, (this.totalDrawTime + this.playerDrawTime) * 1000)
-//   }
-// }
-
-// playGame() {
-//   for (let round = 1; round <= this.totalRounds; round += 1) {
-//     this.possibleJudges = JSON.parse(JSON.stringify(this.room))
-//     this.possiblePlayers = JSON.parse(JSON.stringify(this.room))
-//     this.playRound()
-//   }
-// }
-
-//   totalRoundTimer() {
-//     let timeRemaining = this.totalDrawTime
-//     const intervalDuration = 1
-
-//     this.timerInterval = setInterval(() => {
-//       this.io.to(this.roomCode).emit('roundTimer', {
-//         judges: this.judges,
-//         blueTeam: this.blueTeam,
-//         whiteTeam: this.whiteTeam,
-//         timeRemaining,
-//       })
-//       timeRemaining -= intervalDuration
-//       if (timeRemaining <= 0) {
-//         // nobody could get it
-//         console.log('about to clear timer interval')
-//         clearInterval(this.timerInterval)
-//       }
-//     }, intervalDuration * 1000)
-//     // setTimeout(() => {
-//     //   console.log(`SKIPTONEXT IS: ${this.skipToNext}`)
-//     //   if (!this.skipToNext) {
-//     //     console.log('CLEARING ROUND TIMER IN TOTALROUNDTIMER')
-//     //     clearInterval(this.timerInterval)
-//     //     this.totalRoundTimer()
-//     //   }
-//     // }, (this.totalDrawTime + this.playerDrawTime) * 1000)
-//   }
 
 module.exports = {
   Game,
