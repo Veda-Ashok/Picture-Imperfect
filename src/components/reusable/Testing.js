@@ -136,7 +136,7 @@ export default function Testing() {
       {globalContext.myInfo.username !== undefined && (
         <ScreenshotPage
           players={players}
-          winningTeam="whiteTeam"
+          winningTeam="blueTeam"
           winningJudge={winningJudge}
           whiteTeam={whiteTeam}
           blueTeam={blueTeam}

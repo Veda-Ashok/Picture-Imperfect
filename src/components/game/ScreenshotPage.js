@@ -35,12 +35,32 @@ const useStyles = makeStyles((theme) => ({
     left: 10,
   },
   yourRank: {
+    display: 'flex',
+    justifyContent: 'space-around',
+    alignItems: 'center',
     border: `solid 3px ${amber[200]}`,
     margin: theme.spacing(1),
   },
   othersRank: {
+    display: 'flex',
+    justifyContent: 'space-around',
+    alignItems: 'center',
     border: `solid 3px black`,
     margin: theme.spacing(1),
+  },
+  winningWord: {
+    padding: theme.spacing(2),
+  },
+  playersGettingPoints: {
+    display: 'flex',
+  },
+  screenShotTimer: {
+    display: 'flex',
+    margin: theme.spacing(1),
+  },
+  secondsRemaining: {
+    paddingTop: theme.spacing(0.7),
+    paddingLeft: theme.spacing(1),
   },
 }))
 export default function ScreenshotPage({
@@ -89,10 +109,10 @@ export default function ScreenshotPage({
         <Typography variant="h6">Turn TBD</Typography>
       </div>
       <Rules />
-      <Typography variant="h1">{`${wordGuessed} won!`}</Typography>
+      <Typography className={classes.winningWord} variant="h2">{`${wordGuessed} won!`}</Typography>
       <Typography variant="h5">{turnResult}</Typography>
 
-      <div>
+      <div className={classes.playersGettingPoints}>
         {playersGettingPoints.length > 1 &&
           playersGettingPoints.map((player, index) => {
             return (
@@ -107,7 +127,7 @@ export default function ScreenshotPage({
         src="https://www.google.com/imgres?imgurl=https%3A%2F%2Fassets.newatlas.com%2Fdims4%2Fdefault%2F5ab0e1a%2F2147483647%2Fstrip%2Ftrue%2Fcrop%2F1999x1328%2B0%2B0%2Fresize%2F1440x957!%2Fquality%2F90%2F%3Furl%3Dhttp%253A%252F%252Fnewatlas-brightspot.s3.amazonaws.com%252Ffe%252F06%252F75f2c8704c71ade9c8881c997c8f%252Fdepositphotos-41105113-l-2015.jpg&imgrefurl=https%3A%2F%2Fnewatlas.com%2Fenvironment%2Fstudy-ocean-absorbs-double-co2%2F&tbnid=MMpB81B34lvCFM&vet=12ahUKEwj9rY_y2qnvAhXxIH0KHQxwC6oQMygBegUIARDTAQ..i&docid=iOjM0MV61FtUGM&w=1440&h=957&q=ocean&ved=2ahUKEwj9rY_y2qnvAhXxIH0KHQxwC6oQMygBegUIARDTAQ"
         alt="placeholder"
       />
-      <div>
+      <div className={classes.screenShotTimer}>
         <Typography variant="h4">{screenshotTimer}</Typography>
         <Typography variant="h6" className={classes.secondsRemaining}>
           {' '}
@@ -117,9 +137,15 @@ export default function ScreenshotPage({
       <Button variant="contained" color="primary" size="large" onClick={handleOpenRanking}>
         Player Ranking 👑
       </Button>
-      <Dialog onClose={handleCloseRanking} aria-labelledby="player-ranking" open={openRanking}>
+      <Dialog
+        onClose={handleCloseRanking}
+        fullWidth
+        maxWidth="sm"
+        aria-labelledby="player-ranking"
+        open={openRanking}
+      >
         <DialogTitle>Current Player Ranking</DialogTitle>
-        <DialogContent>
+        <DialogContent dividers>
           {players
             .sort((playera, playerb) => {
               return playerb.points - playera.points
@@ -134,7 +160,7 @@ export default function ScreenshotPage({
                         : classes.othersRank
                     }
                   >
-                    <Typography>
+                    <Typography variant="h4">
                       {`${index === 0 ? '👑' : ''} # ${
                         index > 0 && array[index - 1].points === array[index].points
                           ? '--'
