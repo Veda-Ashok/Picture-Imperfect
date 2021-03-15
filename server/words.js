@@ -8,53 +8,57 @@ const easy = ['cat', 'dog', 'umbrella', 'mouse', 'apple', 'banana', 'pineapple']
 const medium = ['merry-go-round', 'polaroid', 'photo album']
 const hard = ['high school', 'carnival', 'castle']
 const impossible = ['mystery', 'orange', 'novel', 'regret', 'excited']
-const custom = {}
+// const custom = {}
 
-const words = { easy, medium, hard, impossible, custom }
+const DEFAULT_WORDS = { easy, medium, hard, impossible, custom: [] }
+
+const wordSets = {}
 
 function addCustomWord(roomCode, word) {
-  if (Object.prototype.hasOwnProperty.call(custom, roomCode)) {
-    if (!custom[roomCode].find((current) => current === word)) {
-      custom[roomCode] = [...custom[roomCode], word]
-    }
-    console.log('if room already exists', Object.values(custom))
-  } else {
-    custom[roomCode] = [word]
-    console.log('room doesnt exists', Object.values(custom))
+  if (!wordSets[roomCode].custom.includes(word)) {
+    wordSets[roomCode].custom = [...wordSets[roomCode].custom, word]
   }
+  console.log('if room already exists', Object.values(wordSets[roomCode].custom))
 }
 
-function clearCustomWords(roomCode) {
-  delete custom[roomCode]
-  console.log(custom[roomCode])
+function addWordSet(roomCode) {
+  wordSets[roomCode] = JSON.parse(JSON.stringify(DEFAULT_WORDS))
+}
+
+function clearWordSet(roomCode) {
+  delete wordSets[roomCode]
+  console.log(wordSets[roomCode])
 }
 
 function getRandom(list) {
   return list[Math.floor(Math.random() * list.length)]
 }
 
-function getRandomDifficulty() {
-  return getRandom(Object.keys(words))
+function getRandomDifficulty(roomCode) {
+  return getRandom(Object.keys(wordSets[roomCode]))
 }
 
 function getRandomWord(difficulty, roomCode) {
-  let wordList
-  if (difficulty === 'custom') {
-    if (!Object.prototype.hasOwnProperty.call(custom, roomCode)) {
-      wordList = words[getRandomDifficulty()]
-    } else {
-      wordList = custom[roomCode]
-    }
-  } else {
-    wordList = words[difficulty]
+  let newDifficulty = difficulty
+  if (!wordSets[roomCode][difficulty]) {
+    newDifficulty = getRandomDifficulty(roomCode)
   }
-  return getRandom(wordList)
+  const wordList = wordSets[roomCode][newDifficulty]
+  const word = getRandom(wordList)
+  const idx = wordSets[roomCode][newDifficulty].indexOf(word)
+  wordSets[roomCode][newDifficulty].splice(idx, 1)
+  console.log(wordSets)
+  if (wordSets[roomCode][newDifficulty].length < 1) {
+    delete wordSets[roomCode][newDifficulty]
+  }
+  return word
 }
 
 module.exports = {
-  words,
+  wordSets,
+  addWordSet,
   addCustomWord,
-  clearCustomWords,
+  clearWordSet,
   getRandomDifficulty,
   getRandomWord,
 }
