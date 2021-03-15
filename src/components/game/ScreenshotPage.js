@@ -111,7 +111,7 @@ export default function ScreenshotPage({
   const handleOpenRanking = () => {
     setOpenRanking(true)
   }
-  let playersGettingPoints
+  let playersGettingPoints, wordGuessed, turnResult
   let wordGuessed
   let turnResult
   if (winningTeam === 'whiteTeam') {
