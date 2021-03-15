@@ -1,3 +1,4 @@
+/* eslint-disable one-var */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react/no-array-index-key */
 import React, { useContext, useState } from 'react'
@@ -105,31 +106,58 @@ export default function ScreenshotPage({
   const classes = useStyles()
   const globalContext = useContext(Context)
   const [openRanking, setOpenRanking] = useState(false)
-  const handleCloseRanking = () => {
-    setOpenRanking(false)
-  }
-  const handleOpenRanking = () => {
-    setOpenRanking(true)
-  }
   let playersGettingPoints, wordGuessed, turnResult
-  let wordGuessed
-  let turnResult
-  if (winningTeam === 'whiteTeam') {
-    playersGettingPoints = [winningJudge, ...whiteTeam]
-    wordGuessed = whiteTeamWord
-    turnResult = `Points go to ${winningJudge.username} and the white team...`
-  } else if (winningTeam === 'blueTeam') {
-    playersGettingPoints = [winningJudge, ...blueTeam]
-    wordGuessed = blueTeamWord
-    turnResult = `Points go to ${winningJudge.username} and the blue team...`
-  } else if (winningTeam === 'timeOut') {
-    wordGuessed = 'No one'
-    playersGettingPoints = []
-    turnResult = 'Sorry! Time ran out...'
-  } else if (winningTeam === 'playersLeft') {
-    wordGuessed = 'No one'
-    playersGettingPoints = []
-    turnResult = 'Sorry! People left so we had to end early...'
+
+  switch (winningTeam) {
+    case 'whiteTeam':
+      playersGettingPoints = [winningJudge, ...whiteTeam]
+      wordGuessed = whiteTeamWord
+      turnResult = `Points go to ${winningJudge.username} and the white team...`
+      break
+    case 'blueTeam':
+      playersGettingPoints = [winningJudge, ...blueTeam]
+      wordGuessed = blueTeamWord
+      turnResult = `Points go to ${winningJudge.username} and the blue team...`
+      break
+    case 'timeOut':
+      wordGuessed = 'No one'
+      playersGettingPoints = []
+      turnResult = 'Sorry! Time ran out...'
+      break
+    case 'playersLeft':
+      wordGuessed = 'No one'
+      playersGettingPoints = []
+      turnResult = 'Sorry! People left so we had to end early...'
+      break
+    default:
+      wordGuessed = 'Probably no one'
+      playersGettingPoints = []
+      turnResult = 'Sorry! Something went wrong in the server...'
+  }
+
+  const sortPlayersByRank = (people) => {
+    return people
+      .sort((personA, personB) => personB.points - personA.points)
+      .map((person, index, array) => {
+        return (
+          <div key={person.username}>
+            <span
+              className={
+                globalContext.myInfo.username === person.username
+                  ? classes.yourRank
+                  : classes.othersRank
+              }
+            >
+              <Typography variant="h4">
+                {`${index === 0 ? '👑' : ''} # ${
+                  index > 0 && array[index - 1].points === array[index].points ? '--' : index + 1
+                }`}
+              </Typography>
+              <Player color="white" player={person} />
+            </span>
+          </div>
+        )
+      })
   }
 
   return (
@@ -166,12 +194,12 @@ export default function ScreenshotPage({
           second(s) remaining to save the image!
         </Typography>
       </div>
-      <Button variant="contained" color="primary" size="large" onClick={handleOpenRanking}>
+      <Button variant="contained" color="primary" size="large" onClick={() => setOpenRanking(true)}>
         Player Ranking 👑
       </Button>
       <Dialog
         className={classes.button}
-        onClose={handleCloseRanking}
+        onClose={() => setOpenRanking(false)}
         fullWidth
         maxWidth="sm"
         aria-labelledby="player-ranking"
@@ -183,40 +211,13 @@ export default function ScreenshotPage({
             <IconButton
               aria-label="close"
               className={classes.closeButton}
-              onClick={handleCloseRanking}
+              onClick={() => setOpenRanking(false)}
             >
               <CloseIcon />
             </IconButton>
           ) : null}
         </DialogTitle>
-        <DialogContent dividers>
-          {players
-            .sort((playera, playerb) => {
-              return playerb.points - playera.points
-            })
-            .map((player, index, array) => {
-              return (
-                <div key={player.username}>
-                  <span
-                    className={
-                      globalContext.myInfo.username === player.username
-                        ? classes.yourRank
-                        : classes.othersRank
-                    }
-                  >
-                    <Typography variant="h4">
-                      {`${index === 0 ? '👑' : ''} # ${
-                        index > 0 && array[index - 1].points === array[index].points
-                          ? '--'
-                          : index + 1
-                      }`}
-                    </Typography>
-                    <Player color="white" player={player} />
-                  </span>
-                </div>
-              )
-            })}
-        </DialogContent>
+        <DialogContent dividers>{sortPlayersByRank(players)}</DialogContent>
       </Dialog>
     </div>
   )
