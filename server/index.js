@@ -153,7 +153,6 @@ io.on('connection', (socket) => {
       io.to(user.room).emit('everyoneReady')
       const room = getUsersInRoom(user.room)
       const roomCode = user.room
-
       // const game = new Game(room, 5, roomCode, io, socket)
       createGame(room, 5, roomCode, io, socket)
       const game = getGame(roomCode)
@@ -171,6 +170,40 @@ io.on('connection', (socket) => {
 
   // handle user no longer ready for game
   socket.on('notReady', () => {
+    let user = getUserById(socket.id)
+    user = updateUser(socket.id, 'ready', false)
+
+    // send users room info
+    io.to(user.room).emit('roomUsers', {
+      room: user.room,
+      users: getUsersInRoom(user.room),
+    })
+  })
+
+  // handle user getting ready for next round
+  socket.on('roundReady', () => {
+    let user = getUserById(socket.id)
+    user = updateUser(socket.id, 'ready', true)
+
+    const players = Object.values(getUsersInRoom(user.room))
+    console.log(players)
+    let everyoneReady = true
+    players.forEach((player) => {
+      everyoneReady = everyoneReady && player.ready
+    })
+    if (everyoneReady) {
+      io.to(user.room).emit('startNextRound')
+    }
+
+    // send users room info
+    io.to(user.room).emit('roomUsers', {
+      room: user.room,
+      users: getUsersInRoom(user.room),
+    })
+  })
+
+  // handle user no longer ready for next round
+  socket.on('notRoundReady', () => {
     let user = getUserById(socket.id)
     user = updateUser(socket.id, 'ready', false)
 
