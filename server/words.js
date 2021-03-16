@@ -10,14 +10,19 @@ const hard = ['high school', 'carnival', 'castle']
 const impossible = ['mystery', 'orange', 'novel', 'regret', 'excited']
 // const custom = {}
 
-const DEFAULT_WORDS = { easy, medium, hard, impossible, custom: [] }
+// const DEFAULT_WORDS = { easy, medium, hard, impossible }
+const DEFAULT_WORDS = { easy }
 
 const wordSets = {}
 
 function addCustomWord(roomCode, word) {
   if (Object.prototype.hasOwnProperty.call(wordSets, roomCode)) {
-    if (!wordSets[roomCode].custom.includes(word)) {
-      wordSets[roomCode].custom = [...wordSets[roomCode].custom, word]
+    if (Object.prototype.hasOwnProperty.call(wordSets[roomCode], 'custom')) {
+      if (!wordSets[roomCode].custom.includes(word)) {
+        wordSets[roomCode].custom = [...wordSets[roomCode].custom, word]
+      }
+    } else {
+      wordSets[roomCode].custom = [word]
     }
   }
   console.log('if room already exists', Object.values(wordSets[roomCode].custom))
@@ -42,7 +47,7 @@ function getRandomDifficulty(roomCode) {
 
 function getRandomWord(difficulty, roomCode) {
   let newDifficulty = difficulty
-  if (!wordSets[roomCode][difficulty]) {
+  if (!wordSets[roomCode][newDifficulty]) {
     newDifficulty = getRandomDifficulty(roomCode)
   }
   const wordList = wordSets[roomCode][newDifficulty]
