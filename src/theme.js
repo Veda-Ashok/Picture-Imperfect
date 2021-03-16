@@ -25,6 +25,9 @@ const theme = createMuiTheme({
     h1: {
       fontFamily: ['Ribeye', 'cursive'].join(','),
     },
+    h2: {
+      fontFamily: ['Ribeye', 'cursive'].join(','),
+    },
     subtitle1: {
       fontWeight: 500,
     },

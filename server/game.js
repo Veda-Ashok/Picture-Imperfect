@@ -190,7 +190,7 @@ class Game {
 
       if (timeRemaining <= 0) {
         // they couldnt guess it
-        this.goToScreenshot()
+        this.goToScreenshot('timeOut')
       }
     }, intervalDuration * 1000)
 
@@ -254,7 +254,7 @@ class Game {
       Object.keys(this.room).length >= 3
     ) {
       console.log('in if')
-      this.goToScreenshot()
+      this.goToScreenshot('playersLeft')
     }
   }
 

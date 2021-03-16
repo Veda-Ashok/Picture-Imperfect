@@ -21,6 +21,9 @@ describe('Homepage', () => {
         addSocket: jest.fn(),
         roomCode: undefined,
         addRoomCode: jest.fn(),
+        users: {},
+        customWords: true,
+        myInfo: { username: 'tester', icon: '/logo192.png' },
       },
     }
     customRender(<HomePage />, { providerProps })

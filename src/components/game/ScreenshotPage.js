@@ -1,6 +1,7 @@
+/* eslint-disable one-var */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react/no-array-index-key */
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { PropTypes } from 'prop-types'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
@@ -10,6 +11,8 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import Dialog from '@material-ui/core/Dialog'
 import { makeStyles } from '@material-ui/core/styles'
 import { amber } from '@material-ui/core/colors'
+import IconButton from '@material-ui/core/IconButton'
+import CloseIcon from '@material-ui/icons/Close'
 import Context from '../../context/context'
 import Rules from '../reusable/Rules'
 import Player from './Player'
@@ -35,12 +38,59 @@ const useStyles = makeStyles((theme) => ({
     left: 10,
   },
   yourRank: {
+    display: 'flex',
+    justifyContent: 'space-around',
+    alignItems: 'center',
     border: `solid 3px ${amber[200]}`,
     margin: theme.spacing(1),
   },
   othersRank: {
+    display: 'flex',
+    justifyContent: 'space-around',
+    alignItems: 'center',
     border: `solid 3px black`,
     margin: theme.spacing(1),
+  },
+  winningWord: {
+    paddingTop: theme.spacing(2),
+  },
+  playersGettingPoints: {
+    display: 'flex',
+  },
+  screenshot: {
+    width: '50%',
+    backgroundColor: 'white',
+    border: '3px solid black',
+    marginBottom: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    marginLeft: theme.spacing(1),
+  },
+  vs: {
+    width: '50%',
+    backgroundColor: 'white',
+    borderTop: '3px solid black',
+    borderRight: '3px solid black',
+    borderLeft: '3px solid black',
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: theme.spacing(1),
+  },
+  screenShotTimer: {
+    display: 'flex',
+    margin: theme.spacing(1),
+  },
+  secondsRemaining: {
+    paddingTop: theme.spacing(0.7),
+    paddingLeft: theme.spacing(1),
+  },
+  button: {
+    margin: theme.spacing(1),
+  },
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: 'black',
   },
 }))
 export default function ScreenshotPage({
@@ -55,20 +105,61 @@ export default function ScreenshotPage({
 }) {
   const classes = useStyles()
   const globalContext = useContext(Context)
-  const playersGettingPoints =
-    winningTeam === 'whiteTeam'
-      ? [winningJudge, ...whiteTeam]
-      : winningTeam === 'blueTeam'
-      ? [winningJudge, ...blueTeam]
-      : []
-  const wordGuessed =
-    winningTeam === 'whiteTeam'
-      ? whiteTeamWord
-      : winningTeam === 'blueTeam'
-      ? blueTeamWord
-      : 'No one'
-  const winningTeamDisplay =
-    winningTeam === 'whiteTeam' ? 'White Team' : winningTeam === 'blueTeam' ? 'Blue Team' : 'No one'
+  const [openRanking, setOpenRanking] = useState(false)
+  let playersGettingPoints, wordGuessed, turnResult
+
+  switch (winningTeam) {
+    case 'whiteTeam':
+      playersGettingPoints = [winningJudge, ...whiteTeam]
+      wordGuessed = whiteTeamWord
+      turnResult = `Points go to ${winningJudge.username} and the white team...`
+      break
+    case 'blueTeam':
+      playersGettingPoints = [winningJudge, ...blueTeam]
+      wordGuessed = blueTeamWord
+      turnResult = `Points go to ${winningJudge.username} and the blue team...`
+      break
+    case 'timeOut':
+      wordGuessed = 'No one'
+      playersGettingPoints = []
+      turnResult = 'Sorry! Time ran out...'
+      break
+    case 'playersLeft':
+      wordGuessed = 'No one'
+      playersGettingPoints = []
+      turnResult = 'Sorry! People left so we had to end early...'
+      break
+    default:
+      wordGuessed = 'Probably no one'
+      playersGettingPoints = []
+      turnResult = 'Sorry! Something went wrong in the server...'
+  }
+
+  const sortPlayersByRank = (people) => {
+    return people
+      .sort((personA, personB) => personB.points - personA.points)
+      .map((person, index, array) => {
+        return (
+          <div key={person.username}>
+            <span
+              className={
+                globalContext.myInfo.username === person.username
+                  ? classes.yourRank
+                  : classes.othersRank
+              }
+            >
+              <Typography variant="h4">
+                {`${index === 0 ? '👑' : ''} # ${
+                  index > 0 && array[index - 1].points === array[index].points ? '--' : index + 1
+                }`}
+              </Typography>
+              <Player color="white" player={person} />
+            </span>
+          </div>
+        )
+      })
+  }
+
   return (
     <div className={classes.body}>
       <div className={classes.round}>
@@ -76,17 +167,11 @@ export default function ScreenshotPage({
         <Typography variant="h6">Turn TBD</Typography>
       </div>
       <Rules />
-      <Typography variant="h1">{`${wordGuessed} won!`}</Typography>
-      {winningTeamDisplay === 'No one' ? (
-        <Typography variant="h5">Sorry! Time ran out...</Typography>
-      ) : (
-        <Typography variant="h5">
-          {`Points go to ${winningJudge.username} and the 
-        ${winningTeamDisplay}...`}
-        </Typography>
-      )}
-      <div>
-        {winningTeamDisplay !== 'No one' &&
+      <Typography className={classes.winningWord} variant="h2">{`${wordGuessed} won!`}</Typography>
+      <Typography variant="h5">{turnResult}</Typography>
+
+      <div className={classes.playersGettingPoints}>
+        {playersGettingPoints.length > 1 &&
           playersGettingPoints.map((player, index) => {
             return (
               <div key={`playersGettingPoints${index}`} className={classes.avatars}>
@@ -96,42 +181,43 @@ export default function ScreenshotPage({
             )
           })}
       </div>
+      <Typography className={classes.vs}>{`It was ${whiteTeamWord} vs ${blueTeamWord}`}</Typography>
       <img
-        src="https://www.google.com/imgres?imgurl=https%3A%2F%2Fassets.newatlas.com%2Fdims4%2Fdefault%2F5ab0e1a%2F2147483647%2Fstrip%2Ftrue%2Fcrop%2F1999x1328%2B0%2B0%2Fresize%2F1440x957!%2Fquality%2F90%2F%3Furl%3Dhttp%253A%252F%252Fnewatlas-brightspot.s3.amazonaws.com%252Ffe%252F06%252F75f2c8704c71ade9c8881c997c8f%252Fdepositphotos-41105113-l-2015.jpg&imgrefurl=https%3A%2F%2Fnewatlas.com%2Fenvironment%2Fstudy-ocean-absorbs-double-co2%2F&tbnid=MMpB81B34lvCFM&vet=12ahUKEwj9rY_y2qnvAhXxIH0KHQxwC6oQMygBegUIARDTAQ..i&docid=iOjM0MV61FtUGM&w=1440&h=957&q=ocean&ved=2ahUKEwj9rY_y2qnvAhXxIH0KHQxwC6oQMygBegUIARDTAQ"
-        alt="placeholder"
+        className={classes.screenshot}
+        src={globalContext.screenshot ? globalContext.screenshot : '/media/nobodyDrew.png'}
+        alt="screenshot"
       />
-      <div>
+      <div className={classes.screenShotTimer}>
         <Typography variant="h4">{screenshotTimer}</Typography>
         <Typography variant="h6" className={classes.secondsRemaining}>
           {' '}
           second(s) remaining to save the image!
         </Typography>
       </div>
-      <Button variant="contained" color="primary" size="large">
+      <Button variant="contained" color="primary" size="large" onClick={() => setOpenRanking(true)}>
         Player Ranking 👑
       </Button>
-      <Dialog>
-        <DialogTitle>Current Player Ranking</DialogTitle>
-        <DialogContent>
-          {players
-            .sort((playera, playerb) => {
-              return playerb.points - playera.points
-            })
-            .map((player) => {
-              return (
-                <span
-                  key={player.username}
-                  className={
-                    globalContext.myInfo.username === player.username
-                      ? classes.yourRank
-                      : classes.othersRank
-                  }
-                >
-                  <Player color="white" player={player} />
-                </span>
-              )
-            })}
-        </DialogContent>
+      <Dialog
+        className={classes.button}
+        onClose={() => setOpenRanking(false)}
+        fullWidth
+        maxWidth="sm"
+        aria-labelledby="player-ranking"
+        open={openRanking}
+      >
+        <DialogTitle>
+          Current Player Ranking
+          {openRanking ? (
+            <IconButton
+              aria-label="close"
+              className={classes.closeButton}
+              onClick={() => setOpenRanking(false)}
+            >
+              <CloseIcon />
+            </IconButton>
+          ) : null}
+        </DialogTitle>
+        <DialogContent dividers>{sortPlayersByRank(players)}</DialogContent>
       </Dialog>
     </div>
   )
