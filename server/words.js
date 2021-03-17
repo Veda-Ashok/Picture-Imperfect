@@ -10,8 +10,7 @@ const hard = ['high school', 'carnival', 'castle']
 const impossible = ['mystery', 'orange', 'novel', 'regret', 'excited']
 // const custom = {}
 
-// const DEFAULT_WORDS = { easy, medium, hard, impossible }
-const DEFAULT_WORDS = { easy }
+const DEFAULT_WORDS = { easy, medium, hard, impossible }
 
 const wordSets = {}
 
@@ -19,7 +18,7 @@ function addCustomWord(roomCode, word) {
   if (Object.prototype.hasOwnProperty.call(wordSets, roomCode)) {
     if (Object.prototype.hasOwnProperty.call(wordSets[roomCode], 'custom')) {
       if (!wordSets[roomCode].custom.includes(word)) {
-        wordSets[roomCode].custom = [...wordSets[roomCode].custom, word]
+        wordSets[roomCode].custom.push(word)
       }
     } else {
       wordSets[roomCode].custom = [word]
