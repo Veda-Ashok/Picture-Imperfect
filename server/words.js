@@ -4,10 +4,54 @@
 // end of game, clear custom words
 // what do if there's only 1 custom word? do we pick from a different difficulty, or require at least 2 custom words?
 
-const easy = ['cat', 'dog', 'umbrella', 'mouse', 'apple', 'banana', 'pineapple']
-const medium = ['merry-go-round', 'polaroid', 'photo album']
-const hard = ['high school', 'carnival', 'castle']
-const impossible = ['mystery', 'orange', 'novel', 'regret', 'excited']
+const easy = [
+  'apple',
+  'banana',
+  'beach',
+  'cat',
+  'dog',
+  'dolphin',
+  'fork',
+  'ghost',
+  'mouse',
+  'paris',
+  'pineapple',
+  'star',
+  'umbrella',
+]
+const medium = [
+  'aglet',
+  'harry potter',
+  'merry-go-round',
+  'mickey mouse',
+  'photo album',
+  'polaroid',
+  'shrek',
+  'spongebob',
+  'waffle',
+]
+const hard = [
+  'carnival',
+  'castle',
+  'disneyland',
+  'eclipse',
+  'george washington',
+  'high school',
+  'leprechaun',
+  'mario',
+  'pikachu',
+  'yoshi',
+]
+const impossible = [
+  'darkness',
+  'excited',
+  'mystery',
+  'myth',
+  'novel',
+  'orange',
+  'regret',
+  'vegetarian',
+]
 // const custom = {}
 
 const DEFAULT_WORDS = { easy, medium, hard, impossible }
