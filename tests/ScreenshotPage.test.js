@@ -303,7 +303,5 @@ describe('ScreenshotPage', () => {
     expect(screen.getByText('# 5')).toBeInTheDocument()
     expect(screen.getByText('# 6')).toBeInTheDocument()
     expect(screen.getByText('# --')).toBeInTheDocument()
-
-    // screen.debug()
   })
 })
