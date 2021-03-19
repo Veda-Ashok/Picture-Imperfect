@@ -165,10 +165,12 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
     // ---------------- mouse movement --------------------------------------
 
     const onMouseDown = (e) => {
-      console.log('Role in Board.js', role)
-      drawing = true
-      current.x = e.clientX || e.touches[0].clientX
-      current.y = e.clientY || e.touches[0].clientY
+      console.log('Role in Board.js | your turn', role, yourTurn)
+      if (yourTurn) {
+        drawing = true
+        current.x = e.clientX || e.touches[0].clientX
+        current.y = e.clientY || e.touches[0].clientY
+      }
     }
 
     const onMouseMove = (e) => {
