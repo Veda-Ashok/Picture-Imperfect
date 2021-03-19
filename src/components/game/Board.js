@@ -82,14 +82,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-function Board({ role, whiteTeamWord, blueTeamWord }) {
+function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
   const classes = useStyles()
   const globalContext = useContext(Context)
   const canvasRef = useRef(null)
   const socketRef = useRef()
   const [scale, setScale] = useState({ x: 1, y: 1 })
-
-  let yourTurn = false
 
   const resized = () => {
     const { width, height } = canvasRef.current.getBoundingClientRect()
@@ -121,6 +119,7 @@ function Board({ role, whiteTeamWord, blueTeamWord }) {
     }
 
     let drawing = false
+    let turn = false
 
     // ------------------------------- create the drawing ----------------------------
 
@@ -167,7 +166,7 @@ function Board({ role, whiteTeamWord, blueTeamWord }) {
     // ---------------- mouse movement --------------------------------------
 
     const onMouseDown = (e) => {
-      if (yourTurn) {
+      if (turn) {
         drawing = true
       }
       current.x = e.clientX || e.touches[0].clientX
@@ -270,9 +269,9 @@ function Board({ role, whiteTeamWord, blueTeamWord }) {
         globalContext.myInfo.username === blueTeamFirstPlayer.username ||
         globalContext.myInfo.username === whiteTeamFirstPlayer.username
       ) {
-        yourTurn = true
+        turn = true
       } else {
-        yourTurn = false
+        turn = false
         drawing = false
       }
     }
@@ -324,6 +323,7 @@ Board.propTypes = {
   whiteTeamWord: PropTypes.string.isRequired,
   blueTeamWord: PropTypes.string.isRequired,
   role: PropTypes.string.isRequired,
+  yourTurn: PropTypes.string.isRequired,
 }
 
 export default withWidth()(Board)
