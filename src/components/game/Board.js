@@ -89,6 +89,8 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
   const socketRef = useRef()
   const [scale, setScale] = useState({ x: 1, y: 1 })
 
+  // console.log('BEGINNING ROLE', role)
+
   const resized = () => {
     const { width, height } = canvasRef.current.getBoundingClientRect()
 
@@ -98,6 +100,11 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
       canvasRef.current.height = canvasRef.current.clientHeight * ratio
       setScale({ x: ratio, y: ratio })
     }
+  }
+
+  function updateState() {
+    console.log('updating state', yourTurn)
+    return yourTurn
   }
 
   useEffect(() => {
@@ -165,9 +172,11 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
     // ---------------- mouse movement --------------------------------------
 
     const onMouseDown = (e) => {
-      console.log('Role in Board.js | your turn', role, yourTurn)
-      if (yourTurn) {
+      console.log('PREV ROLE/TURN', role, yourTurn)
+      const temp = updateState()
+      if (temp) {
         drawing = true
+        console.log('####   ROLE IN HERE/TURN :', role, temp)
         current.x = e.clientX || e.touches[0].clientX
         current.y = e.clientY || e.touches[0].clientY
       }

@@ -34,6 +34,8 @@ export default function GamePage() {
   const [winningJudge, setWinningJudge] = useState()
   const [screenshotTimer, setScreenshotTimer] = useState()
 
+  // const setRole = async role => {}
+
   useEffect(() => {
     if (!globalContext.roomCode || !globalContext.socket) {
       history.push('/')
@@ -50,9 +52,11 @@ export default function GamePage() {
         : data.whiteTeam.find((member) => member.id === globalContext.socket.id)
         ? 'whiteTeam'
         : 'judge'
-      setRole(currentRole)
       console.log('CURRENT ROLE', currentRole)
-      console.log('ROLE AFTER ASSIGNED', role)
+      setRole(currentRole)
+      if (role !== '') {
+        console.log('ROLE AFTER ASSIGNED', role)
+      }
 
       setScreenshotTime(false)
     })
