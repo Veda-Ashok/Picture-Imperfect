@@ -89,8 +89,6 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
   const socketRef = useRef()
   const [scale, setScale] = useState({ x: 1, y: 1 })
 
-  // console.log('BEGINNING ROLE & TURN', role, yourTurn)
-
   const resized = () => {
     const { width, height } = canvasRef.current.getBoundingClientRect()
 
@@ -170,7 +168,6 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
     const onMouseDown = (e) => {
       if (turn) {
         drawing = true
-        console.log('####   ROLE IN HERE/TURN :', role, turn)
       }
       current.x = e.clientX || e.touches[0].clientX
       current.y = e.clientY || e.touches[0].clientY
@@ -275,6 +272,7 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
         turn = true
       } else {
         turn = false
+        drawing = false
       }
     }
     socketRef.current = globalContext.socket
