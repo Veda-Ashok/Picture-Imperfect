@@ -71,6 +71,8 @@ export default function LobbyPage() {
   const [message, setMessage] = useState('')
   const [copied, setCopied] = useState('copy room code to clipboard')
   const [customWord, setCustomWord] = useState('')
+  const [numOfCustomWords, setNumOfCustomWords] = useState(0)
+  const [wordsNeeded, setWordsNeeded] = useState(0)
 
   const handleRoomUsers = (data) => {
     if (Object.keys(data.users).length < 3) {
@@ -98,6 +100,16 @@ export default function LobbyPage() {
     }
     globalContext.socket.once('everyoneReady', () => {
       history.push('/game')
+    })
+
+    globalContext.socket.on('numCustomWords', (data) => {
+      setNumOfCustomWords(data)
+
+      if (data === 0 || data === 1) {
+        setWordsNeeded(2 - data)
+      } else {
+        setWordsNeeded(0)
+      }
     })
 
     globalContext.socket.on('roomUsers', handleRoomUsers)
@@ -161,6 +173,20 @@ export default function LobbyPage() {
               className={classes.textfields}
             />
           </form>
+        )}
+        <Typography variant="h8" className={classes.margin}>
+          Total number of custom words:
+          {numOfCustomWords}
+        </Typography>
+        {numOfCustomWords === 0 ? (
+          <Typography variant="h8" className={classes.margin}>
+            Include at least two words to use this feature!
+          </Typography>
+        ) : (
+          <Typography variant="h8" className={classes.margin}>
+            Number of additional custom words needed:
+            {wordsNeeded}
+          </Typography>
         )}
         <Typography variant="h5" className={classes.margin}>
           Game starts when everyone is ready

@@ -117,15 +117,15 @@ export default function Rules() {
               </ListItem>
               <ListItem>
                 <ListItemText
-                  primary=" 6.If a judge guesses a team’s word, the members of the
+                  primary=" 6. If a judge guesses a team’s word, the members of the
           team that had the word and the judge who guessed the word all receive a point."
                 />
               </ListItem>
               <ListItem>
-                <ListItemText primary="7.Each round the teams change as the judges are rotated in to be players" />
+                <ListItemText primary="7. Each round the teams change as the judges are rotated in to be players" />
               </ListItem>
               <ListItem>
-                <ListItemText primary="8.The first player to reach the number of points that is chosen at the beginning of the game first wins the game." />
+                <ListItemText primary="8. The first player to reach the number of points that is chosen at the beginning of the game first wins the game." />
               </ListItem>
             </List>
           </DialogContentText>
