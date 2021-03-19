@@ -52,11 +52,7 @@ export default function GamePage() {
         : data.whiteTeam.find((member) => member.id === globalContext.socket.id)
         ? 'whiteTeam'
         : 'judge'
-      console.log('CURRENT ROLE', currentRole)
       setRole(currentRole)
-      if (role !== '') {
-        console.log('ROLE AFTER ASSIGNED', role)
-      }
 
       setScreenshotTime(false)
     })
