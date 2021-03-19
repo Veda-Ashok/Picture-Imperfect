@@ -89,7 +89,7 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
   const socketRef = useRef()
   const [scale, setScale] = useState({ x: 1, y: 1 })
 
-  // console.log('BEGINNING ROLE', role)
+  // console.log('BEGINNING ROLE & TURN', role, yourTurn)
 
   const resized = () => {
     const { width, height } = canvasRef.current.getBoundingClientRect()
@@ -100,11 +100,6 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
       canvasRef.current.height = canvasRef.current.clientHeight * ratio
       setScale({ x: ratio, y: ratio })
     }
-  }
-
-  function updateState() {
-    console.log('updating state', yourTurn)
-    return yourTurn
   }
 
   useEffect(() => {
@@ -126,6 +121,7 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
     }
 
     let drawing = false
+    let turn = false
 
     // ------------------------------- create the drawing ----------------------------
 
@@ -172,31 +168,29 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
     // ---------------- mouse movement --------------------------------------
 
     const onMouseDown = (e) => {
-      console.log('PREV ROLE/TURN', role, yourTurn)
-      const temp = updateState()
-      if (temp) {
+      if (turn) {
         drawing = true
-        console.log('####   ROLE IN HERE/TURN :', role, temp)
-        current.x = e.clientX || e.touches[0].clientX
-        current.y = e.clientY || e.touches[0].clientY
+        console.log('####   ROLE IN HERE/TURN :', role, turn)
       }
+      current.x = e.clientX || e.touches[0].clientX
+      current.y = e.clientY || e.touches[0].clientY
     }
 
     const onMouseMove = (e) => {
-      if (!drawing) {
-        return
+      if (drawing) {
+        drawLine(
+          current.x,
+
+          current.y,
+
+          e.clientX || e.touches[0].clientX,
+
+          e.clientY || e.touches[0].clientY,
+
+          true,
+        )
       }
-      drawLine(
-        current.x,
 
-        current.y,
-
-        e.clientX || e.touches[0].clientX,
-
-        e.clientY || e.touches[0].clientY,
-
-        true,
-      )
       current.x = e.clientX || e.touches[0].clientX
       current.y = e.clientY || e.touches[0].clientY
     }
@@ -271,7 +265,20 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
       drawLine(data.x0, data.y0, data.x1, data.y1, false)
     }
 
+    const onNewDrawers = (data) => {
+      const blueTeamFirstPlayer = data.blueTeam[0]
+      const whiteTeamFirstPlayer = data.whiteTeam[0]
+      if (
+        globalContext.myInfo.username === blueTeamFirstPlayer.username ||
+        globalContext.myInfo.username === whiteTeamFirstPlayer.username
+      ) {
+        turn = true
+      } else {
+        turn = false
+      }
+    }
     socketRef.current = globalContext.socket
+    socketRef.current.on('newDrawers', onNewDrawers)
     socketRef.current.on('drawing', onDrawingEvent)
   }, [])
 
