@@ -119,7 +119,7 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
     }
 
     let drawing = false
-    let turn = false
+    let canDraw = false
 
     // ------------------------------- create the drawing ----------------------------
 
@@ -166,7 +166,7 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
     // ---------------- mouse movement --------------------------------------
 
     const onMouseDown = (e) => {
-      if (turn) {
+      if (canDraw) {
         drawing = true
       }
       current.x = e.clientX || e.touches[0].clientX
@@ -269,9 +269,9 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
         globalContext.myInfo.username === blueTeamFirstPlayer.username ||
         globalContext.myInfo.username === whiteTeamFirstPlayer.username
       ) {
-        turn = true
+        canDraw = true
       } else {
-        turn = false
+        canDraw = false
         drawing = false
       }
     }
@@ -323,7 +323,7 @@ Board.propTypes = {
   whiteTeamWord: PropTypes.string.isRequired,
   blueTeamWord: PropTypes.string.isRequired,
   role: PropTypes.string.isRequired,
-  yourTurn: PropTypes.string.isRequired,
+  yourTurn: PropTypes.bool.isRequired,
 }
 
 export default withWidth()(Board)
