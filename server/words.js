@@ -108,8 +108,10 @@ function addCustomWord(roomCode, word) {
     } else {
       wordSets[roomCode].custom = [word]
     }
+    return wordSets[roomCode].custom.length
   }
   console.log('if room already exists', Object.values(wordSets[roomCode].custom))
+  return 0
 }
 
 function addWordSet(roomCode) {
