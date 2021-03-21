@@ -33,6 +33,16 @@ const easy = [
   'bed',
   'bag',
   'ramen',
+  'elephant',
+  'watermelon',
+  'lemon',
+  'tripod',
+  'dinosaur',
+  'dragon',
+  'wizard',
+  'stocks',
+  'thunderstorm',
+  'compass',
 ]
 const medium = [
   'aglet',
@@ -56,6 +66,13 @@ const medium = [
   'girlfriend',
   'boyfriend',
   'planks',
+  'weather',
+  'sugar daddy',
+  'sugar mama',
+  'children',
+  'parents',
+  'volleyball',
+  'report card',
 ]
 const hard = [
   'carnival',
@@ -76,6 +93,13 @@ const hard = [
   'company',
   'game',
   'fighting',
+  'minecraft',
+  'university',
+  'two-faced',
+  'class',
+  'motorcycle',
+  'apocalypse',
+  'hannah montana',
 ]
 const impossible = [
   'darkness',
@@ -92,8 +116,10 @@ const impossible = [
   'anger',
   'revenge',
   'betrayal',
+  'drama',
+  'degree',
+  'dilemma',
 ]
-// const custom = {}
 
 const DEFAULT_WORDS = { easy, medium, hard, impossible }
 
