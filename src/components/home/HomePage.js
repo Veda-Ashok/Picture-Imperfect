@@ -120,8 +120,8 @@ export default function HomePage() {
         let usernameTaken = false
         let invalidRoom = false
         if (!globalContext.socket) {
-          socket = io.connect(`ws://localhost:${process.env.PORT || 8080}`) // uncomment this to run locally
-          // socket = io() // comment this to run locally
+          // socket = io.connect(`ws://localhost:${process.env.PORT || 8080}`) // uncomment this to run locally
+          socket = io() // comment this to run locally
 
           globalContext.addSocket(socket, globalContext)
         } else {

@@ -226,6 +226,6 @@ io.on('connection', (socket) => {
   })
 })
 
-//const PORT = process.env.PORT || 8080 // comment this to run locally
-const PORT = 8080 // then uncomment this
+const PORT = process.env.PORT || 8080 // comment this to run locally
+// const PORT = 8080 // then uncomment this
 http.listen(PORT, () => console.log(`server is running on port ${PORT}`))
