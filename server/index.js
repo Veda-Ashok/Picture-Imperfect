@@ -201,6 +201,9 @@ io.on('connection', (socket) => {
   // send messages in chat
   socket.on('chat', ({ message }) => {
     const user = getUserById(socket.id)
+    if (!user) {
+      console.log('USER UNDEFINED IN CHAT')
+    }
     const game = getGame(user.room)
     if (Object.prototype.hasOwnProperty.call(game.getJudges(), socket.id)) {
       if (message.toLowerCase() === game.getBlueTeamWord().toLowerCase()) {
