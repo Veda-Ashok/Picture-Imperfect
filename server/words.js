@@ -73,10 +73,6 @@ function addCustomWord(roomCode, word) {
   return 0
 }
 
-// function getNumOfCustom(roomCode) {
-//   return wordSets[roomCode].custom.length
-// }
-
 function addWordSet(roomCode) {
   wordSets[roomCode] = JSON.parse(JSON.stringify(DEFAULT_WORDS))
 }

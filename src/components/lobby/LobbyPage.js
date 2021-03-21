@@ -15,8 +15,16 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(2),
     textAlign: 'center',
   },
-  textfields: {
+  customWords: {
     margin: theme.spacing(2),
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignContent: 'center',
+    textAlign: 'center',
+  },
+  textfields: {
     background: '#B2DAFF',
     borderRadius: '5px',
   },
@@ -165,22 +173,33 @@ export default function LobbyPage() {
               setCustomWord('')
             }}
           >
-            <TextField
-              label="Enter custom words"
-              variant="outlined"
-              value={customWord}
-              onChange={(e) => setCustomWord(e.target.value)}
-              className={classes.textfields}
-            />
+            <Typography className={classes.margin}>
+              {`Total number of custom words: ${numOfCustomWords}`}
+            </Typography>
+            <div className={classes.customWords}>
+              <TextField
+                label="Enter custom words"
+                variant="outlined"
+                value={customWord}
+                onChange={(e) => setCustomWord(e.target.value)}
+                className={classes.textfields}
+                inputProps={{
+                  maxLength: 25,
+                  pattern: '^[a-zA-Z0-9 ]*$',
+                }}
+              />
+              <Typography variant="h8">
+                Words can only contain 25 or less alphanumeric characters.
+              </Typography>
+            </div>
           </form>
         )}
-        <Typography>{`Total number of custom words: ${numOfCustomWords}`}</Typography>
         {numOfCustomWords !== 1 ? (
           <Typography variant="h5" className={classes.margin}>
             Game starts when everyone is ready
           </Typography>
         ) : (
-         <>
+          <>
             <Typography variant="h8" className={classes.margin}>
               {`The lobby needs ${wordsNeeded} more custom word to start game`}
             </Typography>
