@@ -158,11 +158,8 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
       context.stroke()
       context.closePath()
 
-      // if (!emit) {
-      //   return
-      // }
-      // const w = canvas.width
-      // const h = canvas.height
+      const dataURL = canvas.toDataURL('image/png')
+      globalContext.updateScreenshot(dataURL, globalContext)
     }
 
     // ---------------- mouse movement --------------------------------------

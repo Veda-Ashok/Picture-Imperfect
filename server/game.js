@@ -30,7 +30,7 @@ class Game {
     this.roomCode = roomCode
     this.io = io
     this.socket = socket
-    this.pastWords = new Set()
+    // this.pastWords = new Set()
     this.skipToNext = false
     this.turnInterval = undefined
     this.screenshotInterval = undefined
@@ -92,10 +92,10 @@ class Game {
     //   }
     // })
     // END OF BLOCK TO BE DELETED
-    let newWord = getRandomWord(this.difficulty, this.roomCode)
-    while (this.pastWords.has(newWord)) {
-      newWord = getRandomWord(this.difficulty, this.roomCode)
-    }
+    const newWord = getRandomWord(this.difficulty, this.roomCode)
+    // while (this.pastWords.has(newWord)) {
+    //   newWord = getRandomWord(this.difficulty, this.roomCode)
+    // }
     // this.pastWords.add(newWord) Add back in when we have more words
 
     return newWord
@@ -103,15 +103,15 @@ class Game {
 
   assignWords() {
     console.log('about to getRandomDifficulty')
-    this.difficulty = getRandomDifficulty()
+    this.difficulty = getRandomDifficulty(this.roomCode)
     console.log('gettingRandomDifficulty', this.difficulty)
     console.log('about to pick blue word')
     this.blueTeamWord = this.pickRandomWord()
     console.log('about to pick white word')
     this.whiteTeamWord = this.pickRandomWord()
-    while (this.whiteTeamWord === this.blueTeamWord) {
-      this.whiteTeamWord = this.pickRandomWord()
-    }
+    // while (this.whiteTeamWord === this.blueTeamWord) {
+    //   this.whiteTeamWord = this.pickRandomWord()
+    // }
     console.log('about to emit wordAssignment')
     this.io.to(this.roomCode).emit('wordAssignment', {
       blueTeamWord: this.blueTeamWord,
@@ -190,7 +190,7 @@ class Game {
 
       if (timeRemaining <= 0) {
         // they couldnt guess it
-        this.goToScreenshot()
+        this.goToScreenshot('timeOut')
       }
     }, intervalDuration * 1000)
 
@@ -254,7 +254,7 @@ class Game {
       Object.keys(this.room).length >= 3
     ) {
       console.log('in if')
-      this.goToScreenshot()
+      this.goToScreenshot('playersLeft')
     }
   }
 

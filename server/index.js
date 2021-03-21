@@ -148,6 +148,7 @@ io.on('connection', (socket) => {
     }
   })
 
+  let numOfCustom
   // handle user getting ready for game
   socket.on('ready', () => {
     let user = getUserById(socket.id)
@@ -158,7 +159,7 @@ io.on('connection', (socket) => {
     players.forEach((player) => {
       everyoneReady = everyoneReady && player.ready
     })
-    if (everyoneReady) {
+    if (everyoneReady && (!numOfCustom || numOfCustom >= 2)) {
       io.to(user.room).emit('everyoneReady')
       const room = getUsersInRoom(user.room)
       const roomCode = user.room
@@ -219,9 +220,9 @@ io.on('connection', (socket) => {
 
   socket.on('addCustom', ({ customWord }) => {
     const user = getUserById(socket.id)
-
-    addCustomWord(user.room, customWord)
-    console.log('added custom word', customWord)
+    numOfCustom = addCustomWord(user.room, customWord)
+    io.to(user.room).emit('numCustomWords', numOfCustom)
+    console.log('added custom word', customWord, { numOfCustom })
   })
 })
 

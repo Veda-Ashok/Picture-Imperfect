@@ -213,11 +213,18 @@ export default function HomePage() {
               <IconBoard setIcon={setIcon} />
             </div>
             <TextField
-              label="Enter username"
+              label="Enter nickname"
               variant="outlined"
               onChange={(e) => handleUsername(e)}
               className={classes.textfields}
+              inputProps={{
+                maxLength: 25,
+                pattern: '^[a-zA-Z0-9 ]*$',
+              }}
             />
+            <Typography variant="h8">
+              Words can only contain 25 or less alphanumeric characters.
+            </Typography>
           </DialogContent>
           <DialogActions>
             <Button variant="contained" color="primary" type="submit">
@@ -240,13 +247,19 @@ export default function HomePage() {
               className={classes.textfields}
               onChange={(e) => handleRoomCode(e)}
             />
-
             <TextField
               label="Enter nickname"
               variant="outlined"
               className={classes.textfields}
               onChange={(e) => handleUsername(e)}
+              inputProps={{
+                maxLength: 25,
+                pattern: '^[a-zA-Z0-9 ]*$',
+              }}
             />
+            <Typography variant="h8">
+              Words can only contain 25 or less alphanumeric characters.
+            </Typography>
           </DialogContent>
           <DialogActions>
             <Button variant="contained" color="primary" type="submit">

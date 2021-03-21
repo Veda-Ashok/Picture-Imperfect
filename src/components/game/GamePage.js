@@ -21,18 +21,18 @@ export default function GamePage() {
   const classes = useStyles()
   const history = useHistory()
   const globalContext = useContext(Context)
-  const [blueTeam, setBlueTeam] = useState(undefined)
-  const [whiteTeam, setWhiteTeam] = useState(undefined)
-  const [judges, setJudges] = useState(undefined)
-  const [timer, setTimer] = useState(undefined)
-  const [blueTeamWord, setBlueTeamWord] = useState(undefined)
-  const [whiteTeamWord, setWhiteTeamWord] = useState(undefined)
-  const [role, setRole] = useState(undefined)
-  const [screenshotTime, setScreenshotTime] = useState(undefined)
-  const [players, setPlayers] = useState(undefined)
-  const [winningTeam, setWinningTeam] = useState(undefined)
-  const [winningJudge, setWinningJudge] = useState(undefined)
-  const [screenshotTimer, setScreenshotTimer] = useState(undefined)
+  const [blueTeam, setBlueTeam] = useState()
+  const [whiteTeam, setWhiteTeam] = useState()
+  const [judges, setJudges] = useState()
+  const [timer, setTimer] = useState()
+  const [blueTeamWord, setBlueTeamWord] = useState('')
+  const [whiteTeamWord, setWhiteTeamWord] = useState('')
+  const [role, setRole] = useState('')
+  const [screenshotTime, setScreenshotTime] = useState()
+  const [players, setPlayers] = useState()
+  const [winningTeam, setWinningTeam] = useState()
+  const [winningJudge, setWinningJudge] = useState()
+  const [screenshotTimer, setScreenshotTimer] = useState()
 
   useEffect(() => {
     if (!globalContext.roomCode || !globalContext.socket) {
@@ -41,6 +41,7 @@ export default function GamePage() {
     }
     globalContext.socket.on('roomRoles', (data) => {
       console.log('ROOM ROLES: ', data)
+      globalContext.updateScreenshot('', globalContext)
       setBlueTeam(data.blueTeam)
       setWhiteTeam(data.whiteTeam)
       setJudges(Object.values(data.judges))
@@ -60,8 +61,8 @@ export default function GamePage() {
     })
     globalContext.socket.on('roundTimer', (data) => {
       console.log('roundTimer', data.timeRemaining)
-      setScreenshotTime(false)
       setTimer(data.timeRemaining)
+      setScreenshotTime(false)
     })
     globalContext.socket.on('wordAssignment', (data) => {
       setBlueTeamWord(data.blueTeamWord)
@@ -112,7 +113,8 @@ export default function GamePage() {
           blueTeam &&
           whiteTeam &&
           whiteTeamWord &&
-          blueTeamWord ? (
+          blueTeamWord &&
+          screenshotTimer ? (
             <ScreenshotPage
               players={players}
               winningTeam={winningTeam}
