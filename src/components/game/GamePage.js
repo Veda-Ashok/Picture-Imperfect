@@ -34,6 +34,8 @@ export default function GamePage() {
   // const [goNextRound, setGoNextRound] = useState(false)
   const [isScreenshotPage, setIsScreenshotPage] = useState(false)
 
+  // const setRole = async role => {}
+
   useEffect(() => {
     if (!globalContext.roomCode || !globalContext.socket) {
       history.push('/')
@@ -58,7 +60,7 @@ export default function GamePage() {
       setWhiteTeam(data.whiteTeam)
     })
     globalContext.socket.on('roundTimer', (data) => {
-      console.log('roundTimer', data.timeRemaining)
+      // console.log('roundTimer', data.timeRemaining)
       setTimer(data.timeRemaining)
       setIsScreenshotPage(false)
     })
