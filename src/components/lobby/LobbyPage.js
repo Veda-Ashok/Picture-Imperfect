@@ -174,23 +174,21 @@ export default function LobbyPage() {
             />
           </form>
         )}
-        <Typography variant="h8" className={classes.margin}>
-          Total number of custom words:
-          {numOfCustomWords}
-        </Typography>
-        {numOfCustomWords === 0 ? (
-          <Typography variant="h8" className={classes.margin}>
-            Include at least two words to use this feature!
+        <Typography>{`Total number of custom words: ${numOfCustomWords}`}</Typography>
+        {numOfCustomWords !== 1 ? (
+          <Typography variant="h5" className={classes.margin}>
+            Game starts when everyone is ready
           </Typography>
         ) : (
-          <Typography variant="h8" className={classes.margin}>
-            Number of additional custom words needed:
-            {wordsNeeded}
-          </Typography>
+         <>
+            <Typography variant="h8" className={classes.margin}>
+              {`The lobby needs ${wordsNeeded} more custom word to start game`}
+            </Typography>
+            <Typography variant="h5" className={classes.margin}>
+              Game starts when players and words are ready
+            </Typography>
+          </>
         )}
-        <Typography variant="h5" className={classes.margin}>
-          Game starts when everyone is ready
-        </Typography>
         <Button
           className={classes.margin}
           variant="contained"
