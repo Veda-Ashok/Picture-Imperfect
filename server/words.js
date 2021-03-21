@@ -18,6 +18,21 @@ const easy = [
   'pineapple',
   'star',
   'umbrella',
+  'mushroom',
+  'snowman',
+  'carrot',
+  'lamp',
+  'computer',
+  'heart',
+  'star',
+  'glasses',
+  'hat',
+  'pants',
+  'shirt',
+  'pencil',
+  'bed',
+  'bag',
+  'ramen',
 ]
 const medium = [
   'aglet',
@@ -29,6 +44,18 @@ const medium = [
   'shrek',
   'spongebob',
   'waffle',
+  'bicycle',
+  'moped',
+  'vampire',
+  'zombie',
+  'ferris wheel',
+  'garden',
+  'beach',
+  'marriage',
+  'programming',
+  'girlfriend',
+  'boyfriend',
+  'planks',
 ]
 const hard = [
   'carnival',
@@ -41,6 +68,14 @@ const hard = [
   'mario',
   'pikachu',
   'yoshi',
+  'heaven',
+  'hell',
+  'desert',
+  'killer',
+  'lover',
+  'company',
+  'game',
+  'fighting',
 ]
 const impossible = [
   'darkness',
@@ -51,6 +86,12 @@ const impossible = [
   'orange',
   'regret',
   'vegetarian',
+  'free',
+  'beauty',
+  'fear',
+  'anger',
+  'revenge',
+  'betrayal',
 ]
 // const custom = {}
 
