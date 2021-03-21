@@ -75,6 +75,7 @@ const hard = [
   'lover',
   'company',
   'game',
+  'fighting',
 ]
 const impossible = [
   'darkness',
@@ -85,7 +86,6 @@ const impossible = [
   'orange',
   'regret',
   'vegetarian',
-  'fighting',
   'free',
   'beauty',
   'fear',
