@@ -119,6 +119,7 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
     }
 
     let drawing = false
+    let canDraw = false
 
     // ------------------------------- create the drawing ----------------------------
 
@@ -165,28 +166,28 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
     // ---------------- mouse movement --------------------------------------
 
     const onMouseDown = (e) => {
-      console.log(role)
-      drawing = true
+      if (canDraw) {
+        drawing = true
+      }
       current.x = e.clientX || e.touches[0].clientX
       current.y = e.clientY || e.touches[0].clientY
     }
 
     const onMouseMove = (e) => {
-      if (!drawing) {
-        return
+      if (drawing) {
+        drawLine(
+          current.x,
+
+          current.y,
+
+          e.clientX || e.touches[0].clientX,
+
+          e.clientY || e.touches[0].clientY,
+
+          true,
+        )
       }
 
-      drawLine(
-        current.x,
-
-        current.y,
-
-        e.clientX || e.touches[0].clientX,
-
-        e.clientY || e.touches[0].clientY,
-
-        true,
-      )
       current.x = e.clientX || e.touches[0].clientX
       current.y = e.clientY || e.touches[0].clientY
     }
@@ -262,7 +263,21 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
       drawLine(data.x0, data.y0, data.x1, data.y1, false)
     }
 
+    const onNewDrawers = (data) => {
+      const blueTeamFirstPlayer = data.blueTeam[0]
+      const whiteTeamFirstPlayer = data.whiteTeam[0]
+      if (
+        globalContext.myInfo.username === blueTeamFirstPlayer.username ||
+        globalContext.myInfo.username === whiteTeamFirstPlayer.username
+      ) {
+        canDraw = true
+      } else {
+        canDraw = false
+        drawing = false
+      }
+    }
     socketRef.current = globalContext.socket
+    socketRef.current.on('newDrawers', onNewDrawers)
     socketRef.current.on('drawing', onDrawingEvent)
   }, [])
 

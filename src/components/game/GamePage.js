@@ -34,6 +34,8 @@ export default function GamePage() {
   const [winningJudge, setWinningJudge] = useState()
   const [screenshotTimer, setScreenshotTimer] = useState()
 
+  // const setRole = async role => {}
+
   useEffect(() => {
     if (!globalContext.roomCode || !globalContext.socket) {
       history.push('/')
@@ -52,7 +54,6 @@ export default function GamePage() {
         : 'judge'
       setRole(currentRole)
 
-      console.log('Assigned Role: ', role)
       setScreenshotTime(false)
     })
     globalContext.socket.on('newDrawers', (data) => {
@@ -60,7 +61,7 @@ export default function GamePage() {
       setWhiteTeam(data.whiteTeam)
     })
     globalContext.socket.on('roundTimer', (data) => {
-      console.log('roundTimer', data.timeRemaining)
+      // console.log('roundTimer', data.timeRemaining)
       setTimer(data.timeRemaining)
       setScreenshotTime(false)
     })
@@ -75,7 +76,7 @@ export default function GamePage() {
 
     globalContext.socket.on('screenshotTimer', (data) => {
       setScreenshotTimer(data.currentTime)
-      console.log('screenshotTimer', data.currentTime)
+      // console.log('screenshotTimer', data.currentTime)
       if (parseInt(data.currentTime, 10) <= 1) {
         setScreenshotTime(false)
       }
