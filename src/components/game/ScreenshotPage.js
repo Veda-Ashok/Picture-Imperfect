@@ -166,6 +166,7 @@ export default function ScreenshotPage({
       if (isReady) {
         globalContext.socket.emit('notRoundReady', globalContext.socket.id)
       } else {
+        console.log('emitting roundReady')
         globalContext.socket.emit('roundReady', globalContext.socket.id)
       }
 

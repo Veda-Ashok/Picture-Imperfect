@@ -226,7 +226,7 @@ class Game {
     // currentTime -= 1
     // if (currentTime <= 0) {
     //   clearInterval(this.screenshotInterval)
-    this.goToNextRound()
+    // this.goToNextRound()
     //   }
     // }, 1000)
   }

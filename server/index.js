@@ -192,7 +192,10 @@ io.on('connection', (socket) => {
       everyoneReady = everyoneReady && player.ready
     })
     if (everyoneReady) {
+      console.log('about to start next Round')
       io.to(user.room).emit('startNextRound')
+      const game = getGame(user.room)
+      game.goToNextRound()
     }
 
     // send users room info
@@ -234,6 +237,7 @@ io.on('connection', (socket) => {
         // roundWin('whiteTeam', user, user.room)
         game.roundWin('whiteTeam', user)
         console.log('whiteTeam win')
+        console.log('TEST')
       }
     }
     console.log('chat recieved', message, 'room', user.room)

@@ -88,6 +88,7 @@ export default function GamePage() {
       setPlayers(Object.values(data.players))
       setWinningTeam(data.winningTeam === undefined ? 'timeOut' : data.winningTeam)
       setWinningJudge(data.winningJudge === undefined ? 'timeOut' : data.winningTeam)
+      globalContext.updateUsers(data.players)
       console.log('players', data.players)
       console.log('winningTeam', data.winningTeam)
       console.log('winningJudge', data.winningJudge)
