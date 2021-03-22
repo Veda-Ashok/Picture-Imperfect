@@ -126,7 +126,7 @@ const blueTeam = [
   },
 ]
 
-export default function Testing() {
+export default function TestingScreenshotPage() {
   const globalContext = useContext(Context)
   useEffect(() => {
     globalContext.updateMyInfo({ username: 'rachel', icon: '/logo192.png' }, globalContext)
