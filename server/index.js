@@ -238,7 +238,6 @@ io.on('connection', (socket) => {
         // roundWin('whiteTeam', user, user.room)
         game.roundWin('whiteTeam', user)
         console.log('whiteTeam win')
-        console.log('TEST')
       }
     }
     console.log('chat recieved', message, 'room', user.room)

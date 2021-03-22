@@ -215,20 +215,6 @@ class Game {
       winningJudge: judge,
       players: this.room,
     })
-    // wait for screenshot page here
-    // const screenshotTime = 15
-    // let currentTime = screenshotTime
-
-    // this.screenshotInterval = setInterval(() => {
-    // this.io.to(this.roomCode).emit('screenshotTimer', {
-    //   currentTime,
-    // })
-    // currentTime -= 1
-    // if (currentTime <= 0) {
-    //   clearInterval(this.screenshotInterval)
-    // this.goToNextRound()
-    //   }
-    // }, 1000)
   }
 
   goToNextRound() {

@@ -31,7 +31,6 @@ export default function GamePage() {
   const [players, setPlayers] = useState()
   const [winningTeam, setWinningTeam] = useState()
   const [winningJudge, setWinningJudge] = useState()
-  // const [goNextRound, setGoNextRound] = useState(false)
   const [isScreenshotPage, setIsScreenshotPage] = useState(false)
 
   // const setRole = async role => {}
@@ -72,14 +71,6 @@ export default function GamePage() {
       console.log('GAME OVER')
       history.push('/')
     })
-
-    // globalContext.socket.on('isScreenshotPager', (data) => {
-    //   setisScreenshotPager(data.currentTime)
-    //   console.log('screenshotTimer', data.currentTime)
-    //   if (parseInt(data.currentTime, 10) <= 1) {
-    //     setScreenshotTime(false)
-    //   }
-    // })
 
     globalContext.socket.on('startNextRound', () => {
       setIsScreenshotPage(false)
