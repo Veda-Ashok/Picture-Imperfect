@@ -87,14 +87,14 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
   const globalContext = useContext(Context)
   const canvasRef = useRef(null)
   const socketRef = useRef()
-  const [scale, setScale] = useState({ x: 1, y: 1 })
+  const [scale, setScale] = useState({ x: window.devicePixelRatio, y: window.devicePixelRatio })
 
   const resized = () => {
     const { width, height } = canvasRef.current.getBoundingClientRect()
 
     if (canvasRef.current.width !== width || canvasRef.current.height !== height) {
       console.log('Device pixel ratio', window.devicePixelRatio)
-      const { devicePixelRatio: ratio = 1 } = window
+      const ratio = window.devicePixelRatio
       console.log('Device pixel ratio after', window.devicePixelRatio)
       canvasRef.current.width = canvasRef.current.clientWidth * ratio
       canvasRef.current.height = canvasRef.current.clientHeight * ratio
@@ -291,7 +291,7 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
   function draw(canvas, scaleX, scaleY) {
     const context = canvas.getContext('2d')
     context.scale(scaleX, scaleY)
-    context.drawImage(canvas, 0, 0, canvas.clientWidth, canvas.clientHeight)
+    context.drawImage(canvas, 0, 0, canvas.width, canvas.height)
   }
 
   useEffect(() => {
