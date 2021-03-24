@@ -93,7 +93,9 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
     const { width, height } = canvasRef.current.getBoundingClientRect()
 
     if (canvasRef.current.width !== width || canvasRef.current.height !== height) {
+      console.log('Device pixel ratio', window.devicePixelRatio)
       const { devicePixelRatio: ratio = 1 } = window
+      console.log('Device pixel ratio after', window.devicePixelRatio)
       canvasRef.current.width = canvasRef.current.clientWidth * ratio
       canvasRef.current.height = canvasRef.current.clientHeight * ratio
       setScale({ x: ratio, y: ratio })
