@@ -197,6 +197,11 @@ class Game {
     console.log('about to set timeout')
   }
 
+  endGame() {
+    console.log('ENDING')
+    this.goToScreenshot()
+  }
+
   goToScreenshot(teamName, judge) {
     clearInterval(this.turnInterval)
     // if winningTeam is undefined then its a time out
@@ -225,7 +230,11 @@ class Game {
     }
     if (this.round <= this.totalRounds) {
       this.playGame()
+    } else if (this.round > this.totalRounds) {
+      console.log('--------CALLING ENDING---------')
+      this.endGame()
     }
+    // this.endGame()
   }
 
   removePlayer(player) {

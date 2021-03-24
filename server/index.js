@@ -155,7 +155,7 @@ io.on('connection', (socket) => {
       const room = getUsersInRoom(user.room)
       const roomCode = user.room
       // const game = new Game(room, 5, roomCode, io, socket)
-      createGame(room, 5, roomCode, io, socket)
+      createGame(room, 2, roomCode, io, socket)
       const game = getGame(roomCode)
       // startGame(game.roomCode)
       // game.assignRoles()
