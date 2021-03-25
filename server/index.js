@@ -40,7 +40,6 @@ io.on('connection', (socket) => {
       room: user.room,
       users: getUsersInRoom(user.room),
     })
-    console.log('done with whole creation method')
   })
 
   // handle joining a room
@@ -140,7 +139,7 @@ io.on('connection', (socket) => {
   })
 
   // handle user getting ready for game
-  socket.on('ready', (totalRounds) => {
+  socket.on('ready', ({ totalRounds }) => {
     let user = getUserById(socket.id)
     user = updateUser(socket.id, 'ready', true)
 
@@ -186,7 +185,6 @@ io.on('connection', (socket) => {
     user = updateUser(socket.id, 'ready', true)
 
     const players = Object.values(getUsersInRoom(user.room))
-    console.log(players)
     let everyoneReady = true
     players.forEach((player) => {
       everyoneReady = everyoneReady && player.ready
