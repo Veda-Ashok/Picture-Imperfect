@@ -28,11 +28,10 @@ export default function GamePage() {
   const [blueTeamWord, setBlueTeamWord] = useState('')
   const [whiteTeamWord, setWhiteTeamWord] = useState('')
   const [role, setRole] = useState('')
-  const [screenshotTime, setScreenshotTime] = useState()
   const [players, setPlayers] = useState()
   const [winningTeam, setWinningTeam] = useState()
   const [winningJudge, setWinningJudge] = useState()
-  const [screenshotTimer, setScreenshotTimer] = useState()
+  const [isScreenshotPage, setIsScreenshotPage] = useState(false)
 
   // const setRole = async role => {}
 
@@ -53,8 +52,7 @@ export default function GamePage() {
         ? 'whiteTeam'
         : 'judge'
       setRole(currentRole)
-
-      setScreenshotTime(false)
+      setIsScreenshotPage(false)
     })
     globalContext.socket.on('newDrawers', (data) => {
       setBlueTeam(data.blueTeam)
@@ -63,7 +61,7 @@ export default function GamePage() {
     globalContext.socket.on('roundTimer', (data) => {
       // console.log('roundTimer', data.timeRemaining)
       setTimer(data.timeRemaining)
-      setScreenshotTime(false)
+      setIsScreenshotPage(false)
     })
     globalContext.socket.on('wordAssignment', (data) => {
       setBlueTeamWord(data.blueTeamWord)
@@ -74,19 +72,16 @@ export default function GamePage() {
       history.push('/')
     })
 
-    globalContext.socket.on('screenshotTimer', (data) => {
-      setScreenshotTimer(data.currentTime)
-      // console.log('screenshotTimer', data.currentTime)
-      if (parseInt(data.currentTime, 10) <= 1) {
-        setScreenshotTime(false)
-      }
+    globalContext.socket.on('startNextRound', () => {
+      setIsScreenshotPage(false)
     })
 
     globalContext.socket.on('screenshotPage', (data) => {
-      setScreenshotTime(true)
+      setIsScreenshotPage(true)
       setPlayers(Object.values(data.players))
       setWinningTeam(data.winningTeam === undefined ? 'timeOut' : data.winningTeam)
       setWinningJudge(data.winningJudge === undefined ? 'timeOut' : data.winningTeam)
+      globalContext.updateUsers(data.players)
       console.log('players', data.players)
       console.log('winningTeam', data.winningTeam)
       console.log('winningJudge', data.winningJudge)
@@ -106,7 +101,7 @@ export default function GamePage() {
 
   return (
     <>
-      {screenshotTime ? (
+      {isScreenshotPage ? (
         <>
           {players &&
           winningJudge &&
@@ -114,8 +109,7 @@ export default function GamePage() {
           blueTeam &&
           whiteTeam &&
           whiteTeamWord &&
-          blueTeamWord &&
-          screenshotTimer ? (
+          blueTeamWord ? (
             <ScreenshotPage
               players={players}
               winningTeam={winningTeam}
@@ -124,7 +118,6 @@ export default function GamePage() {
               blueTeam={blueTeam}
               whiteTeamWord={whiteTeamWord}
               blueTeamWord={blueTeamWord}
-              screenshotTimer={screenshotTimer}
             />
           ) : (
             loadingPage

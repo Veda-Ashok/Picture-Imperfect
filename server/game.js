@@ -200,26 +200,21 @@ class Game {
   goToScreenshot(teamName, judge) {
     clearInterval(this.turnInterval)
     // if winningTeam is undefined then its a time out
+    // set ready to false for everyone so that they are not immediately ready on next screenshot page
+    // this.room = getUsersInRoom(this.roomCode)
+    const players = Object.values(this.room)
+    players.forEach((player) => {
+      // updateUserInRoom(this.roomCode, player.id, 'ready', false)
+      updateUser(player.id, 'ready', false)
+      console.log('player: ', player)
+    })
     this.room = getUsersInRoom(this.roomCode)
+    console.log('room: ', this.room)
     this.io.to(this.roomCode).emit('screenshotPage', {
       winningTeam: teamName,
       winningJudge: judge,
       players: this.room,
     })
-    // wait for screenshot page here
-    const screenshotTime = 15
-    let currentTime = screenshotTime
-
-    this.screenshotInterval = setInterval(() => {
-      this.io.to(this.roomCode).emit('screenshotTimer', {
-        currentTime,
-      })
-      currentTime -= 1
-      if (currentTime <= 0) {
-        clearInterval(this.screenshotInterval)
-        this.goToNextRound()
-      }
-    }, 1000)
   }
 
   goToNextRound() {

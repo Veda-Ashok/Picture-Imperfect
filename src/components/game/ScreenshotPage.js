@@ -16,6 +16,7 @@ import CloseIcon from '@material-ui/icons/Close'
 import Context from '../../context/context'
 import Rules from '../reusable/Rules'
 import Player from './Player'
+import LobbyUsers from '../lobby/LobbyUsers'
 
 const useStyles = makeStyles((theme) => ({
   body: {
@@ -101,11 +102,11 @@ export default function ScreenshotPage({
   blueTeam,
   whiteTeamWord,
   blueTeamWord,
-  screenshotTimer,
 }) {
   const classes = useStyles()
   const globalContext = useContext(Context)
   const [openRanking, setOpenRanking] = useState(false)
+  const [isReady, setIsReady] = useState(false)
   let playersGettingPoints, wordGuessed, turnResult
 
   switch (winningTeam) {
@@ -159,6 +160,26 @@ export default function ScreenshotPage({
         )
       })
   }
+  const handleReady = async (event) => {
+    event.preventDefault()
+    try {
+      if (isReady) {
+        globalContext.socket.emit('notRoundReady', globalContext.socket.id)
+      } else {
+        console.log('emitting roundReady')
+        globalContext.socket.emit('roundReady', globalContext.socket.id)
+      }
+
+      await new Promise((resolve) => {
+        globalContext.socket.once('roomUsers', async (data) => {
+          resolve(data)
+        })
+      })
+      setIsReady(!isReady)
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   return (
     <div className={classes.body}>
@@ -188,14 +209,23 @@ export default function ScreenshotPage({
         alt="screenshot"
       />
       <div className={classes.screenShotTimer}>
-        <Typography variant="h4">{screenshotTimer}</Typography>
+        {/* <Typography variant="h4">{screenshotTimer}</Typography>
         <Typography variant="h6" className={classes.secondsRemaining}>
           {' '}
           second(s) remaining to save the image!
-        </Typography>
+        </Typography> */}
       </div>
       <Button variant="contained" color="primary" size="large" onClick={() => setOpenRanking(true)}>
         Player Ranking 👑
+      </Button>
+      <Button
+        className={classes.margin}
+        variant="contained"
+        color="secondary"
+        size="large"
+        onClick={handleReady}
+      >
+        {isReady ? `I'm no longer ready :(` : `I'm ready`}
       </Button>
       <Dialog
         className={classes.button}
@@ -219,6 +249,7 @@ export default function ScreenshotPage({
         </DialogTitle>
         <DialogContent dividers>{sortPlayersByRank(players)}</DialogContent>
       </Dialog>
+      <div className={classes.users}>{globalContext.socket && <LobbyUsers />}</div>
     </div>
   )
 }
@@ -262,7 +293,6 @@ ScreenshotPage.propTypes = {
     PropTypes.string,
   ]).isRequired,
   winningTeam: PropTypes.string.isRequired,
-  screenshotTimer: PropTypes.number.isRequired,
   blueTeamWord: PropTypes.string.isRequired,
   whiteTeamWord: PropTypes.string.isRequired,
 }
