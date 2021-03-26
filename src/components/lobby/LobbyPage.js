@@ -81,6 +81,7 @@ export default function LobbyPage() {
   const [customWord, setCustomWord] = useState('')
   const [numOfCustomWords, setNumOfCustomWords] = useState(0)
   const [wordsNeeded, setWordsNeeded] = useState(0)
+  const [totalRounds, setTotalRounds] = useState(3)
 
   const handleRoomUsers = (data) => {
     if (Object.keys(data.users).length < 3) {
@@ -88,6 +89,7 @@ export default function LobbyPage() {
     } else {
       setMessage('')
     }
+    globalContext.socket.emit('totalRounds', { totalRounds: parseInt(totalRounds, 10) })
   }
 
   const handleRoomCode = () => {
@@ -99,6 +101,14 @@ export default function LobbyPage() {
     console.log('before emitting custom')
     globalContext.socket.emit('addCustom', { customWord })
     console.log('after emitting custom')
+  }
+
+  const handleTotalRounds = (e) => {
+    setTotalRounds(e.target.value, 10)
+  }
+
+  const sendTotalRounds = () => {
+    globalContext.socket.emit('totalRounds', { totalRounds: parseInt(totalRounds, 10) })
   }
 
   useEffect(() => {
@@ -120,6 +130,10 @@ export default function LobbyPage() {
       }
     })
 
+    globalContext.socket.on('totalRounds', (data) => {
+      setTotalRounds(data)
+    })
+
     globalContext.socket.on('roomUsers', handleRoomUsers)
     return () => {
       // before the component is destroyed
@@ -134,7 +148,7 @@ export default function LobbyPage() {
       if (isReady) {
         globalContext.socket.emit('notReady', globalContext.socket.id)
       } else {
-        globalContext.socket.emit('ready', globalContext.socket.id)
+        globalContext.socket.emit('ready', { totalRounds: parseInt(totalRounds, 10) })
       }
 
       await new Promise((resolve) => {
@@ -194,6 +208,29 @@ export default function LobbyPage() {
             </div>
           </form>
         )}
+        <form
+          action="."
+          onSubmit={(e) => {
+            e.preventDefault()
+            sendTotalRounds()
+          }}
+        >
+          <div className={classes.customWords}>
+            <TextField
+              label="Number of rounds"
+              defaultValue="3"
+              variant="outlined"
+              value={totalRounds}
+              onChange={(e) => handleTotalRounds(e)}
+              className={classes.textfields}
+              inputProps={{
+                maxLength: 1,
+                pattern: '^[1-6]$',
+              }}
+            />
+            <Typography variant="h8">Number of rounds (1-6)</Typography>
+          </div>
+        </form>
         {numOfCustomWords !== 1 ? (
           <Typography variant="h5" className={classes.margin}>
             Game starts when everyone is ready

@@ -40,7 +40,6 @@ io.on('connection', (socket) => {
       room: user.room,
       users: getUsersInRoom(user.room),
     })
-    console.log('done with whole creation method')
   })
 
   // handle joining a room
@@ -139,9 +138,8 @@ io.on('connection', (socket) => {
     }
   })
 
-  let numOfCustom
   // handle user getting ready for game
-  socket.on('ready', () => {
+  socket.on('ready', ({ totalRounds }) => {
     let user = getUserById(socket.id)
     user = updateUser(socket.id, 'ready', true)
 
@@ -150,12 +148,12 @@ io.on('connection', (socket) => {
     players.forEach((player) => {
       everyoneReady = everyoneReady && player.ready
     })
-    if (everyoneReady && (!numOfCustom || numOfCustom >= 2)) {
+    if (everyoneReady) {
       io.to(user.room).emit('everyoneReady')
       const room = getUsersInRoom(user.room)
       const roomCode = user.room
       // const game = new Game(room, 5, roomCode, io, socket)
-      createGame(room, 5, roomCode, io, socket)
+      createGame(room, totalRounds, roomCode, io, socket)
       const game = getGame(roomCode)
       // startGame(game.roomCode)
       // game.assignRoles()
@@ -187,7 +185,6 @@ io.on('connection', (socket) => {
     user = updateUser(socket.id, 'ready', true)
 
     const players = Object.values(getUsersInRoom(user.room))
-    console.log(players)
     let everyoneReady = true
     players.forEach((player) => {
       everyoneReady = everyoneReady && player.ready
@@ -247,9 +244,16 @@ io.on('connection', (socket) => {
 
   socket.on('addCustom', ({ customWord }) => {
     const user = getUserById(socket.id)
-    numOfCustom = addCustomWord(user.room, customWord)
-    io.to(user.room).emit('numCustomWords', numOfCustom)
-    console.log('added custom word', customWord, { numOfCustom })
+
+    addCustomWord(user.room, customWord)
+    console.log('added custom word', customWord)
+  })
+
+  socket.on('totalRounds', ({ totalRounds }) => {
+    const user = getUserById(socket.id)
+
+    io.to(user.room).emit('totalRounds', totalRounds)
+    console.log('total Rounds: ', totalRounds)
   })
 })
 
