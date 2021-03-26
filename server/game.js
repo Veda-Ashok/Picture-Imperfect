@@ -87,18 +87,7 @@ class Game {
   }
 
   pickRandomWord() {
-    // DELETE THIS CHECK WHEN WE HAVE ENOUGH WORDS TO NOT RUN OUT IN A GAME
-    // words[this.difficulty].forEach((word) => {
-    //   if (!this.pastWords.has(word)) {
-    //     this.pastWords = new Set()
-    //   }
-    // })
-    // END OF BLOCK TO BE DELETED
     const newWord = getRandomWord(this.difficulty, this.roomCode)
-    // while (this.pastWords.has(newWord)) {
-    //   newWord = getRandomWord(this.difficulty, this.roomCode)
-    // }
-    // this.pastWords.add(newWord) Add back in when we have more words
 
     return newWord
   }
