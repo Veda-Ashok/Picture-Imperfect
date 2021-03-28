@@ -4,6 +4,7 @@ const {
 } = require('./users')
 const { getUsersInRoom } = require('./rooms')
 const { getRandomDifficulty, getRandomWord } = require('./words')
+const { deleteGame } = require('./games')
 
 function chooseRandomPlayer(players) {
   const index = Math.floor(Math.random() * players.length)
@@ -170,6 +171,7 @@ class Game {
       players: this.room,
     })
     console.log('game over')
+    deleteGame(this.roomCode)
   }
 
   goToScreenshot(teamName, judge) {
@@ -191,6 +193,7 @@ class Game {
   }
 
   goToNextRound() {
+    console.log(`${this.round} out of ${this.totalRounds}`)
     if (Object.keys(this.possibleJudges).length <= 0) {
       this.possibleJudges = JSON.parse(JSON.stringify(this.room))
       this.possiblePlayers = JSON.parse(JSON.stringify(this.room))

@@ -1,4 +1,5 @@
 const { Game } = require('./game')
+const { deleteRoom } = require('./rooms')
 
 const games = {}
 
@@ -8,8 +9,16 @@ function createGame(room, totalRounds, roomCode, io, socket) {
 }
 
 function deleteGame(roomCode) {
-  games[roomCode].killMySelf()
-  delete games[roomCode]
+  console.log(`Im going to delete the game in ${roomCode}`)
+  if (games[roomCode]) {
+    console.log(`I look like this ${games[roomCode]}`)
+    games[roomCode].killMySelf()
+    console.log(`I killed myself`)
+    delete games[roomCode]
+    console.log(`I deleted the game`)
+    deleteRoom(this.roomCode)
+    console.log(`I deleted the room`)
+  }
 }
 
 function getGame(roomCode) {

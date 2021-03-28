@@ -8,7 +8,7 @@ const {
   getUserByUsernameAndRoom,
   updateUser,
 } = require('./users')
-const { createRoom, getUsersInRoom, deleteRoom } = require('./rooms')
+const { createRoom, getUsersInRoom } = require('./rooms')
 // const { Game } = require('./game')
 const { createGame, deleteGame, getGame } = require('./games')
 const { addCustomWord, getNumberOfCustomWords } = require('./words')
@@ -91,7 +91,6 @@ io.on('connection', (socket) => {
             players: getUsersInRoom(user.room),
           })
           deleteGame(game.roomCode)
-          deleteRoom(user.room)
         } else {
           game.io.to(game.roomCode).emit('roomRoles', {
             judges: game.judges,
@@ -125,7 +124,6 @@ io.on('connection', (socket) => {
             players: getUsersInRoom(user.room),
           })
           deleteGame(game.roomCode)
-          deleteRoom(user.room)
         } else {
           game.io.to(game.roomCode).emit('roomRoles', {
             judges: game.judges,
