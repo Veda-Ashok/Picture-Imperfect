@@ -73,8 +73,8 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log('Later Nerd')
     const user = userLeave(socket.id)
-    const usersInRoom = getUsersInRoom(user.room)
     if (user) {
+      const usersInRoom = getUsersInRoom(user.room)
       io.to(user.room).emit('message', `${user.username} has disconnected`)
 
       // send users room info
@@ -107,8 +107,8 @@ io.on('connection', (socket) => {
   socket.on('manualDisconnect', () => {
     console.log('Later Nerd')
     const user = userLeave(socket.id)
-    const usersInRoom = getUsersInRoom(user.room)
     if (user) {
+      const usersInRoom = getUsersInRoom(user.room)
       io.to(user.room).emit('message', `${user.username} has disconnected`)
 
       // send users room info
