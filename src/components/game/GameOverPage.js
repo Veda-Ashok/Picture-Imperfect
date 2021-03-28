@@ -133,6 +133,7 @@ export default function GameOverPage({ players }) {
     globalContext.addRoomCode(undefined, globalContext)
     globalContext.addSocket(undefined, globalContext)
     history.push('/')
+    history.go(0)
   }
 
   const firstPlace = (player) => {
@@ -212,7 +213,7 @@ export default function GameOverPage({ players }) {
     <div className={classes.body}>
       <div className={classes.finalRanking}>
         {' '}
-        <Typography variant="h4"> Final Ranking </Typography>
+        <Typography variant="h4"> Game Over </Typography>
       </div>
       <Rules />
       <div className={classes.margin}>

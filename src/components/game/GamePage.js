@@ -71,7 +71,7 @@ export default function GamePage() {
     })
     globalContext.socket.on('gameOver', (data) => {
       console.log(' GAME OVER, players', data.players)
-      setPlayers(data.players)
+      setPlayers(Object.values(data.players))
       setIsScreenshotPage(false)
       setIsGameOverPage(true)
     })
