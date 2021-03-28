@@ -34,6 +34,8 @@ class Game {
     this.skipToNext = false
     this.turnInterval = undefined
     this.screenshotInterval = undefined
+
+    console.log('TOTAL ROUNDS: ', this.totalRounds)
   }
 
   getJudges() {
@@ -85,34 +87,15 @@ class Game {
   }
 
   pickRandomWord() {
-    // DELETE THIS CHECK WHEN WE HAVE ENOUGH WORDS TO NOT RUN OUT IN A GAME
-    // words[this.difficulty].forEach((word) => {
-    //   if (!this.pastWords.has(word)) {
-    //     this.pastWords = new Set()
-    //   }
-    // })
-    // END OF BLOCK TO BE DELETED
     const newWord = getRandomWord(this.difficulty, this.roomCode)
-    // while (this.pastWords.has(newWord)) {
-    //   newWord = getRandomWord(this.difficulty, this.roomCode)
-    // }
-    // this.pastWords.add(newWord) Add back in when we have more words
 
     return newWord
   }
 
   assignWords() {
-    console.log('about to getRandomDifficulty')
     this.difficulty = getRandomDifficulty(this.roomCode)
-    console.log('gettingRandomDifficulty', this.difficulty)
-    console.log('about to pick blue word')
     this.blueTeamWord = this.pickRandomWord()
-    console.log('about to pick white word')
     this.whiteTeamWord = this.pickRandomWord()
-    // while (this.whiteTeamWord === this.blueTeamWord) {
-    //   this.whiteTeamWord = this.pickRandomWord()
-    // }
-    console.log('about to emit wordAssignment')
     this.io.to(this.roomCode).emit('wordAssignment', {
       blueTeamWord: this.blueTeamWord,
       whiteTeamWord: this.whiteTeamWord,
@@ -130,21 +113,13 @@ class Game {
 
   // END ROUND AFTER THEY GUESS THE WORD
   roundWin(teamName, judge) {
-    console.log('blueTeam', this.blueTeam)
-    console.log('whiteTeam', this.whiteTeam)
     if (teamName === 'blueTeam') {
       this.blueTeam.forEach((member) => {
-        console.log('member id: ', member.id)
-        console.log('member points: ', member.points)
-
         const newPoints = member.points + 1
         updateUser(member.id, 'points', newPoints)
       })
     } else if (teamName === 'whiteTeam') {
       this.whiteTeam.forEach((member) => {
-        console.log('member id', member.id)
-        console.log('member points: ', member.points)
-
         const newPoints = member.points + 1
         updateUser(member.id, 'points', newPoints)
       })
@@ -159,15 +134,10 @@ class Game {
     this.skipToNext = false
     let timeRemaining = this.totalDrawTime
     const intervalDuration = 1
-    console.log('totalDrawtime: ', this.totalDrawTime)
-    console.log('playerDrawtime: ', this.playerDrawTime)
 
     // interval waits for intervalDuration (2 seconds) before running the function for the first time
-    console.log('assigning roles')
     this.assignRoles()
-    console.log('assigning words')
     this.assignWords()
-    console.log('about to start interval')
     this.turnInterval = setInterval(() => {
       const newTurn = timeRemaining % this.playerDrawTime === 0
       if (newTurn) {
@@ -193,13 +163,13 @@ class Game {
         this.goToScreenshot('timeOut')
       }
     }, intervalDuration * 1000)
-
-    console.log('about to set timeout')
   }
 
   endGame() {
-    console.log('ENDING')
-    this.goToScreenshot()
+    this.io.to(this.roomCode).emit('gameOver', {
+      players: this.room,
+    })
+    console.log('game over')
   }
 
   goToScreenshot(teamName, judge) {
@@ -211,10 +181,8 @@ class Game {
     players.forEach((player) => {
       // updateUserInRoom(this.roomCode, player.id, 'ready', false)
       updateUser(player.id, 'ready', false)
-      console.log('player: ', player)
     })
     this.room = getUsersInRoom(this.roomCode)
-    console.log('room: ', this.room)
     this.io.to(this.roomCode).emit('screenshotPage', {
       winningTeam: teamName,
       winningJudge: judge,
@@ -226,15 +194,15 @@ class Game {
     if (Object.keys(this.possibleJudges).length <= 0) {
       this.possibleJudges = JSON.parse(JSON.stringify(this.room))
       this.possiblePlayers = JSON.parse(JSON.stringify(this.room))
-      this.round = +1
+      this.round += 1
     }
     if (this.round <= this.totalRounds) {
+      console.log('in if')
       this.playGame()
     } else if (this.round > this.totalRounds) {
       console.log('--------CALLING ENDING---------')
       this.endGame()
     }
-    // this.endGame()
   }
 
   removePlayer(player) {
@@ -247,9 +215,6 @@ class Game {
     this.blueTeam = this.blueTeam.filter((user) => user.id !== player.id)
     this.whiteTeam = this.whiteTeam.filter((user) => user.id !== player.id)
 
-    console.log(this.judges)
-    console.log(Object.keys(this.judges).length)
-
     // Check if any of the teams are empty and there are more than 3 players
     if (
       (this.blueTeam.length === 0 ||
@@ -257,7 +222,6 @@ class Game {
         Object.keys(this.judges).length === 0) &&
       Object.keys(this.room).length >= 3
     ) {
-      console.log('in if')
       this.goToScreenshot('playersLeft')
     }
   }

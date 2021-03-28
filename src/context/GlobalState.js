@@ -6,7 +6,6 @@ import {
   ADD_SOCKET,
   ADD_ROOM_CODE,
   UPDATE_USERS,
-  UPDATE_CUSTOM_WORDS,
   UPDATE_MY_INFO,
   UPDATE_SCREENSHOT,
 } from './reducers'
@@ -42,10 +41,6 @@ const GlobalState = (props) => {
     dispatch({ type: UPDATE_SCREENSHOT, screenshot })
   }
 
-  const updateCustomWords = (customWords) => {
-    dispatch({ type: UPDATE_CUSTOM_WORDS, customWords })
-  }
-
   return (
     <Context.Provider
       value={{
@@ -56,7 +51,6 @@ const GlobalState = (props) => {
         users: appState.users,
         updateUsers,
         customWords: appState.customWords,
-        updateCustomWords,
         myInfo: appState.myInfo,
         updateMyInfo,
         screenshot: appState.screenshot,
