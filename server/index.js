@@ -8,10 +8,10 @@ const {
   getUserByUsernameAndRoom,
   updateUser,
 } = require('./users')
-const { createRoom, getUsersInRoom } = require('./rooms')
+const { createRoom, getUsersInRoom, deleteRoom } = require('./rooms')
 // const { Game } = require('./game')
 const { createGame, deleteGame, getGame } = require('./games')
-const { addCustomWord } = require('./words')
+const { addCustomWord, getNumberOfCustomWords } = require('./words')
 
 const app = express()
 const server = http.createServer(app)
@@ -46,11 +46,14 @@ io.on('connection', (socket) => {
   socket.on('joinRoom', ({ username, room, icon }) => {
     const users = getUsersInRoom(room)
     const userExists = getUserByUsernameAndRoom(username, room)
+    const game = getGame(room)
 
     if (!users) {
       socket.emit('invalidRoomCode', `Sorry, ${room} is invalid! Please enter a different code.`)
     } else if (userExists) {
       socket.emit('invalidUsername', `Sorry, ${username} is already taken in room ${room}`)
+    } else if (game) {
+      socket.emit('gameAlreadyStarted', `Sorry, the game in ${room} has already started`)
     } else {
       const user = userJoin(socket.id, username, room, icon)
 
@@ -69,7 +72,6 @@ io.on('connection', (socket) => {
   // handle disconnect
   socket.on('disconnect', () => {
     console.log('Later Nerd')
-
     const user = userLeave(socket.id)
     if (user) {
       io.to(user.room).emit('message', `${user.username} has disconnected`)
@@ -86,11 +88,10 @@ io.on('connection', (socket) => {
 
         if (Object.keys(game.room).length < 3) {
           game.io.to(game.roomCode).emit('gameOver', {
-            judges: game.judges,
-            blueTeam: game.blueTeam,
-            whiteTeam: game.whiteTeam,
+            players: getUsersInRoom(user.room),
           })
           deleteGame(game.roomCode)
+          deleteRoom(user.room)
         } else {
           game.io.to(game.roomCode).emit('roomRoles', {
             judges: game.judges,
@@ -105,7 +106,6 @@ io.on('connection', (socket) => {
   // handle disconnect
   socket.on('manualDisconnect', () => {
     console.log('Later Nerd')
-
     const user = userLeave(socket.id)
     if (user) {
       io.to(user.room).emit('message', `${user.username} has disconnected`)
@@ -122,11 +122,10 @@ io.on('connection', (socket) => {
 
         if (Object.keys(game.room).length < 3) {
           game.io.to(game.roomCode).emit('gameOver', {
-            judges: game.judges,
-            blueTeam: game.blueTeam,
-            whiteTeam: game.whiteTeam,
+            players: getUsersInRoom(user.room),
           })
           deleteGame(game.roomCode)
+          deleteRoom(user.room)
         } else {
           game.io.to(game.roomCode).emit('roomRoles', {
             judges: game.judges,
@@ -144,7 +143,7 @@ io.on('connection', (socket) => {
     user = updateUser(socket.id, 'ready', true)
 
     const players = Object.values(getUsersInRoom(user.room))
-    let everyoneReady = players.length >= 3
+    let everyoneReady = players.length >= 3 && players.length <= 13
     players.forEach((player) => {
       everyoneReady = everyoneReady && player.ready
     })
@@ -244,16 +243,22 @@ io.on('connection', (socket) => {
 
   socket.on('addCustom', ({ customWord }) => {
     const user = getUserById(socket.id)
-
-    addCustomWord(user.room, customWord)
+    const numberOfCustomWords = addCustomWord(user.room, customWord)
+    io.to(user.room).emit('numCustomWords', numberOfCustomWords)
     console.log('added custom word', customWord)
+  })
+
+  socket.on('getNumCustom', () => {
+    const user = getUserById(socket.id)
+    const numberOfCustomWords = getNumberOfCustomWords(user.room)
+    io.to(user.room).emit('numCustomWords', numberOfCustomWords)
   })
 
   socket.on('totalRounds', ({ totalRounds }) => {
     const user = getUserById(socket.id)
 
     io.to(user.room).emit('totalRounds', totalRounds)
-    console.log('total Rounds: ', totalRounds)
+    // console.log('total Rounds: ', totalRounds)
   })
 })
 
