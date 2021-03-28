@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react'
 import Context from '../../context/context'
-import ResultsPage from '../game/ResultsPage'
+import GameOverPage from '../game/GameOverPage'
 
 const players = [
   {
@@ -67,5 +67,5 @@ export default function TestingResultPage() {
     globalContext.updateMyInfo({ username: 'rachel', icon: '/logo192.png' }, globalContext)
   }, [])
 
-  return <>{globalContext.myInfo.username && <ResultsPage players={players} />}</>
+  return <>{globalContext.myInfo.username && <GameOverPage players={players} />}</>
 }

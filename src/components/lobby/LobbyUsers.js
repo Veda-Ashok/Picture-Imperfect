@@ -33,6 +33,7 @@ export default function LobbyUsers() {
 
   const handleUserUpdate = (data) => {
     const { users } = data
+    console.log('inside lobby users im running')
     globalContext.updateUsers(users, globalContext)
   }
 
