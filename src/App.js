@@ -19,9 +19,6 @@ export default function App() {
             <Route exact path="/testing">
               <TestingResultPage />
             </Route>
-            <Route exact path="/gameOver">
-              <h1>GameOver</h1>
-            </Route>
             <Route exact path="/lobby">
               <LobbyPage />
             </Route>

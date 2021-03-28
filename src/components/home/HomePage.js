@@ -57,10 +57,14 @@ export default function HomePage() {
   // if they are in a room right now remove them from the room
   useEffect(() => {
     if (globalContext.roomCode) {
-      globalContext.socket.emit('manualDisconnect')
       globalContext.addRoomCode(undefined, globalContext)
+    } else if (globalContext.socket) {
+      globalContext.socket.emit('manualDisconnect')
       globalContext.addSocket(undefined, globalContext)
     }
+    globalContext.updateUsers({}, globalContext)
+    globalContext.updateMyInfo({}, globalContext)
+    globalContext.updateScreenshot(undefined, globalContext)
   }, [])
 
   // Room handlers
@@ -131,6 +135,12 @@ export default function HomePage() {
 
         await new Promise((resolve) => {
           socket.once('invalidRoomCode', async (data) => {
+            invalidRoom = true
+            setErrorMessage(data)
+            handleErrorOpen()
+            resolve(data)
+          })
+          socket.once('gameAlreadyStarted', async (data) => {
             invalidRoom = true
             setErrorMessage(data)
             handleErrorOpen()
@@ -218,7 +228,7 @@ export default function HomePage() {
                 pattern: '^[a-zA-Z0-9 ]*$',
               }}
             />
-            <Typography variant="h8">
+            <Typography variant="subtitle2">
               Words can only contain 25 or less alphanumeric characters.
             </Typography>
           </DialogContent>
@@ -253,7 +263,7 @@ export default function HomePage() {
                 pattern: '^[a-zA-Z0-9 ]*$',
               }}
             />
-            <Typography variant="h8">
+            <Typography variant="subtitle2">
               Words can only contain 25 or less alphanumeric characters.
             </Typography>
           </DialogContent>

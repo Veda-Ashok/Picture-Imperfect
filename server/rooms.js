@@ -26,11 +26,17 @@ function addUserToRoom(room, userId, user) {
   rooms[room][userId] = user
 }
 
+function deleteRoom(room) {
+  clearWordSet(room)
+  delete rooms[room]
+}
+
 function removeUserFromRoom(room, userId) {
-  delete rooms[room][userId]
-  if (Object.keys(rooms[room]).length === 0) {
-    clearWordSet(room)
-    delete rooms[room]
+  if (rooms[room]) {
+    delete rooms[room][userId]
+    if (Object.keys(rooms[room]).length === 0) {
+      deleteRoom(room)
+    }
   }
 }
 
@@ -48,4 +54,5 @@ module.exports = {
   removeUserFromRoom,
   getUsersInRoom,
   updateUserInRoom,
+  deleteRoom,
 }
