@@ -8,7 +8,7 @@ const {
   getUserByUsernameAndRoom,
   updateUser,
 } = require('./users')
-const { createRoom, getUsersInRoom } = require('./rooms')
+const { createRoom, getUsersInRoom, deleteRoom } = require('./rooms')
 // const { Game } = require('./game')
 const { createGame, deleteGame, getGame } = require('./games')
 const { addCustomWord, getNumberOfCustomWords } = require('./words')
@@ -74,13 +74,12 @@ io.on('connection', (socket) => {
     console.log('Later Nerd')
     const user = userLeave(socket.id)
     if (user) {
-      const usersInRoom = getUsersInRoom(user.room)
       io.to(user.room).emit('message', `${user.username} has disconnected`)
 
       // send users room info
       io.to(user.room).emit('roomUsers', {
         room: user.room,
-        users: usersInRoom,
+        users: getUsersInRoom(user.room),
       })
 
       const game = getGame(user.room)
@@ -89,9 +88,10 @@ io.on('connection', (socket) => {
 
         if (Object.keys(game.room).length < 3) {
           game.io.to(game.roomCode).emit('gameOver', {
-            players: usersInRoom,
+            players: getUsersInRoom(user.room),
           })
           deleteGame(game.roomCode)
+          deleteRoom(user.room)
         } else {
           game.io.to(game.roomCode).emit('roomRoles', {
             judges: game.judges,
@@ -108,13 +108,12 @@ io.on('connection', (socket) => {
     console.log('Later Nerd')
     const user = userLeave(socket.id)
     if (user) {
-      const usersInRoom = getUsersInRoom(user.room)
       io.to(user.room).emit('message', `${user.username} has disconnected`)
 
       // send users room info
       io.to(user.room).emit('roomUsers', {
         room: user.room,
-        users: usersInRoom,
+        users: getUsersInRoom(user.room),
       })
 
       const game = getGame(user.room)
@@ -123,9 +122,10 @@ io.on('connection', (socket) => {
 
         if (Object.keys(game.room).length < 3) {
           game.io.to(game.roomCode).emit('gameOver', {
-            players: usersInRoom,
+            players: getUsersInRoom(user.room),
           })
           deleteGame(game.roomCode)
+          deleteRoom(user.room)
         } else {
           game.io.to(game.roomCode).emit('roomRoles', {
             judges: game.judges,
