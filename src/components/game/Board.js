@@ -5,8 +5,6 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import withWidth from '@material-ui/core/withWidth'
 import { amber } from '@material-ui/core/colors'
-
-// import io from 'socket.io-client'
 import Context from '../../context/context'
 
 const useStyles = makeStyles((theme) => ({
@@ -87,15 +85,13 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
   const globalContext = useContext(Context)
   const canvasRef = useRef(null)
   const socketRef = useRef()
-  const [scale, setScale] = useState({ x: window.devicePixelRatio, y: window.devicePixelRatio })
+  const [scale, setScale] = useState({ x: 1, y: 1 })
 
   const resized = () => {
     const { width, height } = canvasRef.current.getBoundingClientRect()
 
     if (canvasRef.current.width !== width || canvasRef.current.height !== height) {
-      console.log('Device pixel ratio', window.devicePixelRatio)
-      const ratio = window.devicePixelRatio
-      console.log('Device pixel ratio after', window.devicePixelRatio)
+      const ratio = 1
       canvasRef.current.width = canvasRef.current.clientWidth * ratio
       canvasRef.current.height = canvasRef.current.clientHeight * ratio
       setScale({ x: ratio, y: ratio })
@@ -107,11 +103,6 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
 
     const canvas = canvasRef.current
     const context = canvas.getContext('2d')
-
-    // --------------------- Memory canvas for resizing ------------------------------------
-
-    // const memCanvas = document.createElement('canvas')
-    // const memCtx = memCanvas.getContext('2d')
 
     // ----------------------- Colors --------------------------------------------------
 
@@ -241,23 +232,6 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
 
     // -------------- call resized function -----------------
     resized()
-
-    // const onResize = () => {
-    //   memCanvas.width = canvas.width
-    //   memCanvas.height = canvas.height
-    //   memCanvas.style.width = '100%' // Note you must post fix the unit type %,px,em
-    //   memCanvas.style.height = '100%'
-    //   memCtx.drawImage(canvas, 0, 0)
-    //   const bounds = canvas.getBoundingClientRect()
-    //   canvas.width = bounds.width
-    //   canvas.height = bounds.height
-    //   canvas.style.width = '100%' // Note you must post fix the unit type %,px,em
-    //   canvas.style.height = '100%'
-    //   context.drawImage(memCanvas, 0, 0)
-    // }
-
-    // window.addEventListener('resize', onResize, false)
-    // onResize()
 
     // ----------------------- socket.io connection ----------------------------
     const onDrawingEvent = (data) => {
