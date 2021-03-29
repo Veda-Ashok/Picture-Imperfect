@@ -193,7 +193,7 @@ class Game {
       console.log('in if')
       this.playGame()
     } else {
-      this.io.to(this.roomCode).emit('GameOver', {
+      this.io.to(this.roomCode).emit('gameOver', {
         players: this.room,
       })
       console.log('game over')

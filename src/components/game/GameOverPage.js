@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import Avatar from '@material-ui/core/Avatar'
@@ -7,8 +7,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { PropTypes } from 'prop-types'
 import { useHistory } from 'react-router-dom'
 import { amber } from '@material-ui/core/colors'
-
-// import { amber } from '@material-ui/core/colors'
+import Context from '../../context/context'
 import Rules from '../reusable/Rules'
 
 const useStyles = makeStyles((theme) => ({
@@ -85,13 +84,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function ResultsPage({ players }) {
+export default function GameOverPage({ players }) {
   const history = useHistory()
   const classes = useStyles()
   const [firstPlacePlayers, setFirstPlacePlayers] = useState([])
   const [secondPlacePlayers, setSecondPlacePlayers] = useState([])
   const [thirdPlacePlayers, setThirdPlacePlayers] = useState([])
   const [etcPlayers, setEtcPlayers] = useState([])
+  const globalContext = useContext(Context)
 
   useEffect(() => {
     setFirstPlacePlayers([])
@@ -124,6 +124,17 @@ export default function ResultsPage({ players }) {
       }
     })
   }, [players])
+
+  const handlePlayAgain = () => {
+    globalContext.socket.emit('manualDisconnect')
+    globalContext.updateUsers({}, globalContext)
+    globalContext.updateMyInfo({}, globalContext)
+    globalContext.updateScreenshot(undefined, globalContext)
+    globalContext.addRoomCode(undefined, globalContext)
+    globalContext.addSocket(undefined, globalContext)
+    history.push('/')
+    history.go(0)
+  }
 
   const firstPlace = (player) => {
     return (
@@ -202,7 +213,7 @@ export default function ResultsPage({ players }) {
     <div className={classes.body}>
       <div className={classes.finalRanking}>
         {' '}
-        <Typography variant="h4"> Final Ranking </Typography>
+        <Typography variant="h4"> Game Over </Typography>
       </div>
       <Rules />
       <div className={classes.margin}>
@@ -222,7 +233,7 @@ export default function ResultsPage({ players }) {
             color="primary"
             size="large"
             className={classes.button}
-            onClick={() => history.push('/')}
+            onClick={handlePlayAgain}
           >
             Play Again
           </Button>
@@ -232,7 +243,7 @@ export default function ResultsPage({ players }) {
   )
 }
 
-ResultsPage.propTypes = {
+GameOverPage.propTypes = {
   players: PropTypes.arrayOf(
     PropTypes.shape({
       username: PropTypes.string,
