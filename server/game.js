@@ -18,6 +18,7 @@ class Game {
     this.blueTeam = []
     this.whiteTeam = []
     this.currentDrawers = {}
+    this.turn = 1
     this.round = 1
     this.totalRounds = totalRounds
     this.totalDrawTime = 30
@@ -188,8 +189,12 @@ class Game {
       this.possibleJudges = JSON.parse(JSON.stringify(this.room))
       this.possiblePlayers = JSON.parse(JSON.stringify(this.room))
       this.round += 1
+      this.turn = 0
+      // this.io.to(this.roomCode).emit('currentRound', { round: this.round })
     }
     if (this.round <= this.totalRounds) {
+      this.turn += 1
+      this.io.to(this.roomCode).emit('currentRound', { round: this.round, turn: this.turn })
       console.log('in if')
       this.playGame()
     } else {
