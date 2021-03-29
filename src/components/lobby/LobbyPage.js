@@ -215,21 +215,27 @@ export default function LobbyPage() {
             sendTotalRounds()
           }}
         >
-          <div className={classes.customWords}>
-            <TextField
-              label="Number of rounds"
-              defaultValue="3"
-              variant="outlined"
-              value={totalRounds}
-              onChange={(e) => handleTotalRounds(e)}
-              className={classes.textfields}
-              inputProps={{
-                maxLength: 1,
-                pattern: '^[1-6]$',
-              }}
-            />
-            <Typography variant="h8">Number of rounds (1-6)</Typography>
-          </div>
+          {globalContext.isHost ? (
+            <div className={classes.customWords}>
+              <TextField
+                label="Number of rounds"
+                defaultValue="3"
+                variant="outlined"
+                value={totalRounds}
+                onChange={(e) => handleTotalRounds(e)}
+                className={classes.textfields}
+                inputProps={{
+                  maxLength: 1,
+                  pattern: '^[1-6]$',
+                }}
+              />
+              <Typography variant="h8">Number of rounds (1-6)</Typography>
+            </div>
+          ) : null}
+          <Typography variant="h8">
+            Total Rounds:
+            {totalRounds}
+          </Typography>
         </form>
         {numOfCustomWords !== 1 ? (
           <Typography variant="h5" className={classes.margin}>

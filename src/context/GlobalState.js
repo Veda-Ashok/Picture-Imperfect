@@ -9,6 +9,7 @@ import {
   UPDATE_CUSTOM_WORDS,
   UPDATE_MY_INFO,
   UPDATE_SCREENSHOT,
+  UPDATE_IS_HOST,
 } from './reducers'
 
 const GlobalState = (props) => {
@@ -20,6 +21,7 @@ const GlobalState = (props) => {
     customWords: true,
     myInfo: {},
     screenshot: undefined,
+    isHost: false,
   })
 
   const addSocket = (socket) => {
@@ -46,6 +48,10 @@ const GlobalState = (props) => {
     dispatch({ type: UPDATE_CUSTOM_WORDS, customWords })
   }
 
+  const updateIsHost = (isHost) => {
+    dispatch({ type: UPDATE_IS_HOST, isHost })
+  }
+
   return (
     <Context.Provider
       value={{
@@ -61,6 +67,8 @@ const GlobalState = (props) => {
         updateMyInfo,
         screenshot: appState.screenshot,
         updateScreenshot,
+        isHost: appState.isHost,
+        updateIsHost,
       }}
     >
       {children}
