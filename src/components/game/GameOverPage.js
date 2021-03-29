@@ -6,7 +6,7 @@ import Avatar from '@material-ui/core/Avatar'
 import { makeStyles } from '@material-ui/core/styles'
 import { PropTypes } from 'prop-types'
 import { useHistory } from 'react-router-dom'
-import { amber } from '@material-ui/core/colors'
+// import { amber } from '@material-ui/core/colors'
 import Context from '../../context/context'
 import Rules from '../reusable/Rules'
 
@@ -58,29 +58,25 @@ const useStyles = makeStyles((theme) => ({
     gridRow: 1,
     width: '6rem',
   },
-  finalRanking: {
-    [theme.breakpoints.up('md')]: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      background: amber[200],
-      border: '3px solid black',
-      borderRadius: '5px',
-      zIndex: 2,
-      margin: theme.spacing(2),
-      padding: theme.spacing(1),
-    },
-    background: amber[200],
+  screenshot: {
+    width: '50%',
+    backgroundColor: 'white',
     border: '3px solid black',
-    borderRadius: '5px',
     margin: theme.spacing(2),
-    padding: theme.spacing(1),
+  },
+  finalRanking: {
+    padding: theme.spacing(3),
+    fontWeight: 800,
+    display: 'flex',
+    justifyContent: 'center',
+    background: 'white',
+    marginBottom: theme.spacing(1),
   },
   button: {
     margin: theme.spacing(1),
   },
   margin: {
-    margin: theme.spacing(1),
+    marginBottom: theme.spacing(1),
   },
 }))
 
@@ -211,12 +207,11 @@ export default function GameOverPage({ players }) {
 
   return (
     <div className={classes.body}>
-      <div className={classes.finalRanking}>
-        {' '}
-        <Typography variant="h4"> Game Over </Typography>
-      </div>
       <Rules />
       <div className={classes.margin}>
+        <div className={classes.finalRanking}>
+          <Typography variant="h2"> Game Over!! </Typography>
+        </div>
         <div className={classes.rows}>
           {firstPlacePlayers.length > 0 && firstPlacePlayers.map((player) => firstPlace(player))}
         </div>
@@ -226,6 +221,13 @@ export default function GameOverPage({ players }) {
         </div>
         <div className={classes.rows}>
           {etcPlayers && etcPlayers.length > 0 && etcPlayers.map((player) => etc(player))}
+        </div>
+        <div className={classes.rows}>
+          <img
+            className={classes.screenshot}
+            src={globalContext.screenshot ? globalContext.screenshot : '/media/nobodyDrew.png'}
+            alt="screenshot"
+          />
         </div>
         <div className={classes.rows}>
           <Button

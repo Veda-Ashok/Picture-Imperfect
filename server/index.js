@@ -156,6 +156,7 @@ io.on('connection', (socket) => {
       const game = getGame(roomCode)
       // startGame(game.roomCode)
       // game.assignRoles()
+      io.to(user.room).emit('currentRound', { round: 1, turn: 1 })
       game.playGame()
     }
 

@@ -102,6 +102,8 @@ export default function ScreenshotPage({
   blueTeam,
   whiteTeamWord,
   blueTeamWord,
+  round,
+  turn,
 }) {
   const classes = useStyles()
   const globalContext = useContext(Context)
@@ -184,8 +186,8 @@ export default function ScreenshotPage({
   return (
     <div className={classes.body}>
       <div className={classes.round}>
-        <Typography variant="h5">Round TBD</Typography>
-        <Typography variant="h6">Turn TBD</Typography>
+        <Typography variant="h5">{`Round ${round}`}</Typography>
+        <Typography variant="h6">{`Turn ${turn}`}</Typography>
       </div>
       <Rules />
       <Typography className={classes.winningWord} variant="h2">{`${wordGuessed} won!`}</Typography>
@@ -208,13 +210,7 @@ export default function ScreenshotPage({
         src={globalContext.screenshot ? globalContext.screenshot : '/media/nobodyDrew.png'}
         alt="screenshot"
       />
-      <div className={classes.screenShotTimer}>
-        {/* <Typography variant="h4">{screenshotTimer}</Typography>
-        <Typography variant="h6" className={classes.secondsRemaining}>
-          {' '}
-          second(s) remaining to save the image!
-        </Typography> */}
-      </div>
+      <div className={classes.screenShotTimer} />
       <Button variant="contained" color="primary" size="large" onClick={() => setOpenRanking(true)}>
         Player Ranking 👑
       </Button>
@@ -295,4 +291,6 @@ ScreenshotPage.propTypes = {
   winningTeam: PropTypes.string.isRequired,
   blueTeamWord: PropTypes.string.isRequired,
   whiteTeamWord: PropTypes.string.isRequired,
+  round: PropTypes.number.isRequired,
+  turn: PropTypes.number.isRequired,
 }
