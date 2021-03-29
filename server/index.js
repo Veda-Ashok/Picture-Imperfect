@@ -8,7 +8,13 @@ const {
   getUserByUsernameAndRoom,
   updateUser,
 } = require('./users')
-const { createRoom, getUsersInRoom, deleteRoom } = require('./rooms')
+const {
+  createRoom,
+  getUsersInRoom,
+  deleteRoom,
+  updateTotalRounds,
+  getTotalRounds,
+} = require('./rooms')
 // const { Game } = require('./game')
 const { createGame, deleteGame, getGame } = require('./games')
 const { addCustomWord, getNumberOfCustomWords } = require('./words')
@@ -138,7 +144,7 @@ io.on('connection', (socket) => {
   })
 
   // handle user getting ready for game
-  socket.on('ready', ({ totalRounds }) => {
+  socket.on('ready', () => {
     let user = getUserById(socket.id)
     user = updateUser(socket.id, 'ready', true)
 
@@ -151,6 +157,7 @@ io.on('connection', (socket) => {
       io.to(user.room).emit('everyoneReady')
       const room = getUsersInRoom(user.room)
       const roomCode = user.room
+      const totalRounds = getTotalRounds(roomCode)
       // const game = new Game(room, 5, roomCode, io, socket)
       createGame(room, totalRounds, roomCode, io, socket)
       const game = getGame(roomCode)
@@ -256,6 +263,15 @@ io.on('connection', (socket) => {
 
   socket.on('totalRounds', ({ totalRounds }) => {
     const user = getUserById(socket.id)
+    updateTotalRounds(user.room, totalRounds)
+
+    io.to(user.room).emit('totalRounds', totalRounds)
+    // console.log('total Rounds: ', totalRounds)
+  })
+
+  socket.on('getTotalRounds', () => {
+    const user = getUserById(socket.id)
+    const totalRounds = getTotalRounds(user.room)
 
     io.to(user.room).emit('totalRounds', totalRounds)
     // console.log('total Rounds: ', totalRounds)
