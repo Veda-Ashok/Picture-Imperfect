@@ -34,6 +34,8 @@ export default function GamePage() {
   const [winningJudge, setWinningJudge] = useState()
   const [isScreenshotPage, setIsScreenshotPage] = useState(false)
   const [isGameOverPage, setIsGameOverPage] = useState(false)
+  const [round, setRound] = useState(0)
+  const [turn, setTurn] = useState(0)
 
   // const setRole = async role => {}
 
@@ -84,11 +86,16 @@ export default function GamePage() {
       setIsScreenshotPage(true)
       setPlayers(Object.values(data.players))
       setWinningTeam(data.winningTeam === undefined ? 'timeOut' : data.winningTeam)
-      setWinningJudge(data.winningJudge === undefined ? 'timeOut' : data.winningTeam)
+      setWinningJudge(data.winningJudge === undefined ? 'timeOut' : data.winningJudge)
       globalContext.updateUsers(data.players)
       console.log('players', data.players)
       console.log('winningTeam', data.winningTeam)
       console.log('winningJudge', data.winningJudge)
+    })
+
+    globalContext.socket.on('currentRound', (data) => {
+      setRound(data.round)
+      setTurn(data.turn)
     })
 
     return () => {
@@ -113,8 +120,12 @@ export default function GamePage() {
           blueTeam &&
           whiteTeam &&
           whiteTeamWord &&
-          blueTeamWord ? (
+          blueTeamWord &&
+          round &&
+          turn ? (
             <ScreenshotPage
+              round={round}
+              turn={turn}
               players={players}
               winningTeam={winningTeam}
               winningJudge={winningJudge}
@@ -133,14 +144,24 @@ export default function GamePage() {
             <>{players ? <GameOverPage players={players} /> : loadingPage}</>
           ) : (
             <>
-              {judges && blueTeam && whiteTeam && whiteTeamWord && blueTeamWord && role && timer ? (
+              {judges &&
+              blueTeam &&
+              whiteTeam &&
+              whiteTeamWord &&
+              blueTeamWord &&
+              role &&
+              timer &&
+              round &&
+              turn ? (
                 <GamePlayPage
+                  round={round}
                   judges={judges}
                   blueTeam={blueTeam}
                   whiteTeam={whiteTeam}
                   whiteTeamWord={whiteTeamWord}
                   blueTeamWord={blueTeamWord}
                   role={role}
+                  turn={turn}
                   timer={timer}
                 />
               ) : (

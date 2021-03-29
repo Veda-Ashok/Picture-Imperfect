@@ -161,6 +161,8 @@ describe('ScreenshotPage', () => {
         whiteTeamWord={whiteTeamWord}
         blueTeamWord={blueTeamWord}
         screenshotTimer={screenshotTimer}
+        round={5}
+        turn={2}
       />,
       { providerProps },
     )
@@ -191,6 +193,8 @@ describe('ScreenshotPage', () => {
         whiteTeamWord={whiteTeamWord}
         blueTeamWord={blueTeamWord}
         screenshotTimer={screenshotTimer}
+        round={5}
+        turn={2}
       />,
       { providerProps },
     )
@@ -222,6 +226,8 @@ describe('ScreenshotPage', () => {
         whiteTeamWord={whiteTeamWord}
         blueTeamWord={blueTeamWord}
         screenshotTimer={screenshotTimer}
+        round={5}
+        turn={2}
       />,
       { providerProps },
     )
@@ -253,6 +259,8 @@ describe('ScreenshotPage', () => {
         whiteTeamWord={whiteTeamWord}
         blueTeamWord={blueTeamWord}
         screenshotTimer={screenshotTimer}
+        round={5}
+        turn={2}
       />,
       { providerProps },
     )
@@ -284,6 +292,8 @@ describe('ScreenshotPage', () => {
         whiteTeamWord={whiteTeamWord}
         blueTeamWord={blueTeamWord}
         screenshotTimer={screenshotTimer}
+        round={5}
+        turn={2}
       />,
       { providerProps },
     )
