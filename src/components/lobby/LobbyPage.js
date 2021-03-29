@@ -93,7 +93,8 @@ export default function LobbyPage() {
   const [customWord, setCustomWord] = useState('')
   const [numOfCustomWords, setNumOfCustomWords] = useState(0)
   const [wordsNeeded, setWordsNeeded] = useState(0)
-  const [totalRounds, setTotalRounds] = useState(3)
+  const [localTotalRounds, setLocalTotalRounds] = useState('')
+  const [serverTotalRounds, setServerTotalRounds] = useState('')
 
   const handleRoomUsers = (data) => {
     console.log("I'm running")
@@ -104,7 +105,6 @@ export default function LobbyPage() {
     } else {
       setMessage('')
     }
-    globalContext.socket.emit('totalRounds', { totalRounds: parseInt(totalRounds, 10) })
   }
 
   const handleRoomCode = () => {
@@ -119,11 +119,11 @@ export default function LobbyPage() {
   }
 
   const handleTotalRounds = (e) => {
-    setTotalRounds(e.target.value, 10)
+    setLocalTotalRounds(e.target.value, 10)
   }
 
   const sendTotalRounds = () => {
-    globalContext.socket.emit('totalRounds', { totalRounds: parseInt(totalRounds, 10) })
+    globalContext.socket.emit('totalRounds', { totalRounds: parseInt(localTotalRounds, 10) })
   }
 
   useEffect(() => {
@@ -136,6 +136,7 @@ export default function LobbyPage() {
     })
 
     globalContext.socket.emit('getNumCustom')
+    globalContext.socket.emit('getTotalRounds')
 
     globalContext.socket.on('numCustomWords', (data) => {
       setNumOfCustomWords(data)
@@ -148,7 +149,7 @@ export default function LobbyPage() {
     })
 
     globalContext.socket.on('totalRounds', (data) => {
-      setTotalRounds(data)
+      setServerTotalRounds(data)
     })
 
     globalContext.socket.on('roomUsers', handleRoomUsers)
@@ -175,7 +176,7 @@ export default function LobbyPage() {
       if (isReady) {
         globalContext.socket.emit('notReady', globalContext.socket.id)
       } else {
-        globalContext.socket.emit('ready', { totalRounds: parseInt(totalRounds, 10) })
+        globalContext.socket.emit('ready', globalContext.socket.id)
       }
 
       await new Promise((resolve) => {
@@ -243,28 +244,34 @@ export default function LobbyPage() {
                 </div>
               </form>
             )}
-            <form
-              action="."
-              onSubmit={(e) => {
-                e.preventDefault()
-                sendTotalRounds()
-              }}
-            >
-              <div className={classes.customWords}>
-                <TextField
-                  label="Enter number of rounds"
-                  variant="outlined"
-                  value={totalRounds}
-                  onChange={(e) => handleTotalRounds(e)}
-                  className={classes.textfields}
-                  inputProps={{
-                    maxLength: 1,
-                    pattern: '^[1-6]$',
-                  }}
-                />
-                <Typography variant="subtitle2">Number of rounds (1-6)</Typography>
-              </div>
-            </form>
+            {globalContext.isHost && (
+              <form
+                action="."
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  sendTotalRounds()
+                }}
+              >
+                <div className={classes.customWords}>
+                  <TextField
+                    label="Enter number of rounds"
+                    variant="outlined"
+                    value={localTotalRounds}
+                    onChange={(e) => handleTotalRounds(e)}
+                    className={classes.textfields}
+                    inputProps={{
+                      maxLength: 1,
+                      pattern: '^[1-6]$',
+                    }}
+                  />
+                  <Typography variant="subtitle2">Number of rounds (1-6)</Typography>
+                </div>
+              </form>
+            )}
+            <Typography variant="subtitle2">
+              Total Rounds:
+              {serverTotalRounds}
+            </Typography>
             {numOfCustomWords !== 1 ? (
               <Typography variant="h5" className={classes.margin}>
                 Game starts when everyone is ready

@@ -17,13 +17,13 @@ function createRoom() {
   while (code in rooms) {
     code = generateUID()
   }
-  rooms[code] = {}
+  rooms[code] = { totalRounds: 3, players: {} }
   addWordSet(code)
   return code
 }
 
 function addUserToRoom(room, userId, user) {
-  rooms[room][userId] = user
+  rooms[room].players[userId] = user
 }
 
 function deleteRoom(room) {
@@ -33,19 +33,30 @@ function deleteRoom(room) {
 
 function removeUserFromRoom(room, userId) {
   if (rooms[room]) {
-    delete rooms[room][userId]
-    if (Object.keys(rooms[room]).length === 0) {
+    delete rooms[room].players[userId]
+    if (Object.keys(rooms[room].players).length === 0) {
       deleteRoom(room)
     }
   }
 }
 
 function getUsersInRoom(room) {
-  return rooms[room]
+  if (rooms[room]) {
+    return rooms[room].players
+  }
+  return {}
 }
 
 function updateUserInRoom(room, userId, key, value) {
-  rooms[room][userId][key] = value
+  rooms[room].players[userId][key] = value
+}
+
+function updateTotalRounds(room, totalRounds) {
+  rooms[room].totalRounds = totalRounds
+}
+
+function getTotalRounds(room) {
+  return rooms[room].totalRounds
 }
 
 module.exports = {
@@ -55,4 +66,6 @@ module.exports = {
   getUsersInRoom,
   updateUserInRoom,
   deleteRoom,
+  updateTotalRounds,
+  getTotalRounds,
 }

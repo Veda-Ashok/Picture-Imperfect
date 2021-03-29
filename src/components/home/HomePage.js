@@ -129,6 +129,7 @@ export default function HomePage() {
         }
         if (command === 'createRoom') {
           socket.emit(command, { username, icon })
+          globalContext.updateIsHost(true)
         } else if (command === 'joinRoom') {
           socket.emit('joinRoom', { username, room: roomCode, icon })
         }
