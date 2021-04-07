@@ -43,25 +43,37 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
     outline: 'none',
   },
-  whiteBg: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '30%',
-    background: 'white',
-    height: '100vh',
-    zIndex: -900,
-  },
   textContent: {
-    float: 'left',
-    width: '30%',
+    background: 'white',
+    [theme.breakpoints.up('md')]: {
+      float: 'left',
+      width: '30%',
+    },
+    [theme.breakpoints.between('sm', 'md')]: {
+      float: 'left',
+      width: '50%',
+    },
     height: '100%',
     overflow: 'auto',
     display: 'flex',
     flexFlow: 'column nowrap',
-    justifyContent: 'center',
     alignItems: 'center',
-    alignContent: 'center',
+  },
+  whiteBg: {
+    zIndex: -900,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    [theme.breakpoints.up('md')]: {
+      width: '30%',
+      height: '100vh',
+      background: 'white',
+    },
+    [theme.breakpoints.between('sm', 'md')]: {
+      width: '50%',
+      height: '100vh',
+      background: 'white',
+    },
   },
   roomCode: {
     background: '#B2DAFF',
@@ -73,10 +85,20 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: amber[200],
     },
   },
+  roomCodeText: {
+    [theme.breakpoints.down('md')]: {
+      fontSize: '1.8em',
+    },
+  },
   users: {
-    float: 'right',
-    width: '70%',
-    // border: '5px solid black',
+    [theme.breakpoints.up('md')]: {
+      float: 'right',
+      width: '70%',
+    },
+    [theme.breakpoints.between('sm', 'md')]: {
+      float: 'right',
+      width: '50%',
+    },
     height: '85vh',
     overflow: 'auto',
     marginTop: theme.spacing(5),
@@ -96,17 +118,6 @@ export default function LobbyPage() {
   const [localTotalRounds, setLocalTotalRounds] = useState('')
   const [serverTotalRounds, setServerTotalRounds] = useState('')
 
-  const handleRoomUsers = (data) => {
-    console.log("I'm running")
-    if (Object.keys(data.users).length < 3) {
-      setMessage('You need at least 3 players to start!')
-    } else if (Object.keys(data.users).length > 13) {
-      setMessage('Sorry, the maximum is 13 players...')
-    } else {
-      setMessage('')
-    }
-  }
-
   const handleRoomCode = () => {
     navigator.clipboard.writeText(globalContext.roomCode)
     setCopied('room code copied')
@@ -118,7 +129,7 @@ export default function LobbyPage() {
     console.log('after emitting custom')
   }
 
-  const handleTotalRounds = (e) => {
+  const updateTotalRounds = (e) => {
     setLocalTotalRounds(e.target.value, 10)
   }
 
@@ -126,11 +137,38 @@ export default function LobbyPage() {
     globalContext.socket.emit('totalRounds', { totalRounds: parseInt(localTotalRounds, 10) })
   }
 
+  // Socket handler methods
+
+  const handleNumCustomWords = (data) => {
+    setNumOfCustomWords(data)
+
+    if (data === 0 || data === 1) {
+      setWordsNeeded(2 - data)
+    } else {
+      setWordsNeeded(0)
+    }
+  }
+
+  const handleRoomUsers = (data) => {
+    if (Object.keys(data.users).length < 3) {
+      setMessage('You need at least 3 players to start!')
+    } else if (Object.keys(data.users).length > 13) {
+      setMessage('Sorry, the maximum is 13 players...')
+    } else {
+      setMessage('')
+    }
+  }
+
+  const handleTotalRounds = (data) => {
+    setServerTotalRounds(data)
+  }
+
   useEffect(() => {
     if (!globalContext.roomCode || !globalContext.socket) {
       history.push('/')
       return () => {}
     }
+
     globalContext.socket.once('everyoneReady', () => {
       history.push('/game')
     })
@@ -138,19 +176,9 @@ export default function LobbyPage() {
     globalContext.socket.emit('getNumCustom')
     globalContext.socket.emit('getTotalRounds')
 
-    globalContext.socket.on('numCustomWords', (data) => {
-      setNumOfCustomWords(data)
+    globalContext.socket.on('numCustomWords', handleNumCustomWords)
 
-      if (data === 0 || data === 1) {
-        setWordsNeeded(2 - data)
-      } else {
-        setWordsNeeded(0)
-      }
-    })
-
-    globalContext.socket.on('totalRounds', (data) => {
-      setServerTotalRounds(data)
-    })
+    globalContext.socket.on('totalRounds', handleTotalRounds)
 
     globalContext.socket.on('roomUsers', handleRoomUsers)
 
@@ -167,6 +195,10 @@ export default function LobbyPage() {
       // before the component is destroyed
       // unbind all event handlers used in this component
       globalContext.socket.off('roomUsers', handleRoomUsers)
+
+      globalContext.socket.off('numCustomWords', handleNumCustomWords)
+
+      globalContext.socket.off('totalRounds', handleTotalRounds)
     }
   }, [])
 
@@ -198,15 +230,15 @@ export default function LobbyPage() {
   )
 
   return (
-    <>
+    <div className={classes.root}>
       {globalContext.socket ? (
-        <div className={classes.root}>
+        <>
           <div className={classes.whiteBg} />
           <Rules />
           <div className={classes.textContent}>
             <button className={classes.button} type="button" onClick={handleRoomCode}>
               <div className={classes.roomCode}>
-                <Typography variant="h4">
+                <Typography variant="h4" className={classes.roomCodeText}>
                   Roomcode:
                   {'  '}
                   {globalContext.roomCode}
@@ -257,7 +289,7 @@ export default function LobbyPage() {
                     label="Enter number of rounds"
                     variant="outlined"
                     value={localTotalRounds}
-                    onChange={(e) => handleTotalRounds(e)}
+                    onChange={updateTotalRounds}
                     className={classes.textfields}
                     inputProps={{
                       maxLength: 1,
@@ -303,10 +335,10 @@ export default function LobbyPage() {
           <div className={classes.users}>
             <LobbyUsers />
           </div>
-        </div>
+        </>
       ) : (
         loadingPage
       )}
-    </>
+    </div>
   )
 }

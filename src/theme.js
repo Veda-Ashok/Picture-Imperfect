@@ -63,8 +63,13 @@ theme.overrides = {
   },
   MuiCssBaseline: {
     '@global': {
+      html: {
+        height: '100%',
+      },
       body: {
         backgroundColor: babyBlue,
+        height: '100%',
+        margin: '0px',
       },
     },
   },
