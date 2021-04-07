@@ -254,6 +254,11 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
     socketRef.current = globalContext.socket
     socketRef.current.on('newDrawers', onNewDrawers)
     socketRef.current.on('drawing', onDrawingEvent)
+
+    return () => {
+      socketRef.current.off('newDrawers', onNewDrawers)
+      socketRef.current.off('drawing', onDrawingEvent)
+    }
   }, [])
 
   useEffect(() => {

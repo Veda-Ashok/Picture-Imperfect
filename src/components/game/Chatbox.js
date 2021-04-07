@@ -61,17 +61,18 @@ export default function Chatbox({ judges }) {
     ])
   }
 
+  const handleChat = (data) => {
+    handleChatUpdate(data)
+    messageCount += 1
+  }
+
   useEffect(() => {
-    console.log('using effect in chat')
-    globalContext.socket.on('chat', (data) => {
-      handleChatUpdate(data)
-      messageCount += 1
-    })
+    globalContext.socket.on('chat', handleChat)
 
     return () => {
       // before the component is destroyed
       // unbind all event handlers used in this component
-      // globalContext.socket.off('chat', handleChatUpdate)
+      globalContext.socket.off('chat', handleChat)
     }
   }, [])
 

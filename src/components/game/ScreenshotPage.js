@@ -16,7 +16,7 @@ import CloseIcon from '@material-ui/icons/Close'
 import Context from '../../context/context'
 import Rules from '../reusable/Rules'
 import Player from './Player'
-import LobbyUsers from '../lobby/LobbyUsers'
+import ScreenshotUsers from './ScreenshotUsers'
 
 const useStyles = makeStyles((theme) => ({
   body: {
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     flexDirection: 'column',
     alignItems: 'center',
-    height: '100vh',
+    height: '100%',
   },
   avatars: {
     display: 'flex',
@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
   },
   winningWord: {
-    paddingTop: theme.spacing(2),
+    paddingTop: theme.spacing(7),
   },
   playersGettingPoints: {
     display: 'flex',
@@ -92,6 +92,9 @@ const useStyles = makeStyles((theme) => ({
     right: theme.spacing(1),
     top: theme.spacing(1),
     color: 'black',
+  },
+  buttons: {
+    margin: theme.spacing(1),
   },
 }))
 export default function ScreenshotPage({
@@ -211,18 +214,26 @@ export default function ScreenshotPage({
         alt="screenshot"
       />
       <div className={classes.screenShotTimer} />
-      <Button variant="contained" color="primary" size="large" onClick={() => setOpenRanking(true)}>
-        Player Ranking 👑
-      </Button>
-      <Button
-        className={classes.margin}
-        variant="contained"
-        color="secondary"
-        size="large"
-        onClick={handleReady}
-      >
-        {isReady ? `I'm no longer ready :(` : `I'm ready`}
-      </Button>
+      <div>
+        <Button
+          className={classes.buttons}
+          variant="contained"
+          color="secondary"
+          size="large"
+          onClick={() => setOpenRanking(true)}
+        >
+          Player Ranking 👑
+        </Button>
+        <Button
+          className={classes.buttons}
+          variant="contained"
+          color="primary"
+          size="large"
+          onClick={handleReady}
+        >
+          {isReady ? `I'm no longer ready :(` : `Ready for next turn`}
+        </Button>
+      </div>
       <Dialog
         className={classes.button}
         onClose={() => setOpenRanking(false)}
@@ -245,7 +256,7 @@ export default function ScreenshotPage({
         </DialogTitle>
         <DialogContent dividers>{sortPlayersByRank(players)}</DialogContent>
       </Dialog>
-      <div className={classes.users}>{globalContext.socket && <LobbyUsers />}</div>
+      <div className={classes.users}>{globalContext.socket && <ScreenshotUsers />}</div>
     </div>
   )
 }

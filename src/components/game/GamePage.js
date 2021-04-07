@@ -37,70 +37,103 @@ export default function GamePage() {
   const [round, setRound] = useState(0)
   const [turn, setTurn] = useState(0)
 
-  // const setRole = async role => {}
+  // handle methods for sockets
+  const handleScreenshotPage = (data) => {
+    setIsScreenshotPage(true)
+    setPlayers(Object.values(data.players))
+    setWinningTeam(data.winningTeam)
+    setWinningJudge(data.winningJudge ? data.winningJudge : 'No one')
+    globalContext.updateUsers(data.players)
+    console.log('players', data.players)
+    console.log('winningTeam', data.winningTeam)
+    console.log('winningJudge', data.winningJudge)
+  }
+
+  const handleStartNextRound = () => {
+    setIsScreenshotPage(false)
+  }
+
+  const handleGameOver = (data) => {
+    console.log(' GAME OVER, players', data.players)
+    setPlayers(Object.values(data.players))
+    setIsScreenshotPage(false)
+    setIsGameOverPage(true)
+  }
+
+  const handleWordAssignment = (data) => {
+    setBlueTeamWord(data.blueTeamWord)
+    setWhiteTeamWord(data.whiteTeamWord)
+  }
+
+  const handleRoundTimer = (data) => {
+    setTimer(data.timeRemaining)
+    setIsScreenshotPage(false)
+  }
+
+  const handleNewDrawers = (data) => {
+    setBlueTeam(data.blueTeam)
+    setWhiteTeam(data.whiteTeam)
+  }
+
+  const handleRoomRoles = (data) => {
+    console.log('ROOM ROLES: ', data)
+    globalContext.updateScreenshot('', globalContext)
+    setBlueTeam(data.blueTeam)
+    setWhiteTeam(data.whiteTeam)
+    setJudges(Object.values(data.judges))
+    const currentRole = data.blueTeam.find((member) => member.id === globalContext.socket.id)
+      ? 'blueTeam'
+      : data.whiteTeam.find((member) => member.id === globalContext.socket.id)
+      ? 'whiteTeam'
+      : 'judge'
+    setRole(currentRole)
+    setIsScreenshotPage(false)
+  }
+
+  const handleCurrentRound = (data) => {
+    setRound(data.round)
+    setTurn(data.turn)
+  }
 
   useEffect(() => {
     if (!globalContext.roomCode || !globalContext.socket) {
       history.push('/')
       return () => {}
     }
-    globalContext.socket.on('roomRoles', (data) => {
-      console.log('ROOM ROLES: ', data)
-      globalContext.updateScreenshot('', globalContext)
-      setBlueTeam(data.blueTeam)
-      setWhiteTeam(data.whiteTeam)
-      setJudges(Object.values(data.judges))
-      const currentRole = data.blueTeam.find((member) => member.id === globalContext.socket.id)
-        ? 'blueTeam'
-        : data.whiteTeam.find((member) => member.id === globalContext.socket.id)
-        ? 'whiteTeam'
-        : 'judge'
-      setRole(currentRole)
-      setIsScreenshotPage(false)
-    })
-    globalContext.socket.on('newDrawers', (data) => {
-      setBlueTeam(data.blueTeam)
-      setWhiteTeam(data.whiteTeam)
-    })
-    globalContext.socket.on('roundTimer', (data) => {
-      // console.log('roundTimer', data.timeRemaining)
-      setTimer(data.timeRemaining)
-      setIsScreenshotPage(false)
-    })
-    globalContext.socket.on('wordAssignment', (data) => {
-      setBlueTeamWord(data.blueTeamWord)
-      setWhiteTeamWord(data.whiteTeamWord)
-    })
-    globalContext.socket.on('gameOver', (data) => {
-      console.log(' GAME OVER, players', data.players)
-      setPlayers(Object.values(data.players))
-      setIsScreenshotPage(false)
-      setIsGameOverPage(true)
-    })
+    globalContext.socket.on('roomRoles', handleRoomRoles)
 
-    globalContext.socket.on('startNextRound', () => {
-      setIsScreenshotPage(false)
-    })
+    globalContext.socket.on('newDrawers', handleNewDrawers)
 
-    globalContext.socket.on('screenshotPage', (data) => {
-      setIsScreenshotPage(true)
-      setPlayers(Object.values(data.players))
-      setWinningTeam(data.winningTeam === undefined ? 'timeOut' : data.winningTeam)
-      setWinningJudge(data.winningJudge === undefined ? 'timeOut' : data.winningJudge)
-      globalContext.updateUsers(data.players)
-      console.log('players', data.players)
-      console.log('winningTeam', data.winningTeam)
-      console.log('winningJudge', data.winningJudge)
-    })
+    globalContext.socket.on('roundTimer', handleRoundTimer)
 
-    globalContext.socket.on('currentRound', (data) => {
-      setRound(data.round)
-      setTurn(data.turn)
-    })
+    globalContext.socket.on('wordAssignment', handleWordAssignment)
+
+    globalContext.socket.on('gameOver', handleGameOver)
+
+    globalContext.socket.on('startNextRound', handleStartNextRound)
+
+    globalContext.socket.on('screenshotPage', handleScreenshotPage)
+
+    globalContext.socket.on('currentRound', handleCurrentRound)
 
     return () => {
       // before the component is destroyed
       // unbind all event handlers used in this component
+      globalContext.socket.off('roomRoles', handleRoomRoles)
+
+      globalContext.socket.off('newDrawers', handleNewDrawers)
+
+      globalContext.socket.off('roundTimer', handleRoundTimer)
+
+      globalContext.socket.off('wordAssignment', handleWordAssignment)
+
+      globalContext.socket.off('gameOver', handleGameOver)
+
+      globalContext.socket.off('startNextRound', handleStartNextRound)
+
+      globalContext.socket.off('screenshotPage', handleScreenshotPage)
+
+      globalContext.socket.off('currentRound', handleCurrentRound)
     }
   }, [])
 
