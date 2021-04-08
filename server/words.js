@@ -43,6 +43,11 @@ const easy = [
   'stocks',
   'thunderstorm',
   'compass',
+  'rose',
+  'microphone',
+  'key',
+  'candle',
+  'balloon',
 ]
 const medium = [
   'aglet',
@@ -73,6 +78,10 @@ const medium = [
   'parents',
   'volleyball',
   'report card',
+  'movie',
+  'fireplace',
+  'remote',
+  'brother',
 ]
 const hard = [
   'carnival',
@@ -100,6 +109,12 @@ const hard = [
   'motorcycle',
   'apocalypse',
   'hannah montana',
+  'stuffed animal',
+  'yoga',
+  'poster',
+  'mugshot',
+  'graduation speech',
+  'patio',
 ]
 const impossible = [
   'darkness',
@@ -119,6 +134,10 @@ const impossible = [
   'drama',
   'degree',
   'dilemma',
+  'object',
+  'interruption',
+  'LED',
+  'cozy',
 ]
 
 const DEFAULT_WORDS = { easy, medium, hard, impossible }
