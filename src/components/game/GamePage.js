@@ -44,7 +44,7 @@ export default function GamePage() {
     setWinningTeam(data.winningTeam)
     setWinningJudge(data.winningJudge ? data.winningJudge : 'No one')
     globalContext.updateUsers(data.players)
-    console.log('players', data.players)
+    console.log('value of players', Object.values(data.players))
     console.log('winningTeam', data.winningTeam)
     console.log('winningJudge', data.winningJudge)
   }
@@ -75,7 +75,7 @@ export default function GamePage() {
     setWhiteTeam(data.whiteTeam)
   }
 
-  const handleRoomRoles = (data) => {
+  const handleNewTurnRoles = (data) => {
     console.log('ROOM ROLES: ', data)
     globalContext.updateScreenshot('', globalContext)
     setBlueTeam(data.blueTeam)
@@ -90,6 +90,18 @@ export default function GamePage() {
     setIsScreenshotPage(false)
   }
 
+  const handleRoomRoles = (data) => {
+    setBlueTeam(data.blueTeam)
+    setWhiteTeam(data.whiteTeam)
+    setJudges(Object.values(data.judges))
+    const currentRole = data.blueTeam.find((member) => member.id === globalContext.socket.id)
+      ? 'blueTeam'
+      : data.whiteTeam.find((member) => member.id === globalContext.socket.id)
+      ? 'whiteTeam'
+      : 'judge'
+    setRole(currentRole)
+  }
+
   const handleCurrentRound = (data) => {
     setRound(data.round)
     setTurn(data.turn)
@@ -100,6 +112,8 @@ export default function GamePage() {
       history.push('/')
       return () => {}
     }
+    globalContext.socket.on('newTurnRoles', handleNewTurnRoles)
+
     globalContext.socket.on('roomRoles', handleRoomRoles)
 
     globalContext.socket.on('newDrawers', handleNewDrawers)
@@ -119,6 +133,8 @@ export default function GamePage() {
     return () => {
       // before the component is destroyed
       // unbind all event handlers used in this component
+      globalContext.socket.off('newTurnRoles', handleNewTurnRoles)
+
       globalContext.socket.off('roomRoles', handleRoomRoles)
 
       globalContext.socket.off('newDrawers', handleNewDrawers)
