@@ -7,7 +7,7 @@ import LobbyPage from './components/lobby/LobbyPage'
 import GamePage from './components/game/GamePage'
 import theme from './theme'
 import GlobalState from './context/GlobalState'
-import Testing from './components/reusable/Testing'
+import TestingScreenshotPage from './components/reusable/TestingScreenshotPage'
 
 export default function App() {
   return (
@@ -17,10 +17,7 @@ export default function App() {
         <Router>
           <Switch>
             <Route exact path="/testing">
-              <Testing />
-            </Route>
-            <Route exact path="/gameOver">
-              <h1>GameOver</h1>
+              <TestingScreenshotPage />
             </Route>
             <Route exact path="/lobby">
               <LobbyPage />

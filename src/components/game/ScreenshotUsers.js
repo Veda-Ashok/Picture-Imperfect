@@ -1,8 +1,8 @@
 import React, { useContext, useEffect } from 'react'
+import { amber } from '@material-ui/core/colors'
 import Typography from '@material-ui/core/Typography'
 import Avatar from '@material-ui/core/Avatar'
 import { makeStyles } from '@material-ui/core/styles'
-import { amber } from '@material-ui/core/colors'
 import Context from '../../context/context'
 
 const useStyles = makeStyles((theme) => ({
@@ -11,15 +11,14 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    margin: theme.spacing(5),
+    margin: theme.spacing(1),
   },
   format: {
     display: 'flex',
     flexFlow: 'row wrap',
     justifyContent: 'center',
-    // flexDirection: 'row',
     alignItems: 'center',
-    height: '100%',
+    height: '10%',
     overflow: 'auto',
   },
   flexItem: {
@@ -27,13 +26,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function LobbyUsers() {
+export default function ScreenshotUsers() {
   const classes = useStyles()
   const globalContext = useContext(Context)
   const { socket } = globalContext
 
   const handleUserUpdate = (data) => {
     const { users } = data
+    console.log('inside screenshot users im running')
     globalContext.updateUsers(users, globalContext)
   }
 
@@ -55,10 +55,10 @@ export default function LobbyUsers() {
               <Typography variant="subtitle1">{user.username}</Typography>
               {user.ready ? (
                 <Typography variant="subtitle1" style={{ backgroundColor: amber[200] }}>
-                  LET ME INNNNNNNNNN
+                  Let&apos;s go!
                 </Typography>
               ) : (
-                <Typography variant="subtitle1">HOLD THE F*CKING PHONE!!</Typography>
+                <Typography variant="subtitle1">Hold up!</Typography>
               )}
             </div>
           </div>

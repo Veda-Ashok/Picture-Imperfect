@@ -16,6 +16,7 @@ import CloseIcon from '@material-ui/icons/Close'
 import Context from '../../context/context'
 import Rules from '../reusable/Rules'
 import Player from './Player'
+import ScreenshotUsers from './ScreenshotUsers'
 
 const useStyles = makeStyles((theme) => ({
   body: {
@@ -23,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     flexDirection: 'column',
     alignItems: 'center',
-    height: '100vh',
+    height: '100%',
   },
   avatars: {
     display: 'flex',
@@ -52,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
   },
   winningWord: {
-    paddingTop: theme.spacing(2),
+    paddingTop: theme.spacing(7),
   },
   playersGettingPoints: {
     display: 'flex',
@@ -92,6 +93,9 @@ const useStyles = makeStyles((theme) => ({
     top: theme.spacing(1),
     color: 'black',
   },
+  buttons: {
+    margin: theme.spacing(1),
+  },
 }))
 export default function ScreenshotPage({
   players,
@@ -101,11 +105,13 @@ export default function ScreenshotPage({
   blueTeam,
   whiteTeamWord,
   blueTeamWord,
-  screenshotTimer,
+  round,
+  turn,
 }) {
   const classes = useStyles()
   const globalContext = useContext(Context)
   const [openRanking, setOpenRanking] = useState(false)
+  const [isReady, setIsReady] = useState(false)
   let playersGettingPoints, wordGuessed, turnResult
 
   switch (winningTeam) {
@@ -159,12 +165,32 @@ export default function ScreenshotPage({
         )
       })
   }
+  const handleReady = async (event) => {
+    event.preventDefault()
+    try {
+      if (isReady) {
+        globalContext.socket.emit('notRoundReady', globalContext.socket.id)
+      } else {
+        console.log('emitting roundReady')
+        globalContext.socket.emit('roundReady', globalContext.socket.id)
+      }
+
+      await new Promise((resolve) => {
+        globalContext.socket.once('roomUsers', async (data) => {
+          resolve(data)
+        })
+      })
+      setIsReady(!isReady)
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   return (
     <div className={classes.body}>
       <div className={classes.round}>
-        <Typography variant="h5">Round TBD</Typography>
-        <Typography variant="h6">Turn TBD</Typography>
+        <Typography variant="h5">{`Round ${round}`}</Typography>
+        <Typography variant="h6">{`Turn ${turn}`}</Typography>
       </div>
       <Rules />
       <Typography className={classes.winningWord} variant="h2">{`${wordGuessed} won!`}</Typography>
@@ -187,16 +213,27 @@ export default function ScreenshotPage({
         src={globalContext.screenshot ? globalContext.screenshot : '/media/nobodyDrew.png'}
         alt="screenshot"
       />
-      <div className={classes.screenShotTimer}>
-        <Typography variant="h4">{screenshotTimer}</Typography>
-        <Typography variant="h6" className={classes.secondsRemaining}>
-          {' '}
-          second(s) remaining to save the image!
-        </Typography>
+      <div className={classes.screenShotTimer} />
+      <div>
+        <Button
+          className={classes.buttons}
+          variant="contained"
+          color="secondary"
+          size="large"
+          onClick={() => setOpenRanking(true)}
+        >
+          Player Ranking 👑
+        </Button>
+        <Button
+          className={classes.buttons}
+          variant="contained"
+          color="primary"
+          size="large"
+          onClick={handleReady}
+        >
+          {isReady ? `I'm no longer ready :(` : `Ready for next turn`}
+        </Button>
       </div>
-      <Button variant="contained" color="primary" size="large" onClick={() => setOpenRanking(true)}>
-        Player Ranking 👑
-      </Button>
       <Dialog
         className={classes.button}
         onClose={() => setOpenRanking(false)}
@@ -219,6 +256,7 @@ export default function ScreenshotPage({
         </DialogTitle>
         <DialogContent dividers>{sortPlayersByRank(players)}</DialogContent>
       </Dialog>
+      <div className={classes.users}>{globalContext.socket && <ScreenshotUsers />}</div>
     </div>
   )
 }
@@ -262,7 +300,8 @@ ScreenshotPage.propTypes = {
     PropTypes.string,
   ]).isRequired,
   winningTeam: PropTypes.string.isRequired,
-  screenshotTimer: PropTypes.number.isRequired,
   blueTeamWord: PropTypes.string.isRequired,
   whiteTeamWord: PropTypes.string.isRequired,
+  round: PropTypes.number.isRequired,
+  turn: PropTypes.number.isRequired,
 }

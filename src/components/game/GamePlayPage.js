@@ -130,6 +130,8 @@ function GamePlayPage({
   blueTeamWord,
   whiteTeamWord,
   role,
+  round,
+  turn,
 }) {
   const classes = useStyles()
   const globalContext = useContext(Context)
@@ -156,8 +158,8 @@ function GamePlayPage({
       <div className={classes.whiteBg} />
       <Rules />
       <div className={classes.round}>
-        <Typography variant="h5">Round TBD</Typography>
-        <Typography variant="h6">Turn TBD</Typography>
+        <Typography variant="h5">{`Round ${round}`}</Typography>
+        <Typography variant="h6">{`Turn ${turn}`}</Typography>
       </div>
 
       <div className={classes.banner}>
@@ -222,6 +224,8 @@ function GamePlayPage({
 }
 
 GamePlayPage.propTypes = {
+  round: PropTypes.number.isRequired,
+  turn: PropTypes.number.isRequired,
   width: PropTypes.string.isRequired,
   whiteTeam: PropTypes.arrayOf(
     PropTypes.shape({

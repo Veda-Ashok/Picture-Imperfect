@@ -5,8 +5,6 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import withWidth from '@material-ui/core/withWidth'
 import { amber } from '@material-ui/core/colors'
-
-// import io from 'socket.io-client'
 import Context from '../../context/context'
 
 const useStyles = makeStyles((theme) => ({
@@ -93,7 +91,7 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
     const { width, height } = canvasRef.current.getBoundingClientRect()
 
     if (canvasRef.current.width !== width || canvasRef.current.height !== height) {
-      const { devicePixelRatio: ratio = 1 } = window
+      const ratio = 1
       canvasRef.current.width = canvasRef.current.clientWidth * ratio
       canvasRef.current.height = canvasRef.current.clientHeight * ratio
       setScale({ x: ratio, y: ratio })
@@ -105,11 +103,6 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
 
     const canvas = canvasRef.current
     const context = canvas.getContext('2d')
-
-    // --------------------- Memory canvas for resizing ------------------------------------
-
-    // const memCanvas = document.createElement('canvas')
-    // const memCtx = memCanvas.getContext('2d')
 
     // ----------------------- Colors --------------------------------------------------
 
@@ -240,23 +233,6 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
     // -------------- call resized function -----------------
     resized()
 
-    // const onResize = () => {
-    //   memCanvas.width = canvas.width
-    //   memCanvas.height = canvas.height
-    //   memCanvas.style.width = '100%' // Note you must post fix the unit type %,px,em
-    //   memCanvas.style.height = '100%'
-    //   memCtx.drawImage(canvas, 0, 0)
-    //   const bounds = canvas.getBoundingClientRect()
-    //   canvas.width = bounds.width
-    //   canvas.height = bounds.height
-    //   canvas.style.width = '100%' // Note you must post fix the unit type %,px,em
-    //   canvas.style.height = '100%'
-    //   context.drawImage(memCanvas, 0, 0)
-    // }
-
-    // window.addEventListener('resize', onResize, false)
-    // onResize()
-
     // ----------------------- socket.io connection ----------------------------
 
     const onDrawingEvent = (data) => {
@@ -279,6 +255,11 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
     socketRef.current = globalContext.socket
     socketRef.current.on('newDrawers', onNewDrawers)
     socketRef.current.on('drawing', onDrawingEvent)
+
+    return () => {
+      socketRef.current.off('newDrawers', onNewDrawers)
+      socketRef.current.off('drawing', onDrawingEvent)
+    }
   }, [])
 
   useEffect(() => {
@@ -290,7 +271,7 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
   function draw(canvas, scaleX, scaleY) {
     const context = canvas.getContext('2d')
     context.scale(scaleX, scaleY)
-    context.drawImage(canvas, 0, 0, canvas.clientWidth, canvas.clientHeight)
+    context.drawImage(canvas, 0, 0, canvas.width, canvas.height)
   }
 
   useEffect(() => {

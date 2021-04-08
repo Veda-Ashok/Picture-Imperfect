@@ -140,6 +140,15 @@ function addCustomWord(roomCode, word) {
   return 0
 }
 
+function getNumberOfCustomWords(roomCode) {
+  if (Object.prototype.hasOwnProperty.call(wordSets, roomCode)) {
+    if (Object.prototype.hasOwnProperty.call(wordSets[roomCode], 'custom')) {
+      return wordSets[roomCode].custom.length
+    }
+  }
+  return 0
+}
+
 function addWordSet(roomCode) {
   wordSets[roomCode] = JSON.parse(JSON.stringify(DEFAULT_WORDS))
 }
@@ -180,4 +189,5 @@ module.exports = {
   clearWordSet,
   getRandomDifficulty,
   getRandomWord,
+  getNumberOfCustomWords,
 }
