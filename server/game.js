@@ -80,7 +80,7 @@ class Game {
     while (Object.keys(this.possiblePlayers).length > 0) {
       this.assignPlayerToTeam()
     }
-    this.io.to(this.roomCode).emit('roomRoles', {
+    this.io.to(this.roomCode).emit('newTurnRoles', {
       judges: this.judges,
       blueTeam: this.blueTeam,
       whiteTeam: this.whiteTeam,
@@ -177,6 +177,8 @@ class Game {
       updateUser(player.id, 'ready', false)
     })
     this.room = getUsersInRoom(this.roomCode)
+    console.log('players', players)
+    console.log('this.room', this.room)
     this.io.to(this.roomCode).emit('screenshotPage', {
       winningTeam: teamName,
       winningJudge: judge,
