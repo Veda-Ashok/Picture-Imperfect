@@ -18,7 +18,7 @@ const players = [
   {
     icon: '',
     id: 'JGMxwjRlu4xNlW1GAAAH',
-    points: 1,
+    points: 10,
     ready: true,
     room: 'yyxcev',
     username: 'michae',
@@ -66,7 +66,7 @@ const players = [
   {
     username: 'rachel',
     icon: '/logo192.png',
-    points: 7,
+    points: 10,
     room: 'yyxcev',
     ready: false,
     id: 'socketid1234',
