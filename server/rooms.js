@@ -23,7 +23,9 @@ function createRoom() {
 }
 
 function addUserToRoom(room, userId, user) {
-  rooms[room].players[userId] = user
+  if (rooms[room]) {
+    rooms[room].players[userId] = user
+  }
 }
 
 function deleteRoom(room) {
@@ -48,15 +50,22 @@ function getUsersInRoom(room) {
 }
 
 function updateUserInRoom(room, userId, key, value) {
-  rooms[room].players[userId][key] = value
+  if (rooms[room]) {
+    rooms[room].players[userId][key] = value
+  }
 }
 
 function updateTotalRounds(room, totalRounds) {
-  rooms[room].totalRounds = totalRounds
+  if (rooms[room]) {
+    rooms[room].totalRounds = totalRounds
+  }
 }
 
 function getTotalRounds(room) {
-  return rooms[room].totalRounds
+  if (rooms[room]) {
+    return rooms[room].totalRounds
+  }
+  return 0
 }
 
 module.exports = {
