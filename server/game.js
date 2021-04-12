@@ -21,7 +21,7 @@ class Game {
     this.turn = 1
     this.round = 1
     this.totalRounds = totalRounds
-    this.totalDrawTime = 30
+    this.totalDrawTime = 90
     this.playerDrawTime = 4 // SHOULD BE: totalDrawTime / (numberOfPLayersOnTeam * numberOfDrawRotations(aka how many times we loop thru a team))
     this.blueTeamWord = ''
     this.whiteTeamWord = ''
