@@ -46,7 +46,7 @@ function getUsersInRoom(room) {
   if (rooms[room]) {
     return rooms[room].players
   }
-  return {}
+  return false
 }
 
 function updateUserInRoom(room, userId, key, value) {
