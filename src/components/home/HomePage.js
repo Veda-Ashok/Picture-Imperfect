@@ -15,9 +15,6 @@ import Rules from '../reusable/Rules'
 
 // git push heroku heroku-deployment:main
 
-let y = 1
-y = 5
-
 const useStyles = makeStyles((theme) => ({
   body: {
     display: 'flex',
