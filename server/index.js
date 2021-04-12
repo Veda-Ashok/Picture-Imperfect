@@ -25,8 +25,8 @@ const { addCustomWord, getNumberOfCustomWords } = require('./words')
 
 const io = socketio(http, {
   cors: {
-    origin: 'http://localhost:3000',
-    // origin: 'https://picture-imperfect.herokuapp.com/',
+    // origin: 'http://localhost:3000',
+    origin: 'https://picture-imperfect.herokuapp.com/',
     methods: ['GET', 'POST'],
   },
 })
@@ -291,6 +291,6 @@ io.on('connection', (socket) => {
   })
 })
 
-const PORT = process.env.PORT || 8080 // comment this to run locally
-// const PORT = 8080 // then uncomment this
+// const PORT = process.env.PORT || 8080 // comment this to run locally
+const PORT = 8080 // then uncomment this
 http.listen(PORT, () => console.log(`server is running on port ${PORT}`))
