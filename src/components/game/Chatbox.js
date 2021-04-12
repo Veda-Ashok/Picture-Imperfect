@@ -48,11 +48,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function Chatbox({ judges }) {
+function handleHint(word) {
+  return word.replace(/[a-z]/gi, '_')
+}
+
+export default function Chatbox({ judges, blueTeamWord, whiteTeamWord }) {
   const classes = useStyles()
   const [chatLog, setChatLog] = useState([])
+
+  // const [blueHint, setBlueHint] = useState('')
+  // const [whiteHint, setWhiteHint] = useState('')
   const globalContext = useContext(Context)
   let messageCount = 0
+
+  const blueHint = handleHint(blueTeamWord)
+  const whiteHint = handleHint(whiteTeamWord)
 
   function handleChatUpdate(data) {
     setChatLog((oldChatLog) => [
@@ -91,6 +101,9 @@ export default function Chatbox({ judges }) {
       <Typography className={classes.center} variant="h5">
         What do you think it is?!
       </Typography>
+      <Typography className={classes.center} variant="subtitle1">
+        {`${blueHint} vs. ${whiteHint}`}
+      </Typography>
       <Paper className={classes.chatLog}>
         <Typography variant="subtitle1">
           {chatLog.map((chat) => (
@@ -127,4 +140,6 @@ Chatbox.propTypes = {
       points: PropTypes.number,
     }),
   ).isRequired,
+  blueTeamWord: PropTypes.string.isRequired,
+  whiteTeamWord: PropTypes.string.isRequired,
 }
