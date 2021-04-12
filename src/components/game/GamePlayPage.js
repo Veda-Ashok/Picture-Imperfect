@@ -138,7 +138,9 @@ function GamePlayPage({
 
   const chatbox = (
     <div className={classes.chatBox}>
-      {globalContext.socket && judges.length > 0 && <Chatbox judges={judges} />}
+      {globalContext.socket && judges.length > 0 && (
+        <Chatbox judges={judges} blueTeamWord={blueTeamWord} whiteTeamWord={whiteTeamWord} />
+      )}
     </div>
   )
   const playerQueue = (
@@ -174,7 +176,7 @@ function GamePlayPage({
             </div>
           )}
           <Typography className={classes.vs} variant="h1">
-            v.s
+            vs.
           </Typography>
           {blueTeam.length > 0 && (
             <div className={classes.avatars}>

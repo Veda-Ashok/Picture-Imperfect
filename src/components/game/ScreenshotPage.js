@@ -142,28 +142,35 @@ export default function ScreenshotPage({
   }
 
   const sortPlayersByRank = (people) => {
-    return people
-      .sort((personA, personB) => personB.points - personA.points)
-      .map((person, index, array) => {
-        return (
-          <div key={person.username}>
-            <span
-              className={
-                globalContext.myInfo.username === person.username
-                  ? classes.yourRank
-                  : classes.othersRank
-              }
-            >
-              <Typography variant="h4">
-                {`${index === 0 ? '👑' : ''} # ${
-                  index > 0 && array[index - 1].points === array[index].points ? '--' : index + 1
-                }`}
-              </Typography>
-              <Player color="white" player={person} />
-            </span>
-          </div>
-        )
-      })
+    const sortedPlayers = people.sort((personA, personB) => personB.points - personA.points)
+    let rank = 1
+    let previousPlayer
+
+    return sortedPlayers.map((player, index) => {
+      if (previousPlayer) {
+        if (previousPlayer.points > player.points) {
+          rank += 1
+        }
+      }
+      previousPlayer = player
+      sortedPlayers[index].rank = rank
+      return (
+        <div key={player.username}>
+          <span
+            className={
+              globalContext.myInfo.username === player.username
+                ? classes.yourRank
+                : classes.othersRank
+            }
+          >
+            <Typography variant="h4">
+              {`${player.rank === 1 ? '👑' : ''} # ${player.rank}`}
+            </Typography>
+            <Player color="white" player={player} />
+          </span>
+        </div>
+      )
+    })
   }
   const handleReady = async (event) => {
     event.preventDefault()
@@ -171,7 +178,6 @@ export default function ScreenshotPage({
       if (isReady) {
         globalContext.socket.emit('notRoundReady', globalContext.socket.id)
       } else {
-        console.log('emitting roundReady')
         globalContext.socket.emit('roundReady', globalContext.socket.id)
       }
 
