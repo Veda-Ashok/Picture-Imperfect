@@ -30,7 +30,6 @@ const io = socketio(http, {
     methods: ['GET', 'POST'],
   },
 })
-// let game
 
 app.use(express.static(path.join(__dirname, '../build')))
 console.log(__dirname)
