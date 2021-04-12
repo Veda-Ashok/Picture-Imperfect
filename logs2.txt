@@ -1,0 +1,104 @@
+2021-04-12T01:53:44.907802+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=NZ3oDxS&sid=Hq7bywcXMth6IzI7AAAA" host=picture-imperfect.herokuapp.com
+service=102ms status=200 bytes=187 protocol=https
+2021-04-12T01:53:44.923539+00:00 app[web.1]: /app/server/rooms.js:26
+2021-04-12T01:53:44.923542+00:00 app[web.1]: rooms[room].players[userId] = user
+2021-04-12T01:53:44.923543+00:00 app[web.1]: ^
+2021-04-12T01:53:44.923543+00:00 app[web.1]:
+2021-04-12T01:53:44.923544+00:00 app[web.1]: TypeError: Cannot read property 'players' of undefined
+2021-04-12T01:53:44.923545+00:00 app[web.1]: at addUserToRoom (/app/server/rooms.js:26:15)
+2021-04-12T01:53:44.923545+00:00 app[web.1]: at userJoin (/app/server/users.js:7:3)
+2021-04-12T01:53:44.923545+00:00 app[web.1]: at Socket.<anonymous> (/app/server/index.js:74:20)    
+2021-04-12T01:53:44.923546+00:00 app[web.1]: at Socket.emit (events.js:315:20)
+2021-04-12T01:53:44.923546+00:00 app[web.1]: at /app/node_modules/socket.io/dist/socket.js:435:32
+2021-04-12T01:53:44.923547+00:00 app[web.1]: at processTicksAndRejections (internal/process/task_queues.js:75:11)
+2021-04-12T01:53:44.940204+00:00 heroku[router]: at=error code=H13 desc="Connection closed without response" method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3oDxV&sid=Hq7bywcff020b9 fwd="12.106.221.22" dyno=web.1 connect=1ms service=134ms status=503 bytes=0 protocol=https
+2021-04-12T01:53:44.942358+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=websocket&sid=Hq7bywcXMth6IzI7AAAA" host=picture-imperfect.herokuapp.com request_67ms status=101 bytes=129 protocol=https
+2021-04-12T01:53:45.035034+00:00 heroku[web.1]: Process exited with status 1
+2021-04-12T01:53:45.144698+00:00 heroku[web.1]: State changed from up to crashed
+2021-04-12T01:53:46.397122+00:00 heroku[router]: at=error code=H10 desc="App crashed" method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3oEKJ" host=picture-imperfect.herokuapp.ce= status=503 bytes= protocol=https
+2021-04-12T01:53:49.492362+00:00 heroku[router]: at=error code=H10 desc="App crashed" method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3oF3A" host=picture-imperfect.herokuapp.ce= status=503 bytes= protocol=https
+2021-04-12T01:53:50.559079+00:00 heroku[router]: at=error code=H10 desc="App crashed" method=GET path="/" host=picture-imperfect.herokuapp.com request_id=3a35387c-a523-4cf2-8465-f5c6ettps
+2021-04-12T01:53:52.484508+00:00 heroku[router]: at=error code=H10 desc="App crashed" method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3oFo5" host=picture-imperfect.herokuapp.ce= status=503 bytes= protocol=https
+2021-04-12T01:53:57.482038+00:00 heroku[router]: at=error code=H10 desc="App crashed" method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3oH00" host=picture-imperfect.herokuapp.ce= status=503 bytes= protocol=https
+2021-04-12T01:54:03.483470+00:00 heroku[router]: at=error code=H10 desc="App crashed" method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3oITm" host=picture-imperfect.herokuapp.ce= status=503 bytes= protocol=https
+2021-04-12T01:54:09.481423+00:00 heroku[router]: at=error code=H10 desc="App crashed" method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3oJxW" host=picture-imperfect.herokuapp.ce= status=503 bytes= protocol=https
+2021-04-12T01:54:15.490650+00:00 heroku[router]: at=error code=H10 desc="App crashed" method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3oLPF" host=picture-imperfect.herokuapp.ce= status=503 bytes= protocol=https
+2021-04-12T01:54:21.606269+00:00 heroku[router]: at=error code=H10 desc="App crashed" method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3oMs_" host=picture-imperfect.herokuapp.ce= status=503 bytes= protocol=https
+2021-04-12T01:54:27.483397+00:00 heroku[router]: at=error code=H10 desc="App crashed" method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3oOKl" host=picture-imperfect.herokuapp.ce= status=503 bytes= protocol=https
+2021-04-12T01:54:33.474458+00:00 heroku[router]: at=error code=H10 desc="App crashed" method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3oPoW" host=picture-imperfect.herokuapp.ce= status=503 bytes= protocol=https
+2021-04-12T01:54:39.470843+00:00 heroku[router]: at=error code=H10 desc="App crashed" method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3oRGF" host=picture-imperfect.herokuapp.ce= status=503 bytes= protocol=https
+2021-04-12T01:54:41.409107+00:00 heroku[web.1]: State changed from crashed to starting
+2021-04-12T01:55:00.118107+00:00 heroku[web.1]: Starting process with command `node ./server/index.js`
+2021-04-12T01:55:03.708036+00:00 app[web.1]: /app/server
+2021-04-12T01:55:03.723155+00:00 app[web.1]: server is running on port 14925
+2021-04-12T01:55:04.709856+00:00 heroku[web.1]: State changed from starting to up
+2021-04-12T01:55:05.568403+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3oSj_" host=picture-imperfect.herokuapp.com request_id=98a2b02b-0e91-tes=298 protocol=https
+2021-04-12T01:55:05.639383+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=NZ3oXgI&sid=kKBoHdc2B3Md3WMxAAAA" host=picture-imperfect.herokuapp.com
+service=13ms status=200 bytes=187 protocol=https
+2021-04-12T01:55:05.642024+00:00 app[web.1]: hello
+2021-04-12T01:55:05.695055+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3oXgM&sid=kKBoHdc2B3Md3WMxAAAA" host=picture-imperfect.herokuapp.com ervice=2ms status=200 bytes=234 protocol=https
+2021-04-12T01:55:05.907682+00:00 heroku[router]: at=info method=GET path="/" host=picture-imperfect.herokuapp.com request_id=7db4bd74-a8ca-44dd-8e45-c378d322a987 fwd="47.37.112.14" dy
+2021-04-12T01:55:05.915055+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3oXiF&sid=kKBoHdc2B3Md3WMxAAAA" host=picture-imperfect.herokuapp.com ervice=163ms status=200 bytes=202 protocol=https
+2021-04-12T01:55:05.982919+00:00 heroku[router]: at=info method=GET path="/" host=picture-imperfect.herokuapp.com request_id=b4acae3f-714b-44a2-933d-fe4bacfc7edd fwd="47.37.112.14" dy
+2021-04-12T01:55:06.019565+00:00 heroku[router]: at=info method=GET path="/static/js/main.274d4cfa.chunk.js" host=picture-imperfect.herokuapp.com request_id=0d63f6f3-5233-4d9a-b863-bbol=https
+2021-04-12T01:55:06.028957+00:00 heroku[router]: at=info method=GET path="/static/js/2.a277736f.chunk.js" host=picture-imperfect.herokuapp.com request_id=b8f71b50-4b12-4cf4-a718-01505https
+2021-04-12T01:55:06.101505+00:00 heroku[router]: at=info method=GET path="/static/js/2.a277736f.chunk.js" host=picture-imperfect.herokuapp.com request_id=5a59da40-8c2c-4f4d-8061-d5ad2https
+2021-04-12T01:55:06.108402+00:00 heroku[router]: at=info method=GET path="/static/js/main.274d4cfa.chunk.js" host=picture-imperfect.herokuapp.com request_id=37aa2770-7ba3-45a2-ab90-16ol=https
+2021-04-12T01:55:06.169654+00:00 heroku[router]: at=info method=GET path="/logo192.png" host=picture-imperfect.herokuapp.com request_id=c478a771-57a7-48e2-82b0-71b69d4e6fd8 fwd="47.37
+2021-04-12T01:55:06.248092+00:00 heroku[router]: at=info method=GET path="/logo192.png" host=picture-imperfect.herokuapp.com request_id=d9199707-f094-422b-8757-740890376512 fwd="47.37
+2021-04-12T01:55:06.266942+00:00 heroku[router]: at=info method=GET path="/favicon.ico" host=picture-imperfect.herokuapp.com request_id=5d7706ec-49df-48d0-9b73-b65620309b99 fwd="47.37
+2021-04-12T01:55:06.333405+00:00 heroku[router]: at=info method=GET path="/" host=picture-imperfect.herokuapp.com request_id=5f70756f-a81b-4c84-9e7c-04933dce130c fwd="72.134.245.196" 
+2021-04-12T01:55:06.357663+00:00 heroku[router]: at=info method=GET path="/favicon.ico" host=picture-imperfect.herokuapp.com request_id=9246f9b0-568d-450a-a031-ec739ed0ef7d fwd="47.37
+2021-04-12T01:55:06.468723+00:00 heroku[router]: at=info method=GET path="/manifest.json" host=picture-imperfect.herokuapp.com request_id=6b79c20d-79d2-4d48-b082-8c4f8b60fbe6 fwd="47.
+2021-04-12T01:55:06.490887+00:00 heroku[router]: at=info method=GET path="/static/js/2.a277736f.chunk.js" host=picture-imperfect.herokuapp.com request_id=ff779058-b9ca-41fd-b6cb-ed814tocol=https
+2021-04-12T01:55:06.524663+00:00 heroku[router]: at=info method=GET path="/manifest.json" host=picture-imperfect.herokuapp.com request_id=4d5e1320-89e0-4103-8693-126e193e0add fwd="47.
+2021-04-12T01:55:06.528154+00:00 heroku[router]: at=info method=GET path="/logo192.png" host=picture-imperfect.herokuapp.com request_id=48ac2bea-f671-4627-b324-0fff6d96ba7a fwd="47.37
+2021-04-12T01:55:06.593921+00:00 heroku[router]: at=info method=GET path="/logo192.png" host=picture-imperfect.herokuapp.com request_id=d6de0ca4-cb7a-4eec-9668-5aad3915ba46 fwd="47.37
+2021-04-12T01:55:06.683869+00:00 heroku[router]: at=info method=GET path="/static/js/main.274d4cfa.chunk.js" host=picture-imperfect.herokuapp.com request_id=0015f7ed-cf88-4058-999d-05
+protocol=https
+2021-04-12T01:55:07.100197+00:00 heroku[router]: at=info method=GET path="/logo192.png" host=picture-imperfect.herokuapp.com request_id=6b31c442-f3d3-4199-8a59-d2a7fbf62a97 fwd="72.13
+2021-04-12T01:55:07.259309+00:00 heroku[router]: at=info method=GET path="/favicon.ico" host=picture-imperfect.herokuapp.com request_id=837873b3-2e4a-4971-b940-9c6741189aea fwd="72.13
+2021-04-12T01:55:07.504459+00:00 heroku[router]: at=info method=GET path="/manifest.json" host=picture-imperfect.herokuapp.com request_id=6e940ae9-f7ae-4051-9361-768cd93fe8c6 fwd="72.
+2021-04-12T01:55:07.609142+00:00 heroku[router]: at=info method=GET path="/logo192.png" host=picture-imperfect.herokuapp.com request_id=994c935e-cf82-408f-839a-3ad73b432623 fwd="72.13
+2021-04-12T01:55:13.102526+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3oZWX" host=picture-imperfect.herokuapp.com request_id=0ead0003-87eb-s=298 protocol=https
+2021-04-12T01:55:13.188319+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3oZXd&sid=X9DTcVsFvHmyXzb7AAAC" host=picture-imperfect.herokuapp.com rvice=6ms status=200 bytes=234 protocol=https
+2021-04-12T01:55:13.188490+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=NZ3oZXb&sid=X9DTcVsFvHmyXzb7AAAC" host=picture-imperfect.herokuapp.comervice=4ms status=200 bytes=187 protocol=https
+2021-04-12T01:55:13.188640+00:00 app[web.1]: hello
+2021-04-12T01:55:13.411645+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=NZ3oZYy&sid=X9DTcVsFvHmyXzb7AAAC" host=picture-imperfect.herokuapp.comervice=165ms status=200 bytes=187 protocol=https
+2021-04-12T01:55:13.460928+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3oZYy.0&sid=X9DTcVsFvHmyXzb7AAAC" host=picture-imperfect.herokuapp.co
+service=210ms status=200 bytes=27196 protocol=https
+2021-04-12T01:55:41.400477+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3ogNJ" host=picture-imperfect.herokuapp.com request_id=3e1bf1a4-ddda-s=298 protocol=https
+2021-04-12T01:55:41.479886+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=NZ3ogRy&sid=L0juD0DMkyePTuBaAAAE" host=picture-imperfect.herokuapp.comervice=3ms status=200 bytes=187 protocol=https
+2021-04-12T01:55:41.480637+00:00 app[web.1]: hello
+2021-04-12T01:55:41.654576+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3ogRz&sid=L0juD0DMkyePTuBaAAAE" host=picture-imperfect.herokuapp.com rvice=3ms status=200 bytes=234 protocol=https
+2021-04-12T01:55:41.796228+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=NZ3ogVi&sid=L0juD0DMkyePTuBaAAAE" host=picture-imperfect.herokuapp.comervice=80ms status=200 bytes=187 protocol=https
+2021-04-12T01:55:41.805861+00:00 app[web.1]: /app/server/rooms.js:26
+2021-04-12T01:55:41.805871+00:00 app[web.1]: rooms[room].players[userId] = user
+2021-04-12T01:55:41.805872+00:00 app[web.1]: ^
+2021-04-12T01:55:41.805873+00:00 app[web.1]:
+2021-04-12T01:55:41.805874+00:00 app[web.1]: TypeError: Cannot read property 'players' of undefined
+2021-04-12T01:55:41.805874+00:00 app[web.1]: at addUserToRoom (/app/server/rooms.js:26:15)
+2021-04-12T01:55:41.805875+00:00 app[web.1]: at userJoin (/app/server/users.js:7:3)
+2021-04-12T01:55:41.805875+00:00 app[web.1]: at Socket.<anonymous> (/app/server/index.js:74:20)
+2021-04-12T01:55:41.805876+00:00 app[web.1]: at Socket.emit (events.js:315:20)
+2021-04-12T01:55:41.805876+00:00 app[web.1]: at /app/node_modules/socket.io/dist/socket.js:435:32
+2021-04-12T01:55:41.805877+00:00 app[web.1]: at processTicksAndRejections (internal/process/task_queues.js:75:11)
+2021-04-12T01:55:41.843410+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=websocket&sid=L0juD0DMkyePTuBaAAAE" host=picture-imperfect.herokuapp.com request_7ms status=101 bytes=129 protocol=https
+2021-04-12T01:55:41.846352+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=websocket&sid=kKBoHdc2B3Md3WMxAAAA" host=picture-imperfect.herokuapp.com request_6102ms status=101 bytes=129 protocol=https
+2021-04-12T01:55:41.847629+00:00 heroku[router]: at=error code=H13 desc="Connection closed without response" method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3ogVm&sid=L0juD0D1358c49 fwd="96.40.45.157" dyno=web.1 connect=1ms service=123ms status=503 bytes=0 protocol=https
+2021-04-12T01:55:41.848331+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=websocket&sid=X9DTcVsFvHmyXzb7AAAC" host=picture-imperfect.herokuapp.com request_510ms status=101 bytes=129 protocol=https
+2021-04-12T01:55:41.930608+00:00 heroku[web.1]: Process exited with status 1
+2021-04-12T01:55:42.002576+00:00 heroku[web.1]: State changed from up to crashed
+2021-04-12T01:55:43.386926+00:00 heroku[router]: at=error code=H10 desc="App crashed" method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3oguG" host=picture-imperfect.herokuapp.ce= status=503 bytes= protocol=https
+2021-04-12T01:55:43.402093+00:00 heroku[router]: at=error code=H10 desc="App crashed" method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3ogw3" host=picture-imperfect.herokuapp.e= status=503 bytes= protocol=https
+2021-04-12T01:55:43.679307+00:00 heroku[router]: at=error code=H10 desc="App crashed" method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3og-V" host=picture-imperfect.herokuapp.e= status=503 bytes= protocol=https
+2021-04-12T01:55:44.894714+00:00 heroku[router]: at=error code=H10 desc="App crashed" method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3ohFZ" host=picture-imperfect.herokuapp.e= status=503 bytes= protocol=https
+2021-04-12T01:55:46.386284+00:00 heroku[router]: at=error code=H10 desc="App crashed" method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3ohd7" host=picture-imperfect.herokuapp.ce= status=503 bytes= protocol=https
+2021-04-12T01:55:46.676856+00:00 heroku[router]: at=error code=H10 desc="App crashed" method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3ohjN" host=picture-imperfect.herokuapp.e= status=503 bytes= protocol=https
+2021-04-12T01:55:50.279506+00:00 heroku[router]: at=error code=H10 desc="App crashed" method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3oiWX" host=picture-imperfect.herokuapp.e= status=503 bytes= protocol=https
+2021-04-12T01:55:50.350556+00:00 heroku[router]: at=error code=H10 desc="App crashed" method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3oiSF" host=picture-imperfect.herokuapp.e= status=503 bytes= protocol=https
+2021-04-12T01:55:52.600835+00:00 heroku[router]: at=error code=H10 desc="App crashed" method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3oj4u" host=picture-imperfect.herokuapp.ce= status=503 bytes= protocol=https
+host=picture-imperfect.herokuapp.com request_id=d11091b5-f829-4e4e-a310-ee5751213ff7 fwd="96.40.45.157" dyno= connect= service= status=503 bytes= protocol=https
+2021-04-12T01:55:56.171903+00:00 heroku[router]: at=error code=H10 desc="App crashed" method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3ojw0" host=picture-imperfect.herokuapp.com request_id=484a9b1f-e728-4d5a-8a9a-10d680416d25 fwd="47.37.112.14" dyno= connect= service= status=503 bytes= protocol=https
+2021-04-12T01:55:59.400514+00:00 heroku[router]: at=error code=H10 desc="App crashed" method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3okYe" host=picture-imperfect.herokuapp.com request_id=e6f46f4a-b77e-4234-9b52-ee38d75855e5 fwd="12.106.221.22" dyno= connect= service= status=503 bytes= protocol=https
+2021-04-12T01:56:00.816097+00:00 heroku[router]: at=error code=H10 desc="App crashed" method=GET path="/socket.io/?EIO=4&transport=polling&t=NZ3ol8C" host=picture-imperfect.herokuapp.com request_id=85d64f0f-f2c7-4fc3-a808-3e6dda101899 fwd="96.40.45.157" dyno= connect= service= status=503 bytes= protocol=https
