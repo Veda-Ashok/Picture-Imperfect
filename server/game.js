@@ -85,6 +85,9 @@ class Game {
       blueTeam: this.blueTeam,
       whiteTeam: this.whiteTeam,
     })
+    console.log('judges: ', this.judges)
+    console.log('blueTeam: ', this.blueTeam)
+    console.log('whiteTeam: ', this.whiteTeam)
   }
 
   pickRandomWord() {
@@ -155,8 +158,8 @@ class Game {
       })
       // the odd seconds
       // emit timer event
-      console.log('timeRemaining: ', timeRemaining)
-      console.log('interval duration:', intervalDuration)
+      // console.log('timeRemaining: ', timeRemaining)
+      // console.log('interval duration:', intervalDuration)
       timeRemaining -= intervalDuration
 
       if (timeRemaining <= 0) {
@@ -214,11 +217,11 @@ class Game {
     // console.log(this.possibleJudges[player.id])
     // console.log(this.possiblePlayers[player.id])
 
-    delete this.room[player]
+    delete this.room[player.id]
     delete this.judges[player.id]
-    delete this.currentDrawers[player]
-    delete this.possibleJudges[player]
-    delete this.possiblePlayers[player]
+    delete this.currentDrawers[player.id]
+    delete this.possibleJudges[player.id]
+    delete this.possiblePlayers[player.id]
 
     this.blueTeam = this.blueTeam.filter((user) => user.id !== player.id)
     this.whiteTeam = this.whiteTeam.filter((user) => user.id !== player.id)
