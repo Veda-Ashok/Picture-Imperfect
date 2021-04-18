@@ -1,9 +1,9 @@
 import React, { useContext, useEffect } from 'react'
 import { amber } from '@material-ui/core/colors'
 import Typography from '@material-ui/core/Typography'
-import Avatar from '@material-ui/core/Avatar'
 import { makeStyles } from '@material-ui/core/styles'
 import Context from '../../context/context'
+import PlayerAvatar from './PlayerAvatar'
 
 const useStyles = makeStyles((theme) => ({
   avatars: {
@@ -51,7 +51,7 @@ export default function ScreenshotUsers() {
         return (
           <div className={classes.flexItem} key={user.username}>
             <div className={classes.avatars}>
-              <Avatar src={user.icon ? user.icon : '/logo192.png'} alt={user.username} />
+              <PlayerAvatar username={user.username} icon={user.icon} />
               <Typography variant="subtitle1">{user.username}</Typography>
               {user.ready ? (
                 <Typography variant="subtitle1" style={{ backgroundColor: amber[200] }}>

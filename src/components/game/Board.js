@@ -293,7 +293,10 @@ function Board({ role, whiteTeamWord, blueTeamWord, yourTurn }) {
           ref={canvasRef}
           aria-label="canvas"
           className={classes.canvas}
-          style={{ backgroundColor: yourTurn ? amber[200] : 'white' }}
+          style={{
+            backgroundColor: yourTurn ? amber[200] : 'white',
+            border: yourTurn ? '5px solid black' : '3px solid black',
+          }}
         />
       </div>
     </div>

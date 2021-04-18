@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Typography from '@material-ui/core/Typography'
-import Avatar from '@material-ui/core/Avatar'
 import { makeStyles } from '@material-ui/core/styles'
 import { PropTypes } from 'prop-types'
+import { amber } from '@material-ui/core/colors'
+import Context from '../../context/context'
+import PlayerAvatar from './PlayerAvatar'
 
 const useStyles = makeStyles((theme) => ({
   blueElement: {
@@ -17,6 +19,14 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
     padding: theme.spacing(1),
+    backgroundColor: '#FFFFFF',
+  },
+  me: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: theme.spacing(1),
+    backgroundColor: amber[200],
   },
   elementText: {
     display: 'flex',
@@ -29,15 +39,28 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Player({ player, color }) {
   const classes = useStyles()
+  const globalContext = useContext(Context)
 
   return (
-    <div className={color === 'white' ? classes.whiteElement : classes.blueElement}>
-      <Avatar src={player.icon ? player.icon : '/logo192.png'} alt={player.username} />
-      <div className={classes.elementText}>
-        <Typography variant="subtitle1">{player.username}</Typography>
-        <Typography variant="subtitle2">{`points: ${player.points}`}</Typography>
-      </div>
-    </div>
+    <>
+      {player.username === globalContext.myInfo.username ? (
+        <div className={classes.me}>
+          <PlayerAvatar username={player.username} icon={player.icon} />
+          <div className={classes.elementText}>
+            <Typography variant="h6">{player.username}</Typography>
+            <Typography variant="subtitle2">{`points: ${player.points}`}</Typography>
+          </div>
+        </div>
+      ) : (
+        <div className={color === 'white' ? classes.whiteElement : classes.blueElement}>
+          <PlayerAvatar username={player.username} icon={player.icon} />
+          <div className={classes.elementText}>
+            <Typography variant="subtitle1">{player.username}</Typography>
+            <Typography variant="subtitle2">{`points: ${player.points}`}</Typography>
+          </div>
+        </div>
+      )}
+    </>
   )
 }
 
