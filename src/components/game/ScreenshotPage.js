@@ -5,18 +5,18 @@ import React, { useContext, useState } from 'react'
 import { PropTypes } from 'prop-types'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
-import Avatar from '@material-ui/core/Avatar'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Dialog from '@material-ui/core/Dialog'
 import { makeStyles } from '@material-ui/core/styles'
-import { amber } from '@material-ui/core/colors'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
+import { amber } from '@material-ui/core/colors'
 import Context from '../../context/context'
 import Rules from '../reusable/Rules'
 import Player from './Player'
 import ScreenshotUsers from './ScreenshotUsers'
+import PlayerAvatar from './PlayerAvatar'
 
 const useStyles = makeStyles((theme) => ({
   body: {
@@ -42,7 +42,8 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'space-around',
     alignItems: 'center',
-    border: `solid 3px ${amber[200]}`,
+    backgroundColor: amber[200],
+    border: `solid 3px black`,
     margin: theme.spacing(1),
   },
   othersRank: {
@@ -207,7 +208,7 @@ export default function ScreenshotPage({
           playersGettingPoints.map((player, index) => {
             return (
               <div key={`playersGettingPoints${index}`} className={classes.avatars}>
-                <Avatar src={player.icon ? player.icon : '/logo192.png'} alt={player.username} />
+                <PlayerAvatar username={player.username} icon={player.icon} />
                 <Typography variant="subtitle1">{player.username}</Typography>
               </div>
             )
