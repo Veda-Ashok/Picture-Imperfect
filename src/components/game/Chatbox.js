@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useContext } from 'react'
 import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
-import Avatar from '@material-ui/core/Avatar'
 import { makeStyles } from '@material-ui/core/styles'
 import { PropTypes } from 'prop-types'
 import Divider from '@material-ui/core/Divider'
 import { amber } from '@material-ui/core/colors'
 import Context from '../../context/context'
 import ChatInput from './ChatInput'
+import PlayerAvatar from './PlayerAvatar'
 
 const useStyles = makeStyles((theme) => ({
   chatLog: {
@@ -92,7 +92,7 @@ export default function Chatbox({ judges, blueTeamWord, whiteTeamWord }) {
         {judges &&
           judges.map((judge) => (
             <div className={classes.avatars} key={judge.username}>
-              <Avatar src={judge.icon ? judge.icon : '/logo192.png'} alt={judge.username} />
+              <PlayerAvatar username={judge.username} icon={judge.icon} />
               <Typography variant="subtitle1">{judge.username}</Typography>
             </div>
           ))}

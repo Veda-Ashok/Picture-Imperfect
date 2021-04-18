@@ -3,13 +3,13 @@ import React, { useContext } from 'react'
 import { PropTypes } from 'prop-types'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
-import Avatar from '@material-ui/core/Avatar'
 import withWidth, { isWidthDown, isWidthUp } from '@material-ui/core/withWidth'
 import Context from '../../context/context'
 import Chatbox from './Chatbox'
 import Rules from '../reusable/Rules'
 import Board from './Board'
 import PlayerQueue from './PlayerQueue'
+import PlayerAvatar from './PlayerAvatar'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -168,10 +168,7 @@ function GamePlayPage({
         <div className={classes.bannerElement}>
           {whiteTeam.length > 0 && (
             <div className={classes.avatars}>
-              <Avatar
-                src={whiteTeam[0].icon ? whiteTeam[0].icon : '/logo192.png'}
-                alt={whiteTeam[0].username}
-              />
+              <PlayerAvatar username={whiteTeam[0].username} icon={whiteTeam[0].icon} />
               <Typography variant="subtitle1">{whiteTeam[0].username}</Typography>
             </div>
           )}
@@ -180,10 +177,7 @@ function GamePlayPage({
           </Typography>
           {blueTeam.length > 0 && (
             <div className={classes.avatars}>
-              <Avatar
-                src={blueTeam[0].icon ? blueTeam[0].icon : '/logo192.png'}
-                alt={blueTeam[0].username}
-              />
+              <PlayerAvatar username={blueTeam[0].username} icon={blueTeam[0].icon} />
               <Typography variant="subtitle1">{blueTeam[0].username}</Typography>
             </div>
           )}
