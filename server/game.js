@@ -208,6 +208,12 @@ class Game {
   }
 
   removePlayer(player) {
+    // console.log(this.room[player.id])
+    // console.log(this.judges[player.id])
+    // console.log(this.currentDrawers[player.id])
+    // console.log(this.possibleJudges[player.id])
+    // console.log(this.possiblePlayers[player.id])
+
     delete this.room[player]
     delete this.judges[player.id]
     delete this.currentDrawers[player]

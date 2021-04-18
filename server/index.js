@@ -235,7 +235,9 @@ io.on('connection', (socket) => {
   socket.on('drawing', (data) => {
     const user = getUserById(socket.id)
 
-    socket.broadcast.to(user.room).emit('drawing', data)
+    if (user) {
+      socket.broadcast.to(user.room).emit('drawing', data)
+    }
   })
 
   // send messages in chat

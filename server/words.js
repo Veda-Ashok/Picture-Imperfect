@@ -136,7 +136,7 @@ function addCustomWord(roomCode, word) {
     }
     return wordSets[roomCode].custom.length
   }
-  console.log('if room already exists', Object.values(wordSets[roomCode].custom))
+  // console.log('if room already exists', Object.values(wordSets[roomCode].custom))
   return 0
 }
 
@@ -155,7 +155,6 @@ function addWordSet(roomCode) {
 
 function clearWordSet(roomCode) {
   delete wordSets[roomCode]
-  console.log(wordSets[roomCode])
 }
 
 function getRandom(list) {
@@ -175,7 +174,6 @@ function getRandomWord(difficulty, roomCode) {
   const word = getRandom(wordList)
   const index = wordSets[roomCode][newDifficulty].indexOf(word)
   wordSets[roomCode][newDifficulty].splice(index, 1)
-  console.log(wordSets)
   if (wordSets[roomCode][newDifficulty].length < 1) {
     delete wordSets[roomCode][newDifficulty]
   }
