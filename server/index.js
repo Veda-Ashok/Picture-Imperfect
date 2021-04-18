@@ -289,7 +289,6 @@ io.on('connection', (socket) => {
     const totalRounds = getTotalRounds(user.room)
 
     io.to(user.room).emit('totalRounds', totalRounds)
-    // console.log('total Rounds: ', totalRounds)
   })
 })
 
