@@ -117,7 +117,7 @@ export default function Rules() {
               <ListItem>
                 <ListItemText
                   primary="6. When the timer begins, both teams have 90 seconds to draw a picture of
-          their word on a canvas that the other team shares. Members in a team take turns drawing, with each member having 4 seconds."
+          their word on a canvas that the other team shares. Members in a team take turns drawing with each member having 4 seconds."
                 />
               </ListItem>
               <ListItem>
@@ -136,11 +136,11 @@ export default function Rules() {
               <ListItem>
                 <ListItemText
                   primary="9. If a judge guesses a team’s word, that team and the judge who guessed the word all receive a point. 
-                  When a turn ends the player are taken to a screenshot page. The next turn does not start until everyone is ready."
+                  When a turn ends the players are taken to a screenshot page. The next turn does not start until everyone hits the 'I'm Ready' button."
                 />
               </ListItem>
               <ListItem>
-                <ListItemText primary="10. Each turn the teams change as the judges are rotated in to be players. The next round only starts once every player has had the chance to be a judge." />
+                <ListItemText primary="10. Each turn, the teams change as the judges are rotated in to be players. The next round only starts once every player has had the chance to be a judge." />
               </ListItem>
               <ListItem>
                 <ListItemText primary="11. When the number of rounds specified by the host in the beginning of the game is reached, the game ends. The winner is the player with the most points by the end of all the rounds." />
