@@ -39,6 +39,7 @@ export default function GamePage() {
 
   // handle methods for sockets
   const handleScreenshotPage = (data) => {
+    console.log('in handlesScreenShotPage', data)
     setIsScreenshotPage(true)
     setPlayers(Object.values(data.players))
     setWinningTeam(data.winningTeam)

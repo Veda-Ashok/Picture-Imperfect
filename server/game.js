@@ -31,8 +31,6 @@ class Game {
     this.roomCode = roomCode
     this.io = io
     this.socket = socket
-    // this.pastWords = new Set()
-    this.skipToNext = false
     this.turnInterval = undefined
     this.screenshotInterval = undefined
 
@@ -127,12 +125,10 @@ class Game {
     }
     const judgePoints = judge.points + 1
     updateUser(judge.id, 'points', judgePoints)
-    this.skipToNext = true
     this.goToScreenshot(teamName, judge)
   }
 
   playGame() {
-    this.skipToNext = false
     let timeRemaining = this.totalDrawTime
     const intervalDuration = 1
 
@@ -161,12 +157,14 @@ class Game {
 
       if (timeRemaining <= 0) {
         // they couldnt guess it
+        console.log('timer ran out')
         this.goToScreenshot('timeOut')
       }
     }, intervalDuration * 1000)
   }
 
   goToScreenshot(teamName, judge) {
+    console.log('in screenshot function')
     clearInterval(this.turnInterval)
     // if winningTeam is undefined then its a time out
     // set ready to false for everyone so that they are not immediately ready on next screenshot page
@@ -184,6 +182,7 @@ class Game {
       winningJudge: judge,
       players: this.room,
     })
+    console.log('finished screenshot')
   }
 
   goToNextRound() {
