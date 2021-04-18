@@ -6,6 +6,11 @@ import Avatar from '@material-ui/core/Avatar'
 import { makeStyles } from '@material-ui/core/styles'
 import { PropTypes } from 'prop-types'
 import { useHistory } from 'react-router-dom'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import Dialog from '@material-ui/core/Dialog'
+import IconButton from '@material-ui/core/IconButton'
+import CloseIcon from '@material-ui/icons/Close'
 // import { amber } from '@material-ui/core/colors'
 import Context from '../../context/context'
 import Rules from '../reusable/Rules'
@@ -18,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     height: '100%',
     flexFlow: 'column',
+    width: '100%',
   },
   rows: {
     display: 'flex',
@@ -59,10 +65,9 @@ const useStyles = makeStyles((theme) => ({
     width: '6rem',
   },
   screenshot: {
-    width: '50%',
+    width: '100%',
     backgroundColor: 'white',
     border: '3px solid black',
-    margin: theme.spacing(2),
   },
   finalRanking: {
     padding: theme.spacing(3),
@@ -70,6 +75,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center',
     background: 'white',
+    flexGrow: 1,
     marginBottom: theme.spacing(1),
   },
   button: {
@@ -77,6 +83,13 @@ const useStyles = makeStyles((theme) => ({
   },
   margin: {
     marginBottom: theme.spacing(1),
+    width: '100%',
+  },
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: 'black',
   },
 }))
 
@@ -87,6 +100,7 @@ export default function GameOverPage({ players }) {
   const [secondPlacePlayers, setSecondPlacePlayers] = useState([])
   const [thirdPlacePlayers, setThirdPlacePlayers] = useState([])
   const [etcPlayers, setEtcPlayers] = useState([])
+  const [openDrawingModal, setDrawingModal] = useState(false)
   const globalContext = useContext(Context)
 
   useEffect(() => {
@@ -223,11 +237,14 @@ export default function GameOverPage({ players }) {
           {etcPlayers && etcPlayers.length > 0 && etcPlayers.map((player) => etc(player))}
         </div>
         <div className={classes.rows}>
-          <img
-            className={classes.screenshot}
-            src={globalContext.screenshot ? globalContext.screenshot : '/media/nobodyDrew.png'}
-            alt="screenshot"
-          />
+          <Button
+            variant="contained"
+            color="secondary"
+            className={classes.button}
+            onClick={() => setDrawingModal(true)}
+          >
+            View Final Drawing
+          </Button>
         </div>
         <div className={classes.rows}>
           <Button
@@ -240,6 +257,34 @@ export default function GameOverPage({ players }) {
             Play Again
           </Button>
         </div>
+        <Dialog
+          className={classes.button}
+          onClose={() => setDrawingModal(false)}
+          fullWidth
+          maxWidth="md"
+          aria-labelledby="final-drawing"
+          open={openDrawingModal}
+        >
+          <DialogTitle>
+            Final Drawing
+            {openDrawingModal ? (
+              <IconButton
+                aria-label="close"
+                className={classes.closeButton}
+                onClick={() => setDrawingModal(false)}
+              >
+                <CloseIcon />
+              </IconButton>
+            ) : null}
+          </DialogTitle>
+          <DialogContent dividers>
+            <img
+              className={classes.screenshot}
+              src={globalContext.screenshot ? globalContext.screenshot : '/media/nobodyDrew.png'}
+              alt="screenshot"
+            />
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   )
