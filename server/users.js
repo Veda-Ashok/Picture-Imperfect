@@ -9,20 +9,26 @@ function userJoin(id, username, room, icon) {
 }
 
 function getUserById(id) {
-  return users[id]
+  if (Object.prototype.hasOwnProperty.call(users, id)) {
+    return users[id]
+  }
+  return undefined
 }
 
 function userLeave(id) {
-  const user = users[id]
+  if (Object.prototype.hasOwnProperty.call(users, id)) {
+    const user = users[id]
 
-  if (!user) {
-    // throw `Error: user with id ${id} not in list`
-    return id
+    if (!user) {
+      // throw `Error: user with id ${id} not in list`
+      return id
+    }
+    delete users[id]
+    removeUserFromRoom(user.room, id)
+
+    return user
   }
-  delete users[id]
-  removeUserFromRoom(user.room, id)
-
-  return user
+  return undefined
 }
 
 function getUserByUsernameAndRoom(username, room) {
@@ -37,10 +43,13 @@ function getUserByUsernameAndRoom(username, room) {
 }
 
 function updateUser(id, key, value) {
-  users[id][key] = value
-  const { room } = users[id]
-  updateUserInRoom(room, id, key, value)
-  return users[id]
+  if (Object.prototype.hasOwnProperty.call(users, id)) {
+    users[id][key] = value
+    const { room } = users[id]
+    updateUserInRoom(room, id, key, value)
+    return users[id]
+  }
+  return undefined
 }
 
 module.exports = {
