@@ -1,6 +1,6 @@
 # Picture Imperfect
 
-![Logo](/media//Logo.svg)
+![Logo](/public/media//Logo.svg)
 
 ## The drawing game to make Picture Imperfect memories that last.
 
