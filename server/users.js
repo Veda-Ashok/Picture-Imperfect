@@ -12,6 +12,7 @@ function getUserById(id) {
   if (Object.prototype.hasOwnProperty.call(users, id)) {
     return users[id]
   }
+  return undefined
 }
 
 function userLeave(id) {
@@ -27,6 +28,7 @@ function userLeave(id) {
 
     return user
   }
+  return undefined
 }
 
 function getUserByUsernameAndRoom(username, room) {
@@ -47,6 +49,7 @@ function updateUser(id, key, value) {
     updateUserInRoom(room, id, key, value)
     return users[id]
   }
+  return undefined
 }
 
 module.exports = {
