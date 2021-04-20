@@ -36,4 +36,4 @@ The game in which groups of friends and family, no matter how near or far, draw 
 
 ## Where can you play?
 
-## <a href="https://picture-imperfect.herokuapp.com/" title="picture-imperfect-heroku">Here!</a>
+<b> <a href="https://picture-imperfect.herokuapp.com/" title="picture-imperfect-heroku">Here!</a> </b>
